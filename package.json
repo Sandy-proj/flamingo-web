@@ -1,0 +1,30 @@
+{
+  "name": "kandyjar",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "css-build": "node-sass --omit-source-map-url sass_config/bulma_config.scss styles/kandyjar_style.css",
+    "css-watch": "npm run css-build -- --watch",
+    "css-start": "npm run css-watch"
+  },
+  "dependencies": {
+    "@mdi/font": "^5.9.55",
+    "@mdi/js": "^5.9.55",
+    "@mdi/react": "^1.4.0",
+    "axios": "^0.21.1",
+    "classnames": "^2.2.6",
+    "clsx": "^1.1.1",
+    "next": "10.0.6",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-sortable-hoc": "^2.0.0",
+    "swr": "^0.5.6"
+  },
+  "devDependencies": {
+    "bulma": "^0.9.2",
+    "node-sass": "^5.0.0"
+  }
+}
