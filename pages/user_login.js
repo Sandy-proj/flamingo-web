@@ -28,13 +28,11 @@ export default function Login({isLoggedIn,role,onLoginChange}){
         }catch(e){
             console.error(e)
         }
-        
-
     }
    useEffect(()=>{
         if(loginStatus.isLoggedIn===true){
             
-            onLoginChange({isLoggedIn:loginStatus.isLoggedIn,role:loginStatus.role,userId:loginStatus.id});
+            onLoginChange({isLoggedIn:loginStatus.isLoggedIn,role:loginStatus.role,userId:loginStatus.id,handshake:true});
             router.push('/');
         }
     },[loginStatus.isLoggedIn,loginAttempts])

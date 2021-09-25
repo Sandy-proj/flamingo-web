@@ -2,10 +2,20 @@ import SearchBar from './SearchBar'
 import {Icon} from '@mdi/react'
 import {mdiAccount,mdiLock,mdiHeart} from '@mdi/js'
 import clsx from 'clsx'
-export default function Header({resourceData,isLoggedIn}){
+import { AuthorizationContext } from '../Util/AuthContext'
+import { useRouter } from 'next/router'
+import { useContext } from 'react'
+export default function Header({resourceData,onSelection}){
+    const router = useRouter();
+    const user = useContext(AuthorizationContext);
     function handleClick(e){
         e.preventDefault();
-
+        // if(user.isLoggedIn){
+        //     router.push(`/usrview/square?id=${24}`)
+        // }else{
+        //     window.location.href=`http://localhost:3000/view_square?id=24`
+        // }
+        onSelection(resourceData.id)
     }
     return (
     <div>
@@ -18,7 +28,7 @@ export default function Header({resourceData,isLoggedIn}){
                     </div>
                     <div class="media-content">
                         <p class="title is-5 has-text-weight-light has-text-grey-dark">{resourceData.id +':'+resourceData.title}</p>
-                        <p class="subtitle is-info-light is-6"><a>@user234</a></p>
+                        <p class="subtitle is-info-light is-6"><a>it is {user.role}</a></p>
                         <p class="content">A list of awesome collection of things  to be viewed</p>
                     </div>
                 </div>

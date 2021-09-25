@@ -5,7 +5,6 @@ import BaseLayout from './../components/ui/BaseLayout'
 export default function ChangePassword({props}){
     const [formData,setFormData] = useState({oldPassword:'',newPassword:'',confirmPassword:''}); 
     function validateLogin(){
-
        return true;
     }
 

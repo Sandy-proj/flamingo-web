@@ -11,7 +11,7 @@ import DropDownMenu from './DropDownMenu'
 import { CONSTANTS } from './../Util/Constants'
 import ConfirmationDialog from './ConfirmationDialog'
 
-export default function UseSquare({resourceId,resource,onEdit,activity,isEditable}) {
+export default function UseSquarePublic({resourceId,resource,onEdit,activity,isEditable}) {
 
     var downloadUrl = '/hopsapi/resources/resource/download'
     var updateUrl = '/hopsapi/resources/resource/update'
@@ -25,16 +25,10 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
                   CONSTANTS.ACTION_MENU.CLOSE]
     const user = useContext(AuthorizationContext)
     const router = useRouter();
-    const actions = useRef({});
     const [downloading,setDownloading] = useState(false);
-    const [deleting,setDeleting] = useState(false)
-    const [userAction,setUserAction] = useState({like:false,bookmark:false,download:false});
     const [counters,setCounters]=useState({likes:0,downloads:0,bookmarks:0})
 
-    function isUserAuthor(){
-      if(user.userId===resource.authorId) return true;
-      return false;
-    }
+
     function handleEdit(e){
         onEdit()
     }
@@ -49,59 +43,17 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
 
     function handleLike(){
-      //Toggle between like and dislike based on the current state.
-      var newAction = Object.assign({},userAction)
-      newAction.like=!userAction.like;
-      console.log('new action:'+newAction)
-      actions.current.like = userAction.like?false:true;
-      userAction.like?counters.likes--:counters.likes++
-      setUserAction(newAction);
+    
     }
 
     async function handleDownload(){
-      if(userAction.download||isUserAuthor())
-      return;
-      downloadUrl = downloadUrl+`?resId=${resource.id}`
-      try{
-         setDownloading(true)
-         const downloadResponse = await axios.get(downloadUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-         if(downloadResponse.data.status=CONSTANTS.SUCCESS){
-          var newAction = Object.assign({},userAction)
-          newAction.download=true;
-          setUserAction(newAction)
-          setDownloading(false)
-         }
-      }catch(error){
-        if(downloading){
-          setDownloading(false)
-        }
-        console.error(error)
-      }
-      
+     
 
     }
 
 
     function handleBookmark(){
-      var newAction = Object.assign({},userAction)
-      newAction.bookmark=!userAction.bookmark;
-      actions.current.bookmark = userAction.bookmark?false:true;
-      userAction.bookmark?counters.bookmarks--:counters.bookmarks--;
-      console.log('new action:'+newAction)
-      setUserAction(newAction);
-    }
-
-    async function  handleDialogCofirm(){
-      setDeleting(false)
-      try{
-        const deleteResponse = await axios.delete(deleteUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-        if(response.status!=CONSTANTS.SUCCESS){
-          console.log('error')
-        }
-      }catch(error){
-        console.error(error)
-      }
-      router.replace('/')
+     
     }
 
   
@@ -157,9 +109,9 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       console.log('using square - '+user.isLoggedIn)
 
      
-      return <li className="mb-0 ml-0 p-1">
+      return <li className="mb-3 ml-0 p-1">
         
-        <div className={clsx('columns','is-gapless','is-mobile','mb-1','mt-4')}>
+        <div className={clsx('columns','is-gapless','is-mobile','mb-1')}>
         {actionable?  <div className={clsx('column','is-auto',isSelected?'active-item':false)}>
             <button className={clsx('button','is-white')} onClick={handleSelection}>
               <span className='icon'><Icon path={isSelected?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon></span>
@@ -169,9 +121,6 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
          
           <div className={clsx('column','is-10','ml-1','mr-1')}>
             <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>
-            <div className={clsx('tray',isExpanded?'tray-max':'tray-min')}>
-          <input className={clsx('input','entrystyle')} type="text" defaultValue={''} placeholder="Add details"/>
-        </div>
           </div>
           <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
          
@@ -185,53 +134,16 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
                         
   
   
-       
+        <div className={clsx('tray','mt-1',isExpanded?'tray-max':'tray-min')}>
+          <p className={clsx('text')} type="text" defaultValue={''}>{itemData&&itemData.detail}</p>
+        </div>
       
       </li>
     }
 
 
-    function EditButton(){
-      if(!user.isLoggedIn){
-        return null;
-      }
-      
-      if(!isEditable){
-        return null;
-      }
-
-      return (
-        <div>
-            <button className={clsx('button')} onClick={handleEdit}>Edit</button>
-         </div>
-      );
-    }
 
 
-    function Modal({activate}){
-      
-      return <div className={clsx('modal','is-clipped',activate?'is-active':'')}>
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">In progress..</p>
-          <button class="delete" aria-label="close"></button>
-        </header>
-        <section class="modal-card-body">
-         downloading
-         <progress class="progress is-small is-primary" max="100"></progress>
-        </section>
-       
-      </div>
-    </div>
-    }
-    //Read the user activity from the server and set the internal state. 
-    useEffect(()=>{
-      console.log('toggling')
-      if(activity){
-        setUserAction(activity)
-      }
-    },[activity.like,activity.bookmark,activity.download])
 
 
     useEffect(()=>{
@@ -244,22 +156,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       setCounters(counterObject)
     },[resource])
 
-    useEffect(()=>{
-      return ()=>{
-        var updateActions = {};
-        
-        try{
-          const response = axios.post(updateUrl,actions.current,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-        }catch(error){
 
-        }
-      }
-    },[])
-
-    console.log('user-resource:'+resource.resource)
-    console.log('user activity:'+activity.like+'-'+activity.bookmark+'-'+activity.download)
-    console.log('user-author'+user.userId+'-'+resource.authorId)
-    console.log('user-ref:'+actions.current.like)
     return (
       <div>
         <Head>
@@ -269,8 +166,8 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
         </Head>
        
         <div>
-        <Modal activate={downloading}/>
-        <ConfirmationDialog message={"Are you sure you want to delete this list?"} isVisible={deleting} onCancel={handleDialogCancel} onConfirm={handleDialogCofirm}/>s
+        {/* <Modal activate={downloading}/>
+        <ConfirmationDialog message={"Are you sure you want to delete this list?"} isVisible={deleting} onCancel={handleDialogCancel} onConfirm={handleDialogCofirm}/>s */}
           
         <div className={clsx('columns')}>
           <div className="column is-one-fifth">
@@ -295,13 +192,13 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
             <nav class="level">
              <div class="level-item has-text-centered pl-5">
                 <div>
-                  <a onClick={handleLike}><p className={clsx(userAction.like?'has-text-danger':'has-text-gray')}><Icon path={userAction.like?mdiHeart:mdiHeartOutline} size={1}></Icon></p></a>
+                  <a onClick={handleLike}><p className={clsx('has-text-danger')}><Icon path={mdiHeart} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.likes}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered pl-5">
                 <div>
-                   <a onClick={handleDownload}><p class={clsx(userAction.download?'has-text-link':'has-text-gray')}><Icon path={userAction.download||isUserAuthor()?mdiDownload:mdiDownloadOutline} size={1}></Icon></p></a>
+                   <a onClick={handleDownload}><p class={clsx('has-text-link')}><Icon path={mdiDownload} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.downloads}</p>
                 </div>
 
@@ -309,15 +206,15 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
               <div class="level-item has-text-centered pl-5">
                 <div>
       
-                  <a onClick={handleBookmark}><p class={clsx(userAction.bookmark?'has-text-success':'has-text-gray')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></p></a>
+                  <a onClick={handleBookmark}><p class={clsx('has-text-success')}><Icon path={mdiBookmark} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.bookmarks}</p>
                 </div>
               </div>
             </nav>
 
 
-            <ul className={clsx('p-2','listbox')}>
-              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={userAction.download||user.userId===resource.authorId}/>})}
+            <ul className={clsx('box','listbox')}>
+              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={false}/>})}
             </ul>
           </div>
           <div className="column has-text-centered is-one-fifth">
