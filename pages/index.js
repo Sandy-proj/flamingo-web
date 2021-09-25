@@ -1,41 +1,61 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import BaseLayout from './../components/ui/BaseLayout'
 import clsx from 'clsx'
-
 import SearchBar from './../components/ui/SearchBar'
 import DisplayArea from './../components/ui/DisplayArea'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import {mdiAccount,mdiLock} from '@mdi/js'
-import Paginator from './../components/ui/Paginator'
 import { CONSTANTS } from './../components/Util/Constants'
+import { useContext } from 'react'
+import { AuthorizationContext } from '../components/Util/AuthContext'
+import { NavigationContext } from '../components/Util/NavigationContext'
+import Header from '../components/ui/Header'
+import Categories from '../components/ui/Categories'
+import Menu from '../components/ui/Menu'
+import GenericCategories from '../components/ui/GenericCategories'
 
-export default function Home({isLoggedIn,role,user,onLoginChange}) {
+export default function Home({onLoginChange,displayState,onDisplayStateChange}) {
 
   const router = useRouter();
-  const [displayState,setDisplayState]=useState({mode:(isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),param:(isLoggedIn?user.id:'')});
+  const user = useContext(AuthorizationContext);
+  //const [displayState,setDisplayState]=useState({mode:(user.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),param:(user.isLoggedIn?user.id:'')});
   
+
+  function setDisplayState(displayStateObject){
+    onDisplayStateChange(displayStateObject)
+  }
+
   function handleSearch(queryString){
 
     if(queryString)
-    setDisplayState({mode:CONSTANTS.commandModes.SEARCH,param:queryString});
+    setDisplayState({mode:CONSTANTS.commandModes.SEARCH,param:queryString,activeItem:-1});
     
   }
 
-
+  console.log(displayState)
   function handleCreatePost(){
-    if(isLoggedIn){
+    if(user.isLoggedIn){
       router.push('/usrview/square')
     }else{
       router.push('/user_signup')
     }
   }
 
+  function handleCategoryMenuItem(category,activeIndex){
+    //Build a query for the category and set the displaystate
+    if(category)
+    setDisplayState({mode:CONSTANTS.commandModes.CATEGORIES,param:category,activeItem:activeIndex})
+  }
+
+  function handleGenericCategories(category,activeIndex){
+    
+    setDisplayState({mode:category,param:'',activeItem:activeIndex})
+  }
+
   //My feed button 
   function MyFeedButton({}){
-    if(!isLoggedIn){
+    if(!user.isLoggedIn){
       return null;
     }
 
@@ -55,38 +75,38 @@ export default function Home({isLoggedIn,role,user,onLoginChange}) {
    
   //Elements switching for logged in user and guest user. 
   var navButtons=<div></div>
-  if(isLoggedIn){
+  if(user.isLoggedIn){
     navButtons =  (<div className={clsx('buttons')}>
-    
-                      <a className={clsx('button','is-light','hoverzoom')} onClick={()=>{onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1})}}>
+                    <Link href='/usrview/profile'>
+                      <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
+                        <strong>Profile</strong>
+                      </a>
+                    </Link>
+                    <a className={clsx('button','is-light','hoverzoom')} onClick={()=>{onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1,handshake:true})}}>
                         Sign out
                       </a>
                     </div>);    
   }else{
     navButtons =  (<div className={clsx('buttons')}>
-    <Link href='/user_signup'>
-    <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
-      <strong>Sign up</strong>
-    </a>
-    </Link>
-    <Link href='/user_login'>
-    <a className={clsx('button','is-light','hoverzoom')}>
-      Log in
-    </a>
-    </Link>
-    </div>);
+                    <Link href='/user_signup'>
+                      <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
+                        <strong>Sign up</strong>
+                      </a>
+                    </Link>
+                    <Link href='/user_login'>
+                      <a className={clsx('button','is-light','hoverzoom')}>
+                        Log in
+                      </a>
+                    </Link>
+                  </div>);
   }
 
 
-  console.log('Login-status:'+(isLoggedIn?'logged in':'logged out')+' role:'+role)
   return (
     <BaseLayout>
    
     <div>
-      <Head>
-        <title>HopSquare</title>
-        <link rel="icon" href="/tinylogo.png" />
-      </Head>
+     <Header/>
       <div>
 
      {
@@ -118,7 +138,7 @@ export default function Home({isLoggedIn,role,user,onLoginChange}) {
         <div id="navBarMenu" className="navbar-menu is-active">
           <div className={clsx("navbar-end",'is-align-content-center')}>
             <div className={clsx('navbar-item','is-expanded','is-align-items-center')}>
-              <SearchBar onSearch={handleSearch}/>
+              <SearchBar onSearch={handleSearch} reset={displayState.mode===CONSTANTS.commandModes.SEARCH?false:true}/>
             </div>
           </div>
       <div className="level navbar-end">
@@ -132,45 +152,21 @@ export default function Home({isLoggedIn,role,user,onLoginChange}) {
 </nav>
 
       <div className="columns is-gapless">
-        <div className="column ml-2 mr-2 is-one-fifth">
-          <div className="box mt-1 has-background-white">
-          <aside className="menu">
-            <ul className="menu-list">
-              <MyFeedButton/>
-              <li key={2}>
-                <a onClick={(e)=>{e.preventDefault();setDisplayState({mode:CONSTANTS.commandModes.POPULAR,param:''});}}>
-                  <span className="icon-text">
-                    <span className="icon">
-                      <i className="mdi mdi-heart has-text-danger p-2"></i>
-                    </span>
-                    <span>Popular</span>
-                  </span>
-                </a>
-                
-                </li>
-                <li  key={3}>
-                <a onClick={(e)=>{e.preventDefault();setDisplayState({mode:CONSTANTS.commandModes.TRENDING,param:''});}}>
-                  <span className="icon-text">
-                    <span className="icon">
-                      <i className="mdi mdi-trending-up has-text-success p-2"></i>
-                    </span>
-                    <span>Trending</span>
-                  </span>
-                </a>
-                
-                </li>
+        <div className="column ml-2 mr-1 is-one-fifth">
+          <div className="box mt-2 has-background-white">
+            
+         
 
-
-            </ul>
-          </aside>
+          <GenericCategories onSelectItem={handleGenericCategories} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.TRENDING||displayState.mode===CONSTANTS.commandModes.POPULAR||displayState.mode===CONSTANTS.commandModes.MYLISTS||displayState.mode===CONSTANTS.commandModes.MYFEED||displayState.mode===CONSTANTS.commandModes.SAVED||displayState.mode===CONSTANTS.commandModes.BOOKMARKED?false:true}/>
          
           </div>
-          <div className="box mt-0 has-background-white">
-            Tags
+         
+          <div className={clsx('box',)}>
+            <Categories onSelectItem={handleCategoryMenuItem} activeIndex={displayState.activeItem} reset={displayState.mode===CONSTANTS.commandModes.CATEGORIES?false:true}/>
           </div>
         </div>                                                                                                                                           
         <div className="column mr-2 is-auto media">
-         <DisplayArea command={displayState}/>
+         <NavigationContext.Provider value={displayState}><DisplayArea isLoggedIn={user.isLoggedIn} command={displayState}/></NavigationContext.Provider>
           <div>
            
         </div> 
@@ -183,7 +179,7 @@ export default function Home({isLoggedIn,role,user,onLoginChange}) {
                 <a onClick={handleCreatePost}>
                   <span className="icon-text">
                     <span className="icon">
-                      <i className="mdi mdi-pencil has-text-success p-2"></i>
+                      <i className="mdi mdi-plus has-text-success p-2"></i>
                     </span>
                     <span>Create a post</span>
                   </span>

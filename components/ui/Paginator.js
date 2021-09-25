@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { CONSTANTS } from '../Util/Constants';
 import ResourceCard from './ResourceCard'
 import { useEffect } from 'react';
-export default function Paginator({onNextFetch,pageIndex,pageCount,data,transition,children}){
+export default function Paginator({onNextFetch,onSelection,pageIndex,pageCount,data,transition,isLoggedIn,children}){
   
 
   if(pageCount==0){
@@ -91,7 +91,7 @@ export default function Paginator({onNextFetch,pageIndex,pageCount,data,transiti
             
           {
             data.resources.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE,(offsetCurrentPage)*CONSTANTS.PAGE_SIZE).map(item=><li>
-              <ResourceCard resourceData={item}></ResourceCard>
+              <ResourceCard isLoggedIn={isLoggedIn} resourceData={item} onSelection={onSelection}></ResourceCard>
               </li>)
           }
         </ul>

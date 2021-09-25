@@ -5,6 +5,8 @@ import UseSquare from './../components/ui/UseSquare';
 import { CONSTANTS } from './../components/Util/Constants';
 import {useRouter} from 'next/router'
 import axios from 'axios'
+import BaseLayout from '../components/ui/BaseLayout';
+import UseSquarePublic from '../components/ui/UseSquarePublic';
 
 export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}) {
     const [mode,setMode] = useState(CONSTANTS.modes.USE)
@@ -22,12 +24,12 @@ export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}
     }
 
     var pageBody;
-    pageBody = <UseSquare onEdit={onEdit} resource={resource} isLoggedIn={isLoggedIn} isEditable={false}/>
+    pageBody = <UseSquarePublic onEdit={onEdit} resource={resource} isLoggedIn={isLoggedIn} isEditable={false}/>
      
     return (
-        <div>
+        <BaseLayout>
             {pageBody}
-        </div>
+        </BaseLayout>
         
     );
     }
@@ -43,7 +45,7 @@ export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}
         var data={}
         try{
             const response = await axios.get(`http://localhost:3001/resources/resource?id=${id}`,{timeout:10000});
-            data = { resource:response.data.resource}
+            data = { resource:response.data}
             console.log('server data:'+data)
         }catch(error){
             console.error(error)

@@ -1,11 +1,16 @@
 
 import {useState} from 'react'
+import {useRouter} from 'next/router'
+import Error from '../../pages/_error'
 
 export default function withAuthorization(Component){
-    return function({loginStatus,setLogin,...remainingProps}){
-        
-             return(
-            <Component user={{id:loginStatus.userId}} handshake={loginStatus.handshake} role={loginStatus.role} isLoggedIn={loginStatus.isLoggedIn} onLoginChange ={setLogin} {...remainingProps}/>
-        )
+    const router = useRouter();
+    return function({error,...props}){
+            if(error==0){
+                return(
+                    <Component {...props}/>
+                )
+            }
+            return <Error statusCode={error}/>
     }
 }

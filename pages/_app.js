@@ -4,50 +4,55 @@ import {useEffect, useImperativeHandle, useState} from 'react'
 import '../styles/kandyjar_style.css'
 import '../styles/utilities.css'
 import axios from 'axios'
+import { buildGuestUser,buildUser } from '../components/Util/Session'
 import {CONSTANTS} from './../components/Util/Constants'
 import '@mdi/font/css/materialdesignicons.min.css'
+import { AuthorizationContext } from '../components/Util/AuthContext'
 
 
 function MyApp({ Component, pageProps }) {
+
+  //Initialize the page.
   const loginCheckUrl='/hopsapi/checklogin'
 
-  const [loginStatus,setLoginStatus] = useState({isLoggedIn:false,role:CONSTANTS.ROLE.GUEST,handshake:false,userId:-1});
-  const [checkLogin,setCheckLogin]=useState(false)
-
-  const setLogin = ({isLoggedIn,role,userId})=>{ 
-    //Cookie based authentication. 
-    console.log('not here'+userId)
-    setLoginStatus({isLoggedIn:isLoggedIn,role:role,handshake:loginStatus.handshake,userId:userId});
+  const [loginStatus,setLoginStatus] = useState(buildGuestUser());
+  const [errorCode,setErrorCode] = useState(CONSTANTS.NO_ERROR)
+  const [displayState,setDisplayState]=useState({mode:(loginStatus.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),param:(loginStatus.isLoggedIn?loginStatus.id:'')});
 
 
-
+  //Function to change the authentication status of the user. 
+  const setLogin = (user)=>{ 
+    setLoginStatus(user);
   }
 
+  function handleDisplayStateChange(displayStateObject){
+    setDisplayState(displayStateObject)
+  }
+  //Effect runs after when the user refreshes the page. 
+  //It validates the user authorization status from the server and holds it in the global state.
   useEffect(async ()=>{
-    console.log('need to shake hand!')
     if(!loginStatus.handshake){
-      //Get the login status from the server. If loggedin set the login status, 
+      //Get the login status from the server and set it in context to be accessed by the pages. 
       try{
-        console.log('shaking hand')
-        const response = await axios.get(loginCheckUrl);
-        console.log(response.data.isLoggedIn); 
-        if(response.data.status==='SUCCESS'){
+          const response = await axios.get(loginCheckUrl);
+          if(response.data.status==='SUCCESS'){
          
-          setLoginStatus({isLoggedIn:response.data.isLoggedIn,role:response.data.role,handshake:true,userId:response.data.userId});
-          
-        }else{
-          setLoginStatus({isLoggedIn:false,role:'GUEST',handshake:true,userId:-1});
-        }
+            setLoginStatus(buildUser(response.data.id,response.data.role,response.data.preferences))        
+
+          }else{
+            setLoginStatus(buildGuestUser());
+          }
         
       }catch(error){
-        console.log('error') 
+        //On failure to communicate with the server.
+        setErrorCode(CONSTANTS.FAILED_TO_CONNECT)
+        
       }
       
     }
   },[loginStatus.handshake])
-  console.log('status = ' + loginStatus.isLoggedIn)
 
-  const AuthorizedComponent = withAuthorization(Component);
-  return <AuthorizedComponent setLogin={setLogin} loginStatus={loginStatus} {...pageProps} />
-}
+  const AuthorizedComponent = withAuthorization(Component)
+  return <AuthorizationContext.Provider value={loginStatus}><AuthorizedComponent displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/></AuthorizationContext.Provider>
+ }
 export default MyApp
