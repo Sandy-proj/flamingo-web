@@ -17,6 +17,7 @@ export default function Header({resourceData,onSelection}){
         // }
         onSelection(resourceData.id)
     }
+
     return (
     <div>
         <div className="box mt-1 is-radiusless is-shadowless is-clickable" onClick={handleClick}>
@@ -27,9 +28,9 @@ export default function Header({resourceData,onSelection}){
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-5 has-text-weight-light has-text-grey-dark">{resourceData.id +':'+resourceData.title}</p>
-                        <p class="subtitle is-info-light is-6"><a>it is {user.role}</a></p>
-                        <p class="content">A list of awesome collection of things  to be viewed</p>
+                        <p class="title is-5 has-text-weight-light has-text-grey-dark">{resourceData.title}</p>
+                        <p class="subtitle is-info-light is-6"><a>{resourceData.author_id}<strong>{resourceData.author_name}</strong></a></p>
+                        <p class="content">{resourceData.preview&&resourceData.preview.name}<br></br>....</p>
                     </div>
                 </div>
                 <div class="nav mt-3">
@@ -39,7 +40,7 @@ export default function Header({resourceData,onSelection}){
                     <span class="icon mdi mdi-eye p-2 has-text-warning">
                         
                     </span>
-                    <span>8989</span>
+                    <span>{resourceData.views?resourceData.views:0}</span>
                  </span>
                     </div>
 
@@ -49,7 +50,7 @@ export default function Header({resourceData,onSelection}){
                     <span class="icon mdi mdi-heart p-2 has-text-danger">
                         
                     </span>
-                    <span>300</span>
+                    <span>{resourceData.likes?resourceData.likes:0}</span>
                  </span>
                     </div>
 
@@ -59,7 +60,7 @@ export default function Header({resourceData,onSelection}){
                     <span class="icon mdi mdi-download p-2 has-text-success">
                         
                     </span>
-                    <span>898</span>
+                    <span>{resourceData.bookmarks?resourceData.bookmarks:0}</span>
                  </span>
                     </div>
                 

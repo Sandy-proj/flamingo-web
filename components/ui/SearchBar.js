@@ -24,11 +24,11 @@ export default function SearchBar({onSearch,reset,children}){
   
     return (
         <div className={clsx("field",'has-addons','centeralignment')} >
-        <p class="control">
+        <p className="control">
               <input class="input is-rounded" value={searchString} type="text" placeholder="Find a post" onChange={updateSearchString} onKeyPress={handleKeyPress}/>
              
         </p>
-        <p class="control">
+        <p className="control">
           <button class="button is-info" onClick={(e)=>{setSearchCommand(true);onSearch(searchString)}}>
             Search
           </button>

@@ -13,16 +13,70 @@ import { AuthorizationContext } from '../components/Util/AuthContext'
 function MyApp({ Component, pageProps }) {
 
   //Initialize the page.
-  const loginCheckUrl='/hopsapi/checklogin'
+  const loginCheckUrl='/hopsapi/user/checklogin'
+  const refreshAccessUrl = '/hopsapi/user/checklogin'
 
   const [loginStatus,setLoginStatus] = useState(buildGuestUser());
   const [errorCode,setErrorCode] = useState(CONSTANTS.NO_ERROR)
-  const [displayState,setDisplayState]=useState({mode:(loginStatus.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),param:(loginStatus.isLoggedIn?loginStatus.id:'')});
+  const [displayState,setDisplayState]=useState({mode:(loginStatus.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),
+                                                param:(loginStatus.isLoggedIn?loginStatus.id:'')});
 
 
   //Function to change the authentication status of the user. 
   const setLogin = (user)=>{ 
-    setLoginStatus(user);
+    //setLoginStatus(buildUser(user.id,user.role,{}));
+    user.initiateHandshake = handleIntiateRequest;
+    setLoginStatus(user)
+  }
+
+
+
+  //Try to refresh expired access using refresh token 
+  async function handleIntiateRequest(){
+  
+    try{
+
+      console.log('checking login.')
+      setInProgress(true)
+      const response = await axios.get(loginCheckUrl);
+      
+      var user = null;
+      if(response.data.result==='SUCCESS'){
+
+        if(response.data.data.userId===0){
+          user = buildGuestUser();
+        }else{
+          user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences)
+        }
+
+         
+      }else{
+
+        
+        user = buildGuestUser();
+        
+      }
+      user.handshake=true;
+      user.initiateHandshake = handleIntiateRequest;
+      console.log(user)
+      setLoginStatus(user);
+    
+  }catch(error){
+    console.log(error)
+    //On failure to communicate with the server.
+    setErrorCode(CONSTANTS.FAILED_TO_CONNECT)
+    setInProgress(false)
+    
+  }
+  }
+
+
+
+  function setInProgress(value){
+    var userObject = Object.assign({},loginStatus);
+    userObject.handshakeInProgress = value;
+    userObject.initiateHandshake = handleIntiateRequest;
+    setLoginStatus(userObject);
   }
 
   function handleDisplayStateChange(displayStateObject){
@@ -32,22 +86,11 @@ function MyApp({ Component, pageProps }) {
   //It validates the user authorization status from the server and holds it in the global state.
   useEffect(async ()=>{
     if(!loginStatus.handshake){
-      //Get the login status from the server and set it in context to be accessed by the pages. 
-      try{
-          const response = await axios.get(loginCheckUrl);
-          if(response.data.status==='SUCCESS'){
-         
-            setLoginStatus(buildUser(response.data.id,response.data.role,response.data.preferences))        
-
-          }else{
-            setLoginStatus(buildGuestUser());
-          }
-        
-      }catch(error){
-        //On failure to communicate with the server.
-        setErrorCode(CONSTANTS.FAILED_TO_CONNECT)
-        
+      if(!loginStatus.handshakeInProgress){
+        handleIntiateRequest();
       }
+      //Get the login status from the server and set it in context to be accessed by the pages. 
+     
       
     }
   },[loginStatus.handshake])

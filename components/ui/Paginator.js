@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { CONSTANTS } from '../Util/Constants';
 import ResourceCard from './ResourceCard'
 import { useEffect } from 'react';
-export default function Paginator({onNextFetch,onSelection,pageIndex,pageCount,data,transition,isLoggedIn,children}){
+export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex,pageCount,data,transition,isLoggedIn,children}){
   
 
   if(pageCount==0){
@@ -90,21 +90,26 @@ export default function Paginator({onNextFetch,onSelection,pageIndex,pageCount,d
         <ul>
             
           {
-            data.resources.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE,(offsetCurrentPage)*CONSTANTS.PAGE_SIZE).map(item=><li>
-              <ResourceCard isLoggedIn={isLoggedIn} resourceData={item} onSelection={onSelection}></ResourceCard>
+            data.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE,(offsetCurrentPage)*CONSTANTS.PAGE_SIZE).map(item=><li key={item.id}>
+               
+                <ResourceCard isLoggedIn={isLoggedIn} resourceData={item} onSelection={onSelection}></ResourceCard>
+              {/* <ResourceCard isLoggedIn={isLoggedIn} resourceData={item} onSelection={onSelection}></ResourceCard> */}
               </li>)
           }
         </ul>
-
-        <div className="box mt-0 mb-1 has-background-white is-radiusless is-shadowless">
-          <nav className={clsx("pagination",'centeralignment','is-centered','is-rounded')} role="navigation" aria-label="pagination">
-              <a className="pagination-previous" onClick={handlePrevious}>Previous</a>
-              <a className="pagination-next" onClick={handleNext}>Next page</a>
-              <ul className="pagination-list">
-              {pageSequence.filter(i=>i>0).map(item=> <li key={item}><a id={item} className={clsx('pagination-link',item==currentPage?'is-current':false)} onClick={updateCurrentPage} aria-label="Goto page 1">{item}</a></li>)}
-                </ul>
-          </nav>    
-        </div>
+          {
+            displayFlag?<div className="box mt-0 mb-1 has-background-white is-radiusless is-shadowless">
+            <nav className={clsx("pagination",'centeralignment','is-centered','is-rounded')} role="navigation" aria-label="pagination">
+                <a className="pagination-previous" onClick={handlePrevious}>Previous</a>
+                <a className="pagination-next" onClick={handleNext}>Next page</a>
+                <ul className="pagination-list">
+                {pageSequence.filter(i=>i>0).map(item=> <li key={item}><a id={item} className={clsx('pagination-link',item==currentPage?'is-current':false)} onClick={updateCurrentPage} aria-label="Goto page 1">{item}</a></li>)}
+                  </ul>
+            </nav>    
+          </div>:
+          <div></div>
+          }
+        
       </div>
     );
 

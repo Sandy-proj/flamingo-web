@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BaseLayout from '../components/ui/BaseLayout'
 import axios from 'axios';
 import Link from 'next/link'
@@ -7,22 +7,33 @@ import {Icon} from '@mdi/react'
 import {mdiAccount,mdiLock} from '@mdi/js'
 import {useRouter} from 'next/router'
 import clsx from 'clsx'
+import { buildUser } from '../components/Util/Session';
 import {CONSTANTS} from  '../components/Util/Constants'
+import { AuthorizationContext } from '../components/Util/AuthContext';
+import loadCustomRoutes from 'next/dist/lib/load-custom-routes';
+const qs = require('qs')
 
 export default function Login({isLoggedIn,role,onLoginChange}){
     const router = useRouter();
-    const [credentials,setCredentials] = useState({emailId:'',passWord:''}); 
+
+    const [credentials,setCredentials] = useState({emailId:'',password:''}); 
     const [loginStatus,setLoginStatus] = useState({isLoggedIn:false,id:-1,role:'GUEST'});
     const [loginAttempts,setLoginAttempts] = useState(0);
+    const user = useContext(AuthorizationContext)
     const loginUrl = '/hopsapi/user/login'
     const handleSubmit = async (e)=>{
         e.preventDefault();
         try{
-            const response = await axios.post(loginUrl,{emailId:credentials.emailId,password:credentials.password});
+            
+            const response = await axios.post(loginUrl,qs.stringify({emailId:credentials.emailId,password:credentials.password}));
+            //const response = await axios.post(loginUrl,params)
             if(response.data.status==='FAIL'){
                 setLoginAttempts(loginAttempts+1);
             }else{
-                setLoginStatus({isLoggedIn:true,id:response.data.userId,role:response.data.role})
+                var user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences)
+                onLoginChange(user);
+                
+               
             }
 
         }catch(e){
@@ -30,12 +41,11 @@ export default function Login({isLoggedIn,role,onLoginChange}){
         }
     }
    useEffect(()=>{
-        if(loginStatus.isLoggedIn===true){
-            
-            onLoginChange({isLoggedIn:loginStatus.isLoggedIn,role:loginStatus.role,userId:loginStatus.id,handshake:true});
+        if(user.isLoggedIn===true){
+           
             router.push('/');
         }
-    },[loginStatus.isLoggedIn,loginAttempts])
+    },[user.isLoggedIn,loginAttempts])
 
     function validateLogin(){
 
@@ -81,7 +91,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                         </div> 
                         <div className="field">
                             <p className="control has-icons-left">
-                                <input className="input is-rounded" value={credentials.passWord} placeholder="Password" type="password" onChange={(e)=>setCredentials({...credentials,passWord:e.target.value})}/>    
+                                <input className="input is-rounded" value={credentials.password} placeholder="Password" type="password" onChange={(e)=>setCredentials({...credentials,password:e.target.value})}/>    
                                 <span class={clsx('icon','is-left','centeralignment')}>
                                     <Icon path={mdiLock} size={1}></Icon>
                                 </span>

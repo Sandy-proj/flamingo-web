@@ -12,7 +12,7 @@ export default function DropDownMenu({onSelectItem,list,trigger,data,reset,activ
         setIsActive(!isActive)
     }
 
-    
+    console.log(list);
 
     useEffect(()=>{
         function checkBoundary(e){
@@ -40,7 +40,7 @@ export default function DropDownMenu({onSelectItem,list,trigger,data,reset,activ
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
             <div class="dropdown-content"> 
                 {list.map((item,index)=>{
-                    return <a onClick={()=>{setIsActive(false);onSelectItem(index)}} className={'dropdown-item'}>{item}</a>
+                    return <a onClick={()=>{setIsActive(false);onSelectItem(index)}} key={item.id} className={'dropdown-item'}>{item.name}</a>
                     })
   
                 }

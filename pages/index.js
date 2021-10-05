@@ -4,7 +4,7 @@ import BaseLayout from './../components/ui/BaseLayout'
 import clsx from 'clsx'
 import SearchBar from './../components/ui/SearchBar'
 import DisplayArea from './../components/ui/DisplayArea'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { CONSTANTS } from './../components/Util/Constants'
 import { useContext } from 'react'
@@ -12,13 +12,17 @@ import { AuthorizationContext } from '../components/Util/AuthContext'
 import { NavigationContext } from '../components/Util/NavigationContext'
 import Header from '../components/ui/Header'
 import Categories from '../components/ui/Categories'
-import Menu from '../components/ui/Menu'
+import axios from 'axios'
 import GenericCategories from '../components/ui/GenericCategories'
+import { buildGuestUser } from '../components/Util/Session'
 
 export default function Home({onLoginChange,displayState,onDisplayStateChange}) {
 
   const router = useRouter();
   const user = useContext(AuthorizationContext);
+  const [categoryData,setCategoryData] = useState([]);
+  const fetchCategoryUrl = '/hopsapi/resources/categories'
+  const logoutUrl = '/hopsapi/user/logout'
   //const [displayState,setDisplayState]=useState({mode:(user.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),param:(user.isLoggedIn?user.id:'')});
   
 
@@ -33,7 +37,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
     
   }
 
-  console.log(displayState)
+  console.log('userstatus:'+user.id+"-"+user.role+'-'+user.isLoggedIn);
   function handleCreatePost(){
     if(user.isLoggedIn){
       router.push('/usrview/square')
@@ -42,6 +46,23 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
     }
   }
 
+  function handleLogout(){
+    try{
+      const response = axios.post(logoutUrl);
+      if(response.status=='FAIL'){
+        throw error('logout failed')
+      }
+      var guestUser = buildGuestUser();
+      guestUser.handshake=true;
+
+     // onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1,handshake:true})
+     //onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1,handshake:true})
+     onLoginChange(guestUser)
+    }catch(error){
+      console.log(error)
+    }
+    
+  }
   function handleCategoryMenuItem(category,activeIndex){
     //Build a query for the category and set the displaystate
     if(category)
@@ -82,7 +103,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
                         <strong>Profile</strong>
                       </a>
                     </Link>
-                    <a className={clsx('button','is-light','hoverzoom')} onClick={()=>{onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1,handshake:true})}}>
+                    <a className={clsx('button','is-light','hoverzoom')} onClick={handleLogout}>
                         Sign out
                       </a>
                     </div>);    
@@ -100,6 +121,15 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
                     </Link>
                   </div>);
   }
+
+  useEffect(async()=>{
+    try{
+      const response = await axios.get(fetchCategoryUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
+      setCategoryData(response.data.data.categories)
+    }catch(error){
+      //No Category data
+    }
+  },[])
 
 
   return (
@@ -161,12 +191,12 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
          
           </div>
          
-          <div className={clsx('box',)}>
-            <Categories onSelectItem={handleCategoryMenuItem} activeIndex={displayState.activeItem} reset={displayState.mode===CONSTANTS.commandModes.CATEGORIES?false:true}/>
+          <div className={clsx('box')}>
+            <Categories onSelectItem={handleCategoryMenuItem} data={categoryData} activeIndex={displayState.activeItem} reset={displayState.mode===CONSTANTS.commandModes.CATEGORIES?false:true}/>
           </div>
         </div>                                                                                                                                           
-        <div className="column mr-2 is-auto media">
-         <NavigationContext.Provider value={displayState}><DisplayArea isLoggedIn={user.isLoggedIn} command={displayState}/></NavigationContext.Provider>
+        <div className={clsx('column','mr-2','is-auto','min-screen-fill')}>
+         <NavigationContext.Provider value={displayState}><DisplayArea  isLoggedIn={user.isLoggedIn} command={displayState}/></NavigationContext.Provider>
           <div>
            
         </div> 

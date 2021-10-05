@@ -27,13 +27,16 @@ export default function Square({handshake,onLoginChange}) {
     function onEdit(){
         setMode(CONSTANTS.modes.EDIT); 
     }
-    function onSave(resourceId){
+    function onSave(savedList){
         console.log('setting view mode')
-        setId(resourceId)
+        console.log(savedList)
+        setId(savedList.id)
+        setResourceObject({id:savedList.id,resource:savedList.data,title:savedList.title})
         setMode(CONSTANTS.modes.USE)
     }
 
     console.log('list:'+ resourceObject)
+    console.log(user)
 
     function handleUserActivity(activity){
         setUserActivity(activity);
@@ -41,20 +44,20 @@ export default function Square({handshake,onLoginChange}) {
     }
     
     useEffect(async ()=>{
-        if(handshake==false){
+        if(user.handshake==false){
             return;
         }
         if(!user.isLoggedIn){
             window.location.href='http://localhost:3000/view_square?id=24'
         }else{
-            if((user.isLoggedIn&&user.userId&&user.userId>0)&&id>0){
+            if((user.isLoggedIn&&user.id&&user.id>0)&&id>0){
                 try{
                     
-                    console.log('retrieval ...........')
+                    console.log('retrieval ..........')
                    
-                    const response = await axios.get(`/hopsapi/resources/resource?id=${id}`,{timeout:10000});
-                   
-                    setResourceObject(response.data)
+                    const response = await axios.get(`/hopsapi/resources/resource?res=${id}`,{timeout:10000});
+                    if(response.data&&response.data.result==='SUCCESS')
+                    setResourceObject(response.data.data)
                   }catch(error){
                     console.error(error)
                   } 
