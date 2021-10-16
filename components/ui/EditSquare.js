@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState  } from 'react'
+import { useContext, useState  } from 'react'
 import { useRef } from 'react'
 import { useEffect } from 'react'
 import BaseLayout from '../../components/ui/BaseLayout'
@@ -15,9 +15,10 @@ import { CONSTANTS } from '../../components/Util/Constants'
 import ConfirmationDialog from './ConfirmationDialog'
 import router, { useRouter } from 'next/router'
 import DropDownMenu from './DropDownMenu'
+import { AuthorizationContext } from '../Util/AuthContext'
 
 export default function EditSquare({resourceId,resource,onSave}) {
-  const [list,setList] = useState(resource.resource);
+  const [list,setList] = useState([]);
   const [currentItem,setCurrentItem]=useState('')
   const [categories,setCategories]=useState([])
   const [selectedCategory,setSelectedCategory]=useState('ALL');
@@ -25,7 +26,12 @@ export default function EditSquare({resourceId,resource,onSave}) {
   const[discarding,setDiscarding] = useState(false)
   const [requestStatus,setRequestStatus]=useState({status:CONSTANTS.messageTypes.HIDDEN,message:'',error:false,isVisible:false})
   const router = useRouter();
+  const user = useContext(AuthorizationContext)
   const categoriesUrl = '/hopsapi/resources/categories'
+  const addResourcesUrl = '/hopsapi/resources/resource/add'
+  const updateUrl = '/hopsapi/resources/resource/update'
+
+
   function handleEntry(e){
     
     addItem(currentItem)
@@ -56,6 +62,12 @@ export default function EditSquare({resourceId,resource,onSave}) {
     setList([...list]);
   }
 
+  function getNewItemId(){
+    //Return the maximum running id  + 1;
+    var newId = list.reduce((maxId,item)=>Math.max(maxId,item.id),0);
+    console.log(newId+1)
+    return newId+1;
+  }
 
   function onItemChange(index,value){
     list[index].name=value;
@@ -72,11 +84,19 @@ export default function EditSquare({resourceId,resource,onSave}) {
        return;
      }
      try{
-       
-       setRequestStatus({status:CONSTANTS.messageTypes.PROGRESS,message:'Saving your data',isVisible:true})
-       const resp = await axios.post('/hopsapi/resources/addresource',{resource:list,category:selectedCategory,title:resourceTitle},{timeout:10000});
-       setRequestStatus({status:CONSTANTS.messageTypes.SUCCESS,message:'Done',isVisible:true})
-       onSave(resp.data.id);
+       let resp = null;
+       if(resource.id>0){
+        setRequestStatus({status:CONSTANTS.messageTypes.PROGRESS,message:'Updating your data',isVisible:true})
+        const updateRequest = updateUrl+'?res='+resource.id
+        resp = await axios.post(updateUrl,{resource:list,category:selectedCategory,title:resourceTitle,author_id:user.id,author_name:'generic_user3',resource_id:resource.id},{timeout:10000});
+        setRequestStatus({status:CONSTANTS.messageTypes.SUCCESS,message:'Done',isVisible:true})
+       }else{
+        setRequestStatus({status:CONSTANTS.messageTypes.PROGRESS,message:'Saving your data',isVisible:true})
+        resp = await axios.post(addResourcesUrl,{resource:list,category:selectedCategory,title:resourceTitle,author_id:user.id,author_name:'generic_user3'},{timeout:10000});
+        setRequestStatus({status:CONSTANTS.messageTypes.SUCCESS,message:'Done',isVisible:true})
+       }
+     
+       onSave(resp.data.data);
      }catch(error){
        console.error(error)
      }
@@ -96,7 +116,8 @@ export default function EditSquare({resourceId,resource,onSave}) {
   function addItem(itemString){
     const newValue = itemString; 
     if(newValue.trim()==='')return;  
-    setList([...list,{name:newValue}]) 
+    var newId = getNewItemId();
+    setList([...list,{id:newId,name:newValue}]) 
     setCurrentItem('')
   }
 
@@ -109,15 +130,18 @@ export default function EditSquare({resourceId,resource,onSave}) {
   useEffect(async()=>{
     try{
       const listOfCategories = await axios.get(categoriesUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-      setCategories(listOfCategories.data.categories)
+      setCategories(listOfCategories.data.data.categories)
     }catch(error){
       console.error(error);
     }
   },[])
 
   useEffect(()=>{
-    if(resource&&resource.title)
-    setResourceTitle(resource.title)
+    if(resource.data){
+      setList(resource.data.resource?resource.data.resource:[]);
+    }
+    if(resource.data&&resource.data.title)
+    setResourceTitle(resource.data.title)
   },[resource])
 
   const DragHandle = sortableHandle(()=> <button className={clsx('button','is-white')}>
@@ -276,14 +300,14 @@ export default function EditSquare({resourceId,resource,onSave}) {
             </nav>
                <input className={clsx('input','title','is-4','entrystyle')} placeholder='Enter a title here...' value={resourceTitle} onChange={handleTitlechange}></input>
                {/* <TitleInput inputValue={resource.title} onInputChange={handleInputChange}/> */}
-               <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index)=>{setSelectedCategory(categories[index])}}/>
+               <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index)=>{setSelectedCategory(categories[index].name)}}/>
               </div>
               <div className={clsx('box','listbox','mb-0','is-shadowless','has-background-gray')}>
             {isListEmpty()?<div className={clsx('min-screen-fill','container','centeralignment')}> 
   <p className={clsx('is-size-4')}>Lists are fun after adding the first item.<br/><span className={clsx('is-size-5','has-text-info')}> Use the text box below.</span></p>
 </div>:
             <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-            {list.map((value,index)=> {;return <SortableElement key={index} index={index} operationIndex={index} value={value}></SortableElement>})}
+            {list.map((value,index)=> {;return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement>})}
             <AlwaysScrollToBottom/>
             </SortableContainer>
             

@@ -1,5 +1,5 @@
 
-import { useState,useEffect } from 'react';
+import { useState,useEffect, useRef } from 'react';
 import {CONSTANTS} from './../Util/Constants'
 import axios from 'axios';
 import Paginator from './Paginator';
@@ -14,6 +14,7 @@ export default function DisplayArea({command,isLoggedIn, children}){
     let dataUrl = '/hopsapi/resources';
     const [page,setPage]=useState({pageIndex:0,transition:true})
     const [data,setData] = useState();
+    const readyToFetch = useRef(true)
     const [requestTimeOut,setRequestTimeOut] = useState(false)
     const user = useContext(AuthorizationContext)
     let fetchUrl = '';
@@ -21,32 +22,61 @@ export default function DisplayArea({command,isLoggedIn, children}){
     let resultHeader = <div></div>
      
     function handleFetch(isNext){
-        console.log('retrieve:'+(isNext?'next':'prev'))
+        
         isNext?setPage({pageIndex:page.pageIndex+1,transition:true}):setPage({pageIndex:page.pageIndex-1,transition:false})
         
     }
 
     function handleSelection(id){
         if(user.isLoggedIn){
-            router.push(`/usrview/square?id=${24}&pageIndex=${page.pageIndex}`)
+            router.push(`/usrview/square?id=${id}&pageIndex=${page.pageIndex}`)
         }else{
             window.location.href=`http://localhost:3000/view_square?id=24&pageIndex=${page.pageIndex}`
         }
     }
-    console.log('rendering parent')
+    
 
+    
     useEffect(async ()=>{
-        console.log('trying to fetch:'+fetchUrl)
-        if(!fetchUrl) return;
-        try{
-            console.log('fetching here')
-            const response = await axios.get(fetchUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT});
-            setData(response.data)
-        }catch(error){
-            console.log('timing out..')
-            setRequestTimeOut(true)
-        
+
+        if(user.handshake===true){
+             //Fetch the resource header's here. 
+        //Check if a refresh is in progress and set the waiting flag. 
+        console.log('handshake value in display:'+user.handshakeInProgress+'-current ready-'+readyToFetch.current)
+        if(user.handshakeInProgress){
+           /// readyToFetch.current = true;
+        }else{
+            if(readyToFetch.current){
+                   try{
+                        console.log('fetching here')
+                        const response = await axios.get(fetchUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT});
+                        console.log(response)
+                        if(response.data&&response.data.data&&response.data.data.action==='REFRESH'){
+                            readyToFetch.current = true
+                            user.initiateHandshake();
+
+                        }else{
+                            console.log(response.data.data)
+                            setData(response.data.data)//Statement causing warning.
+                            
+                            readyToFetch.current = false;
+                            console.log('setting the ready flag to :'+readyToFetch.current)
+                        }
+                        
+                    }catch(error){
+                    console.log(error)
+                    console.log('timing out..')
+                    setRequestTimeOut(true)
+                    readyToFetch.current = false;
+                    }
+            }
         }
+        }
+       
+
+        return ()=>{console.log('setting read flag to:'+readyToFetch.current);readyToFetch.current=false}
+
+
        
     },[command.mode])
 
@@ -98,7 +128,8 @@ export default function DisplayArea({command,isLoggedIn, children}){
     }
 
    
-    if(!data){
+    if(!data||!user.handshake){
+        
         console.log('loading...')
         
         return <div className={clsx('min-screen-fill','container','centeralignment')}>
@@ -114,7 +145,7 @@ export default function DisplayArea({command,isLoggedIn, children}){
     }
 
   
-    const rowCount = data.resources.length;
+    const rowCount = data.length;
     const noOfPages = Math.ceil(rowCount / CONSTANTS.PAGE_SIZE);
     
    
@@ -126,8 +157,8 @@ export default function DisplayArea({command,isLoggedIn, children}){
                     {resultHeader}
                     </div>
                 }
-            
-            <Paginator isLoggedIn={isLoggedIn} onSelection={handleSelection} pageIndex={page.pageIndex} pageCount={noOfPages} data={data} onNextFetch={handleFetch} transition={page.transition} />
+           
+            <Paginator displayFlag={!(page.pageIndex==0&&noOfPages==1)} isLoggedIn={isLoggedIn} onSelection={handleSelection} pageIndex={page.pageIndex} pageCount={noOfPages} data={data} onNextFetch={handleFetch} transition={page.transition} />
         </div>
        
     );

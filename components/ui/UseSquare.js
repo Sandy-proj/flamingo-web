@@ -14,33 +14,69 @@ import ConfirmationDialog from './ConfirmationDialog'
 export default function UseSquare({resourceId,resource,onEdit,activity,isEditable}) {
 
     var downloadUrl = '/hopsapi/resources/resource/download'
-    var updateUrl = '/hopsapi/resources/resource/update'
+    var updateActionsUrl = '/hopsapi/resources/resource/actionupdate?'
     var deleteUrl = '/hopsapi/resources/resource/delete'
-    const list = resource.resource
-    const menu = [CONSTANTS.ACTION_MENU.EDIT,
-                  CONSTANTS.ACTION_MENU.DOWNLOAD,
-                  CONSTANTS.ACTION_MENU.BOOKMARK,
-                  CONSTANTS.ACTION_MENU.LIKE,
-                  CONSTANTS.ACTION_MENU.DELETE,
-                  CONSTANTS.ACTION_MENU.CLOSE]
+    let list=[];
+    if(resource.data){
+      list = resource.data?resource.data.resource:[]
+    }
+     
+    const menu = [{id:1,name:CONSTANTS.ACTION_MENU.EDIT},
+                  {id:2,name:CONSTANTS.ACTION_MENU.DOWNLOAD},
+                  {id:3,name:CONSTANTS.ACTION_MENU.BOOKMARK},
+                  {id:4,name:CONSTANTS.ACTION_MENU.LIKE},
+                  {id:5,name:CONSTANTS.ACTION_MENU.DELETE},
+                  {id:6,name:CONSTANTS.ACTION_MENU.CLOSE}
+                  ]
     const user = useContext(AuthorizationContext)
     const router = useRouter();
     const actions = useRef({});
     const [downloading,setDownloading] = useState(false);
     const [deleting,setDeleting] = useState(false)
     const [userAction,setUserAction] = useState({like:false,bookmark:false,download:false});
-    const [counters,setCounters]=useState({likes:0,downloads:0,bookmarks:0})
+    const [counters,setCounters]=useState({views:0,likes:0,downloads:0,bookmarks:0})
 
     function isUserAuthor(){
-      if(user.userId===resource.authorId) return true;
+      let authorId  = 0
+      console.log('owner-user-'+resource.owner_id)
+      console.log(resource)
+      if(resource.data&&resource.data.author_id){
+        authorId = resource.data.author_id
+      }
+      if(user.id===authorId) return true;
+      return false;
+    }
+    function isUserOwner(){
+      let ownerId  = 0
+      console.log('owner-user-'+resource.owner_id)
+      console.log(resource)
+      if(resource.data&&resource.owner_id){
+        ownerId = resource.owner_id
+      }
+      if(user.id===ownerId) return true;
       return false;
     }
     function handleEdit(e){
+      if(isUserAuthor())
         onEdit()
     }
 
-    function handleClose(e){
+    async function handleClose(e){
       e.preventDefault();
+      const actions_performed = Object.keys(actions.current).length;
+        console.log(resource)
+        console.log('actions taken:'+actions_performed)
+        if(actions_performed==0){
+          //return ;
+        }else{
+          try{
+            let requestUrl = updateActionsUrl+`?res=${resource.id}`
+            const response =  await axios.post(requestUrl,actions.current,{timeout:CONSTANTS.REQUEST_TIMEOUT})
+
+          }catch(error){
+            console.error(error)
+          }
+        }
       router.push('/')
     }
 
@@ -59,17 +95,17 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
 
     async function handleDownload(){
-      if(userAction.download||isUserAuthor())
+      if(userAction.download||isUserAuthor()||isUserOwner())
       return;
-      downloadUrl = downloadUrl+`?resId=${resource.id}`
+      downloadUrl = downloadUrl+`?res=${resource.id}`
       try{
          setDownloading(true)
          const downloadResponse = await axios.get(downloadUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-         if(downloadResponse.data.status=CONSTANTS.SUCCESS){
-          var newAction = Object.assign({},userAction)
-          newAction.download=true;
-          setUserAction(newAction)
-          setDownloading(false)
+         if(downloadResponse.data.result=CONSTANTS.SUCCESS){
+            var newAction = Object.assign({},userAction)
+            newAction.download=true;
+            setUserAction(newAction)
+            setDownloading(false)
          }
       }catch(error){
         if(downloading){
@@ -86,13 +122,15 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       var newAction = Object.assign({},userAction)
       newAction.bookmark=!userAction.bookmark;
       actions.current.bookmark = userAction.bookmark?false:true;
-      userAction.bookmark?counters.bookmarks--:counters.bookmarks--;
+      userAction.bookmark?counters.bookmarks--:counters.bookmarks++;
       console.log('new action:'+newAction)
       setUserAction(newAction);
     }
 
     async function  handleDialogCofirm(){
       setDeleting(false)
+
+      
       try{
         const deleteResponse = await axios.delete(deleteUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
         if(response.status!=CONSTANTS.SUCCESS){
@@ -110,21 +148,21 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
 
     function handleMenuItemSelection(index){
-      if(menu[index]===CONSTANTS.ACTION_MENU.EDIT){
+      if(menu[index].name===CONSTANTS.ACTION_MENU.EDIT){
         handleEdit();
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.DOWNLOAD){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.DOWNLOAD){
         handleDownload();
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.BOOKMARK){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.BOOKMARK){
         handleBookmark();
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.SHOW_NUMBERS){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.SHOW_NUMBERS){
         
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.LIKE){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.LIKE){
         handleLike();
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.REMOVE){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.REMOVE){
       
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.DELETE){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.DELETE){
         setDeleting(true);
-      }else if(menu[index]===CONSTANTS.ACTION_MENU.CLOSE){
+      }else if(menu[index].name===CONSTANTS.ACTION_MENU.CLOSE){
           router.push('/')
       }else{
 
@@ -155,8 +193,8 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
   
       console.log('using square - '+user.isLoggedIn)
-
-     
+      actions.current.view = true;
+      
       return <li className="mb-0 ml-0 p-1">
         
         <div className={clsx('columns','is-gapless','is-mobile','mb-1','mt-4')}>
@@ -244,21 +282,30 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       setCounters(counterObject)
     },[resource])
 
-    useEffect(()=>{
-      return ()=>{
-        var updateActions = {};
-        
-        try{
-          const response = axios.post(updateUrl,actions.current,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-        }catch(error){
+    useEffect( ()=>{
+      //  return async ()=>{
+        // var updateActions = {};
+        // const actions_performed = Object.keys(actions.current).length;
+        // console.log(resource)
+        // console.log('actions taken:'+actions_performed)
+        // if(actions_performed==0){
+        //   return ;
+        // }else{
+        //   try{
+        //     let requestUrl = updateActionsUrl+`?res=${resource.id}`
+        //     const response =  axios.post(requestUrl,actions.current,{timeout:CONSTANTS.REQUEST_TIMEOUT})
 
-        }
-      }
+        //   }catch(error){
+        //     console.error(error)
+        //   }
+        // }
+        
+      //  }
     },[])
 
-    console.log('user-resource:'+resource.resource)
+    console.log(resource)
     console.log('user activity:'+activity.like+'-'+activity.bookmark+'-'+activity.download)
-    console.log('user-author'+user.userId+'-'+resource.authorId)
+    console.log('user-author'+user.id+'-'+resource.authorId)
     console.log('user-ref:'+actions.current.like)
     return (
       <div>
@@ -283,7 +330,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
                 <DropDownMenu list={menu} onSelectItem={handleMenuItemSelection}/>
               </div>
               <div className={clsx('column','is-auto')}>
-                <div className="is-title is-4"><p className="title is-4">{resource.title}</p>
+                <div className="is-title is-4"><p className="title is-4">{resource.data&&resource.data.title}</p>
                 <p className='has-text-grey is-6'>{resource.author}</p></div>
               </div>
               <div className={clsx('column','is-narrow')}>
@@ -301,7 +348,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
               </div>
               <div class="level-item has-text-centered pl-5">
                 <div>
-                   <a onClick={handleDownload}><p class={clsx(userAction.download?'has-text-link':'has-text-gray')}><Icon path={userAction.download||isUserAuthor()?mdiDownload:mdiDownloadOutline} size={1}></Icon></p></a>
+                   <a onClick={handleDownload}><p class={clsx(userAction.download?'has-text-link':'has-text-gray')}><Icon path={userAction.download||isUserAuthor()||isUserOwner()?mdiDownload:mdiDownloadOutline} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.downloads}</p>
                 </div>
 
@@ -317,7 +364,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
 
             <ul className={clsx('p-2','listbox')}>
-              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={userAction.download||user.userId===resource.authorId}/>})}
+              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={userAction.download||isUserAuthor()||isUserOwner()}/>})}
             </ul>
           </div>
           <div className="column has-text-centered is-one-fifth">

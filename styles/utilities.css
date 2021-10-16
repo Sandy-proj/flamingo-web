@@ -16,6 +16,11 @@
 .flexibleinput{
     width:auto
 }
+/* Solid border */
+hr.solid {
+  border-top: 2px solid #fff;
+}
+
 .input.is-rounded-left-side {
     border-top-left-radius: 290486px;
     border-bottom-left-radius: 290486px;
@@ -74,6 +79,15 @@
 .min-screen-fill{
   height: 90vh;
 }
+
+/*Stylized input*/
+.stylized-input{
+  border:none;
+  border-bottom:1px solid #ddd;
+  width: 100%;
+  padding: 8px;
+}
+
 
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
