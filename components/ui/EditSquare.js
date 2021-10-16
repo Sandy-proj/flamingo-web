@@ -4,7 +4,7 @@ import { useContext, useState  } from 'react'
 import { useRef } from 'react'
 import { useEffect } from 'react'
 import BaseLayout from '../../components/ui/BaseLayout'
-import { mdiDragVertical, mdiPlus,mdiMinus, mdiHeart,mdiBookmark,mdiBookmarkOutline,mdiHeartOutline, mdiClose, mdiMinuss, mdiArrowDown, mdiMenuDown } from '@mdi/js'
+import { mdiDragVertical, mdiPlus,mdiMinus, mdiHeart,mdiBookmark,mdiSwapVertical,mdiBookmarkOutline,mdiHeartOutline, mdiClose, mdiMinuss, mdiArrowDown, mdiMenuDown } from '@mdi/js'
 import {Icon} from '@mdi/react'
 import  axios from 'axios'
 import clsx from 'clsx';
@@ -16,21 +16,25 @@ import ConfirmationDialog from './ConfirmationDialog'
 import router, { useRouter } from 'next/router'
 import DropDownMenu from './DropDownMenu'
 import { AuthorizationContext } from '../Util/AuthContext'
+import SimpleAlert from './SimpleAlert'
 
 export default function EditSquare({resourceId,resource,onSave}) {
   const [list,setList] = useState([]);
   const [currentItem,setCurrentItem]=useState('')
   const [categories,setCategories]=useState([])
-  const [selectedCategory,setSelectedCategory]=useState('ALL');
+  const [selectedCategory,setSelectedCategory]=useState('Anything goes');
   const [resourceTitle,setResourceTitle] = useState('')
+  const [swapMode,setSwapMode] = useState(false);
   const[discarding,setDiscarding] = useState(false)
+  const [titleValidation,setTitleValidation] = useState(false);
   const [requestStatus,setRequestStatus]=useState({status:CONSTANTS.messageTypes.HIDDEN,message:'',error:false,isVisible:false})
   const router = useRouter();
   const user = useContext(AuthorizationContext)
   const categoriesUrl = '/hopsapi/resources/categories'
   const addResourcesUrl = '/hopsapi/resources/resource/add'
   const updateUrl = '/hopsapi/resources/resource/update'
-
+  const inputLengthLimit = 150;
+  const itemLimit=CONSTANTS.LIST_ITEM_LIMIT;
 
   function handleEntry(e){
     
@@ -48,7 +52,13 @@ export default function EditSquare({resourceId,resource,onSave}) {
     setDiscarding(true);
   }
 
+
+  function toggleSwap(){
+    setSwapMode(!swapMode);
+  }
   function handleKeyChange(e){
+    
+   
     setCurrentItem(e.target.value)
   }
 
@@ -65,7 +75,7 @@ export default function EditSquare({resourceId,resource,onSave}) {
   function getNewItemId(){
     //Return the maximum running id  + 1;
     var newId = list.reduce((maxId,item)=>Math.max(maxId,item.id),0);
-    console.log(newId+1)
+    //console.log(newId+1)
     return newId+1;
   }
 
@@ -83,16 +93,21 @@ export default function EditSquare({resourceId,resource,onSave}) {
      if(requestStatus.status===CONSTANTS.messageTypes.PROGRESS){
        return;
      }
+
+     if(resourceTitle.length===0){
+       setTitleValidation(true);
+       return;
+     }
      try{
        let resp = null;
        if(resource.id>0){
         setRequestStatus({status:CONSTANTS.messageTypes.PROGRESS,message:'Updating your data',isVisible:true})
         const updateRequest = updateUrl+'?res='+resource.id
-        resp = await axios.post(updateUrl,{resource:list,category:selectedCategory,title:resourceTitle,author_id:user.id,author_name:'generic_user3',resource_id:resource.id},{timeout:10000});
+        resp = await axios.post(updateUrl,{resource:list,category:selectedCategory,title:resourceTitle,author_id:user.id,author_name:localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY),resource_id:resource.id},{timeout:10000});
         setRequestStatus({status:CONSTANTS.messageTypes.SUCCESS,message:'Done',isVisible:true})
        }else{
         setRequestStatus({status:CONSTANTS.messageTypes.PROGRESS,message:'Saving your data',isVisible:true})
-        resp = await axios.post(addResourcesUrl,{resource:list,category:selectedCategory,title:resourceTitle,author_id:user.id,author_name:'generic_user3'},{timeout:10000});
+        resp = await axios.post(addResourcesUrl,{resource:list,category:selectedCategory,title:resourceTitle,author_id:user.id,author_name:localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)},{timeout:10000});
         setRequestStatus({status:CONSTANTS.messageTypes.SUCCESS,message:'Done',isVisible:true})
        }
      
@@ -104,8 +119,8 @@ export default function EditSquare({resourceId,resource,onSave}) {
 
   function DropDownMenuTrigger(){
     return (
-    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-    <span>{selectedCategory}</span>
+    <button className={clsx("button",'is-light','mr-2')} aria-haspopup="true" aria-controls="dropdown-menu">
+    <span><strong>{selectedCategory}</strong></span>
     <span class="icon is-small">
       <Icon path={mdiMenuDown}/>
     </span>
@@ -170,6 +185,10 @@ export default function EditSquare({resourceId,resource,onSave}) {
     }
 
     function handleMainInput(e){
+      //console.log(e.target.value.length)
+      if(e.target.value.length>inputLengthLimit){
+        return;
+      }
       onItemChange(index,e.target.value)
       setData({name:e.target.value})
 
@@ -193,23 +212,25 @@ export default function EditSquare({resourceId,resource,onSave}) {
     return <li ref={itemRef} className="mb-0 ml-0 p-1">
     
       <div className={clsx('columns','is-gapless','is-mobile','mb-1','mt-4')}>
-      <div className={clsx('column','is-auto')}>
-         <DragHandle/>
-        </div>
-        <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
+      {swapMode&&<div className={clsx('column','is-auto','is-narrow')}>
+         <span><DragHandle/></span>
+      
+        </div>}
+      
+        <div className={clsx('column','is-auto','is-narrow',isExpanded?'active-item':false)}>
           <button className={clsx('button','is-white')} onClick={handleExpansion}>
-            <span className='icon'><Icon path={isExpanded?mdiMinus:mdiPlus} size={1}></Icon></span>
+            <span className='has-text-grey'><Icon path={isExpanded?mdiMinus:mdiPlus} size={1}></Icon></span>
           </button>
         </div>
-        <div className={clsx('column','is-10','ml-1','mr-1')}>
-          <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>
+        <div className={clsx('column','is-auto','ml-1','mr-1')}>
+          <input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>
           <div className={clsx('tray',isExpanded?'tray-max':'tray-min')}>
-      <textarea className={clsx('textarea','entrystyle')} rows={3} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details"/>
+      <textarea maxLength={CONSTANTS.LIST_ITEM_DETAIL_MAX_LENGTH} className={clsx('textarea','entrystyle')} rows={3} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details"/>
   </div>
         </div>
-        <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
+        <div className={clsx('column','is-1','is-narrow',isExpanded?'active-item':false)}>
         <button className={clsx('button','is-white')} onClick={handleDelete}>
-            <span className='icon'><Icon path={mdiClose} size={1}></Icon></span>
+            <span className='has-text-grey'><Icon path={mdiClose} size={1}></Icon></span>
           </button>
         </div>
       </div>
@@ -240,6 +261,9 @@ export default function EditSquare({resourceId,resource,onSave}) {
   })
 
 
+  function closeDialog(){
+    setTitleValidation(false)
+  }
 
 
     return (
@@ -248,7 +272,7 @@ export default function EditSquare({resourceId,resource,onSave}) {
           <title>HopSquare</title>
           <link rel="icon" href="/tinylogo.png"  />
         </Head>
-       
+            <SimpleAlert isVisible={titleValidation} message={'Enter a title to save the list.'} onCancel={closeDialog} onConfirm={closeDialog} onClose={closeDialog}/> 
             <div>
             <div>
 
@@ -298,56 +322,43 @@ export default function EditSquare({resourceId,resource,onSave}) {
               </div>
               </div>
             </nav>
-               <input className={clsx('input','title','is-4','entrystyle')} placeholder='Enter a title here...' value={resourceTitle} onChange={handleTitlechange}></input>
+               <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input','title','is-4','entrystyle')} placeholder="It's a list of" value={resourceTitle} onChange={handleTitlechange}></input>
                {/* <TitleInput inputValue={resource.title} onInputChange={handleInputChange}/> */}
-               <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index)=>{setSelectedCategory(categories[index].name)}}/>
+               <div>
+                    <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index)=>{setSelectedCategory(categories[index].name)}}/>
+                      <button className={clsx('button','is-light',swapMode?'has-background-info':'')} onClick={toggleSwap}>
+            <span className={clsx(swapMode?'has-text-white':'has-text-grey')}><Icon path={mdiSwapVertical} size={1}></Icon></span>
+          </button>
+               </div>
               </div>
               <div className={clsx('box','listbox','mb-0','is-shadowless','has-background-gray')}>
             {isListEmpty()?<div className={clsx('min-screen-fill','container','centeralignment')}> 
   <p className={clsx('is-size-4')}>Lists are fun after adding the first item.<br/><span className={clsx('is-size-5','has-text-info')}> Use the text box below.</span></p>
 </div>:
             <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-            {list.map((value,index)=> {;return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement>})}
-            <AlwaysScrollToBottom/>
+              {list.map((value,index)=> {;return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement>})}
+              <AlwaysScrollToBottom/>
             </SortableContainer>
             
             }
             
             </div>
-             
-             {/* <div className={clsx('columns','is-gapless', 'is-mobile','mt-1','p-2')}>
-
-                <div className={clsx('column', 'is-auto','mr-0')}>
-                  <input className={clsx('input', 'is-rounded-left-side','mr-0','p-2','bottom-panel-dimensions')} autoFocus type="text" placeholder="Type your item & press enter." value={currentItem} onChange={handleKeyChange} onKeyPress={handleKeyPress}></input>
-                </div>
-                <div className={clsx('column', 'ml-0','is-1','bottom-panel-dimensions')}>
-                  <button className={clsx('button','is-info','is-rounded-right-side','bottom-panel-dimensions')}
-                    onClick={handleEntry}>
-                    <span className={clsx('icon')}><Icon path={mdiPlus}></Icon></span>
-                  </button>
-                </div>
-                <div className={clsx('column','is-1')}></div>
-              </div> */}
-
+          
               <div className={clsx('columns','is-gapless', 'is-mobile','mt-0.5')}>
 
                 <div className={clsx('column', 'is-auto','box','mr-0')}>
-                  <input className={clsx('input','mr-0','is-large','has-text-blue','p-2','bottom-panel-dimensions')} autoFocus type="text" placeholder="Type your item & press enter." value={currentItem} onChange={handleKeyChange} onKeyPress={handleKeyPress}></input>
-                </div>
+                {list.length>itemLimit?<div className={clsx('has-background-gray')}><p className={clsx('title','has-background-gray','tag','has-text-info','container','is-6')}>You have reached the maximum items on a list({itemLimit}).</p></div>:
+                 <input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input','mr-0','is-large','has-text-blue','p-2','bottom-panel-dimensions')}  disabled={list.length>itemLimit} autoFocus type="text" placeholder={`Type your item  press enter.(MAX ${CONSTANTS.LIST_ITEM_MAX_LENGTH})`} value={currentItem} onChange={handleKeyChange} onKeyPress={handleKeyPress}></input>
+
+                }
+                                 </div>
                 <div className={clsx('column', 'ml-0','is-1','p-1')}>
-                  <button className={clsx('button','is-info','bottom-panel-dimensions','is-fullwidth')}
+                  <button className={clsx('button','pl-6','pr-6','is-info','bottom-panel-dimensions','is-fullwidth')}
                     onClick={handleEntry}>
                     <span className={clsx('icon')}><Icon path={mdiPlus} size={2}></Icon></span>
                   </button>
                 </div>
                 </div> 
-
-
-
-
-
-
-
 
              </div>
             

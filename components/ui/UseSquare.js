@@ -11,23 +11,25 @@ import DropDownMenu from './DropDownMenu'
 import { CONSTANTS } from './../Util/Constants'
 import ConfirmationDialog from './ConfirmationDialog'
 
-export default function UseSquare({resourceId,resource,onEdit,activity,isEditable}) {
+export default function UseSquare({resourceId,resource,onEdit,activity,isEditable,onDownload}) {
 
     var downloadUrl = '/hopsapi/resources/resource/download'
     var updateActionsUrl = '/hopsapi/resources/resource/actionupdate?'
     var deleteUrl = '/hopsapi/resources/resource/delete'
+    const [mainMenu,setMainMenu] = useState([])
     let list=[];
     if(resource.data){
       list = resource.data?resource.data.resource:[]
     }
      
-    const menu = [{id:1,name:CONSTANTS.ACTION_MENU.EDIT},
-                  {id:2,name:CONSTANTS.ACTION_MENU.DOWNLOAD},
-                  {id:3,name:CONSTANTS.ACTION_MENU.BOOKMARK},
-                  {id:4,name:CONSTANTS.ACTION_MENU.LIKE},
-                  {id:5,name:CONSTANTS.ACTION_MENU.DELETE},
-                  {id:6,name:CONSTANTS.ACTION_MENU.CLOSE}
+    let menu = [{id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
+                  {id:2,name:CONSTANTS.ACTION_MENU.DOWNLOAD,isOwner:false},
+                  {id:3,name:CONSTANTS.ACTION_MENU.BOOKMARK,isOwner:false},
+                  {id:4,name:CONSTANTS.ACTION_MENU.LIKE,isOwner:false},
+                  {id:5,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
+                  {id:6,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
                   ]
+    
     const user = useContext(AuthorizationContext)
     const router = useRouter();
     const actions = useRef({});
@@ -35,11 +37,15 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     const [deleting,setDeleting] = useState(false)
     const [userAction,setUserAction] = useState({like:false,bookmark:false,download:false});
     const [counters,setCounters]=useState({views:0,likes:0,downloads:0,bookmarks:0})
+    const [listAction,setListAction]=useState({});
+
+
+ 
 
     function isUserAuthor(){
       let authorId  = 0
-      console.log('owner-user-'+resource.owner_id)
-      console.log(resource)
+      //console.log('owner-user-'+resource.owner_id)
+      //console.log(resource)
       if(resource.data&&resource.data.author_id){
         authorId = resource.data.author_id
       }
@@ -48,8 +54,8 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
     function isUserOwner(){
       let ownerId  = 0
-      console.log('owner-user-'+resource.owner_id)
-      console.log(resource)
+      //console.log('owner-user-'+resource.owner_id)
+      //console.log(resource)
       if(resource.data&&resource.owner_id){
         ownerId = resource.owner_id
       }
@@ -64,14 +70,14 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     async function handleClose(e){
       e.preventDefault();
       const actions_performed = Object.keys(actions.current).length;
-        console.log(resource)
-        console.log('actions taken:'+actions_performed)
+        //console.log(resource)
+        //console.log('actions taken:'+actions_performed)
         if(actions_performed==0){
           //return ;
         }else{
           try{
             let requestUrl = updateActionsUrl+`?res=${resource.id}`
-            const response =  await axios.post(requestUrl,actions.current,{timeout:CONSTANTS.REQUEST_TIMEOUT})
+            const response =  await axios.post(requestUrl,{...actions.current,listactions:listAction},{timeout:CONSTANTS.REQUEST_TIMEOUT})
 
           }catch(error){
             console.error(error)
@@ -88,7 +94,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       //Toggle between like and dislike based on the current state.
       var newAction = Object.assign({},userAction)
       newAction.like=!userAction.like;
-      console.log('new action:'+newAction)
+      //console.log('new action:'+newAction)
       actions.current.like = userAction.like?false:true;
       userAction.like?counters.likes--:counters.likes++
       setUserAction(newAction);
@@ -101,45 +107,62 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       try{
          setDownloading(true)
          const downloadResponse = await axios.get(downloadUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
+
+
          if(downloadResponse.data.result=CONSTANTS.SUCCESS){
-            var newAction = Object.assign({},userAction)
-            newAction.download=true;
-            setUserAction(newAction)
+            actions.current.download = true;
+            let requestUrl = updateActionsUrl+`?res=${resource.id}`
+            const upDateresponse =  await axios.post(requestUrl,{...actions.current,listactions:listAction},{timeout:CONSTANTS.REQUEST_TIMEOUT})
+            setUserAction({like:false,bookmark:false,download:false});
+          actions.current = {};
+
             setDownloading(false)
+
+            onDownload(downloadResponse.data.data.id)
          }
       }catch(error){
         if(downloading){
           setDownloading(false)
         }
-        console.error(error)
+        //console.error(error)
       }
       
 
     }
 
+    function transformLinks(item){
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+      return item.replace(urlRegex,function(url){
+        return '<a href="'+url+'">' + url + '</a>';
+      })
+    }
 
     function handleBookmark(){
       var newAction = Object.assign({},userAction)
       newAction.bookmark=!userAction.bookmark;
       actions.current.bookmark = userAction.bookmark?false:true;
       userAction.bookmark?counters.bookmarks--:counters.bookmarks++;
-      console.log('new action:'+newAction)
       setUserAction(newAction);
     }
 
     async function  handleDialogCofirm(){
-      setDeleting(false)
-
       
+      if(!isUserOwner())
+      return;
+      setDeleting(true)
       try{
-        const deleteResponse = await axios.delete(deleteUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
+        const deleteResponse = await axios.delete(deleteUrl+`?res=${resource.id}`,{timeout:CONSTANTS.REQUEST_TIMEOUT})
+        
         if(response.status!=CONSTANTS.SUCCESS){
-          console.log('error')
+          
         }
       }catch(error){
-        console.error(error)
+       
+      }finally{
+        setDeleting(false)
+        router.replace('/')
       }
-      router.replace('/')
+    
     }
 
   
@@ -148,22 +171,23 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
 
     function handleMenuItemSelection(index){
-      if(menu[index].name===CONSTANTS.ACTION_MENU.EDIT){
+      if(mainMenu[index].name===CONSTANTS.ACTION_MENU.EDIT){
+        if(isUserAuthor())
         handleEdit();
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.DOWNLOAD){
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.DOWNLOAD){
         handleDownload();
       }else if(menu[index].name===CONSTANTS.ACTION_MENU.BOOKMARK){
         handleBookmark();
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.SHOW_NUMBERS){
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.SHOW_NUMBERS){
         
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.LIKE){
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.LIKE){
         handleLike();
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.REMOVE){
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.REMOVE){
       
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.DELETE){
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.DELETE){
         setDeleting(true);
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.CLOSE){
-          router.push('/')
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.CLOSE){
+          router.replace('/')
       }else{
 
       }
@@ -171,29 +195,40 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
     function ExpandableListItem({item,actionable,itemIndex,onItemSelection}){
       const [isExpanded,setExpanded]=useState(false);
-      const [isSelected,setSelected]=useState(item.actions?(item.actions?item.actions.check:false):false);
+      //const itemId = item.id;
+      const [isSelected,setSelected]=useState(listAction[item.id]?true:false);
       const[itemData,setData]=useState(item)
    
-      console.log('item:'+item)
       
       function handleExpansion(){
+      if(itemData.detail)
        setExpanded(!isExpanded)
       }
   
       function handleMainInput(e){
-        setData(e.target.value)
+        //setData(e.target.value)
       }
 
       function handleSelection(e){
-        
+
         //Add action to the batch of updates. 
-        onItemSelection(itemIndex,{"check":!isSelected})
+        let newListAction = Object.assign({},listAction)
+        newListAction[item.id] = !isSelected
+        setListAction(newListAction)
+        //onItemSelection()
         setSelected(!isSelected)
       }
 
+
+      function handleDetailChange(e){
+
+      }
   
-      console.log('using square - '+user.isLoggedIn)
+     
+      
+
       actions.current.view = true;
+
       
       return <li className="mb-0 ml-0 p-1">
         
@@ -208,12 +243,13 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
           <div className={clsx('column','is-10','ml-1','mr-1')}>
             <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>
             <div className={clsx('tray',isExpanded?'tray-max':'tray-min')}>
-          <input className={clsx('input','entrystyle')} type="text" defaultValue={''} placeholder="Add details"/>
+            <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
+         <textarea className={clsx('textarea','entrystyle','has-text-grey','has-background-grey-light')} rows={3} type="text" defaultValue={''} onChange={handleDetailChange} value={itemData.detail} placeholder="Add details"/>
+
+          </div>
         </div>
           </div>
-          <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
          
-          </div>
           <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
             <button className={clsx('button','is-white')} onClick={handleExpansion}>
               <span className='icon'><Icon path={isExpanded?mdiMinus:mdiDotsHorizontal} size={1}></Icon></span>
@@ -265,11 +301,14 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
     //Read the user activity from the server and set the internal state. 
     useEffect(()=>{
-      console.log('toggling')
       if(activity){
         setUserAction(activity)
       }
-    },[activity.like,activity.bookmark,activity.download])
+      if(activity&&activity.listactions){
+        setListAction(activity.listactions)
+      }
+    },[activity]);
+    //[activity.like,activity.bookmark,activity.download,activity.listactions])
 
 
     useEffect(()=>{
@@ -279,34 +318,35 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
         counterObject['bookmarks']=resource.bookmarks?resource.bookmarks:0;
         counterObject['downloads']=resource.downloads?resource.downloads:0;
       }
+
+      if(isUserAuthor()){
+        setMainMenu([{id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
+          // {id:2,name:CONSTANTS.ACTION_MENU.DOWNLOAD,isOwner:false},
+          {id:2,name:CONSTANTS.ACTION_MENU.BOOKMARK,isOwner:false},
+          {id:3,name:CONSTANTS.ACTION_MENU.LIKE,isOwner:false},
+          {id:4,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
+          {id:5,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
+          ])
+      }else if(resource.status==='DOWNLOADED'){
+        setMainMenu([
+          {id:1,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
+          {id:2,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
+          ])
+      }else{
+
+        setMainMenu([
+          {id:1,name:CONSTANTS.ACTION_MENU.DOWNLOAD,isOwner:false},
+          {id:2,name:CONSTANTS.ACTION_MENU.BOOKMARK,isOwner:false},
+          {id:3,name:CONSTANTS.ACTION_MENU.LIKE,isOwner:false},
+          {id:4,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
+          ])
+      }
       setCounters(counterObject)
     },[resource])
 
-    useEffect( ()=>{
-      //  return async ()=>{
-        // var updateActions = {};
-        // const actions_performed = Object.keys(actions.current).length;
-        // console.log(resource)
-        // console.log('actions taken:'+actions_performed)
-        // if(actions_performed==0){
-        //   return ;
-        // }else{
-        //   try{
-        //     let requestUrl = updateActionsUrl+`?res=${resource.id}`
-        //     const response =  axios.post(requestUrl,actions.current,{timeout:CONSTANTS.REQUEST_TIMEOUT})
 
-        //   }catch(error){
-        //     console.error(error)
-        //   }
-        // }
-        
-      //  }
-    },[])
 
-    console.log(resource)
-    console.log('user activity:'+activity.like+'-'+activity.bookmark+'-'+activity.download)
-    console.log('user-author'+user.id+'-'+resource.authorId)
-    console.log('user-ref:'+actions.current.like)
+
     return (
       <div>
         <Head>
@@ -325,46 +365,53 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
             
           </div>
           <div className={clsx('column','box','is-auto','mt-5')}>
-            <div className={clsx('columns')}>
+            <div className={clsx('columns is-mobile')}>
               <div className={clsx('column','is-narrow')}>
-                <DropDownMenu list={menu} onSelectItem={handleMenuItemSelection}/>
+                <DropDownMenu list={mainMenu} isAuthor={isUserAuthor()} isOwner={isUserOwner()} onSelectItem={handleMenuItemSelection}/>
               </div>
               <div className={clsx('column','is-auto')}>
-                <div className="is-title is-4"><p className="title is-4">{resource.data&&resource.data.title}</p>
-                <p className='has-text-grey is-6'>{resource.author}</p></div>
+                <div className="is-title is-4"><span className="title is-4">{resource.data&&resource.data.title}</span>
+                <p className='has-text-link is-6'>{resource.status==='DOWNLOADED'?'Downloaded copy':resource.data&&resource.data.author_name}</p></div>
               </div>
               <div className={clsx('column','is-narrow')}>
                 <a onClick={handleClose}><Icon path={mdiClose} size={1.5}></Icon></a>
               </div>
             </div>
            
-           
-            <nav class="level">
-             <div class="level-item has-text-centered pl-5">
-                <div>
-                  <a onClick={handleLike}><p className={clsx(userAction.like?'has-text-danger':'has-text-gray')}><Icon path={userAction.like?mdiHeart:mdiHeartOutline} size={1}></Icon></p></a>
-                  <p className="label is-6 has-text-info">{counters.likes}</p>
-                </div>
+          
+            {resource.status!=='DOWNLOADED'&&<nav class="columns is-mobile">
+            {/* <div class='columns is-mobile'> */}
+             <div class="column is-1 is-narrow"/>
+             <div class="column is-auto is-narrow">
+                
+                <button className={clsx('button','is-light',userAction.like?'has-text-danger':'has-text-grey')} onClick={handleLike}>
+            <span className={clsx(userAction.like?'has-text-danger':'has-text-grey')}><Icon path={userAction.like?mdiHeart:mdiHeartOutline} size={1}></Icon></span>
+            <span className="label is-6 has-text-info">{counters.likes}</span>
+          </button>
               </div>
-              <div class="level-item has-text-centered pl-5">
-                <div>
-                   <a onClick={handleDownload}><p class={clsx(userAction.download?'has-text-link':'has-text-gray')}><Icon path={userAction.download||isUserAuthor()||isUserOwner()?mdiDownload:mdiDownloadOutline} size={1}></Icon></p></a>
-                  <p className="label is-6 has-text-info">{counters.downloads}</p>
-                </div>
+              <div class="column is-auto is-narrow">
+                
+                 <button className={clsx('button','is-light',userAction.download?'has-text-link':'has-text-grey')} onClick={handleDownload}>
+            <span className={clsx(userAction.download?'has-text-link':'has-text-grey')}><Icon path={userAction.download||isUserAuthor()||isUserOwner()?mdiDownload:mdiDownloadOutline} size={1}></Icon></span>
+            <span className="label is-6 has-text-info">{counters.downloads}</span>
+          </button>
+              
+              </div>
+              <div class="column is-auto is-narrow">
+              
+       <button className={clsx('button','is-light',userAction.bookmark?'has-text-success':'has-text-grey')} onClick={handleBookmark}>
+            <span className={clsx(userAction.bookmark?'has-text-success':'has-text-grey')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></span>
+            <span className="label is-6 has-text-info">{counters.bookmarks}</span>
+          </button>
+                  </div>
+             <div className={clsx('is-auto')}></div>
+              {/* </div> */}
+            </nav>}
 
-              </div>
-              <div class="level-item has-text-centered pl-5">
-                <div>
-      
-                  <a onClick={handleBookmark}><p class={clsx(userAction.bookmark?'has-text-success':'has-text-gray')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></p></a>
-                  <p className="label is-6 has-text-info">{counters.bookmarks}</p>
-                </div>
-              </div>
-            </nav>
 
 
             <ul className={clsx('p-2','listbox')}>
-              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={userAction.download||isUserAuthor()||isUserOwner()}/>})}
+              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={isUserAuthor()||isUserOwner()}/>})}
             </ul>
           </div>
           <div className="column has-text-centered is-one-fifth">

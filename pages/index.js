@@ -15,12 +15,16 @@ import Categories from '../components/ui/Categories'
 import axios from 'axios'
 import GenericCategories from '../components/ui/GenericCategories'
 import { buildGuestUser } from '../components/Util/Session'
+import Icon from '@mdi/react'
+import { mdiClockTimeSix, mdiPlus } from '@mdi/js'
+import Footer from '../components/ui/Footer'
 
 export default function Home({onLoginChange,displayState,onDisplayStateChange}) {
 
   const router = useRouter();
   const user = useContext(AuthorizationContext);
   const [categoryData,setCategoryData] = useState([]);
+  const [sidebar,setSidebar] = useState(false)
   const fetchCategoryUrl = '/hopsapi/resources/categories'
   const logoutUrl = '/hopsapi/user/logout'
   //const [displayState,setDisplayState]=useState({mode:(user.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),param:(user.isLoggedIn?user.id:'')});
@@ -32,17 +36,17 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
 
   function handleSearch(queryString){
 
-    if(queryString)
+
     setDisplayState({mode:CONSTANTS.commandModes.SEARCH,param:queryString,activeItem:-1});
     
   }
 
-  console.log('userstatus:'+user.id+"-"+user.role+'-'+user.isLoggedIn);
+  //console.log('userstatus:'+user.id+"-"+user.role+'-'+user.isLoggedIn);
   function handleCreatePost(){
     if(user.isLoggedIn){
       router.push('/usrview/square')
     }else{
-      router.push('/user_signup')
+      router.push('/user_login')
     }
   }
 
@@ -58,20 +62,25 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
      // onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1,handshake:true})
      //onLoginChange({isLoggedIn:false,role:'GUEST',userId:-1,handshake:true})
      onLoginChange(guestUser)
+     setDisplayState({mode:CONSTANTS.commandModes.POPULAR,param:'',activeItem:0})
     }catch(error){
-      console.log(error)
+      
     }
     
   }
   function handleCategoryMenuItem(category,activeIndex){
     //Build a query for the category and set the displaystate
-    if(category)
-    setDisplayState({mode:CONSTANTS.commandModes.CATEGORIES,param:category,activeItem:activeIndex})
+    if(category){
+      setDisplayState({mode:CONSTANTS.commandModes.CATEGORIES,param:category,activeItem:activeIndex})
+      setSidebar(false)
+    }
+    
   }
 
   function handleGenericCategories(category,activeIndex){
     
     setDisplayState({mode:category,param:'',activeItem:activeIndex})
+    setSidebar(false)
   }
 
   //My feed button 
@@ -109,14 +118,15 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
                     </div>);    
   }else{
     navButtons =  (<div className={clsx('buttons')}>
-                    <Link href='/user_signup'>
-                      <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
-                        <strong>Sign up</strong>
+                  
+                    <Link href='/user_login'>
+                      <a className={clsx('button','is-info','is-rounded','is-outlined','hoverzoom')}>
+                        <strong>Log in</strong>
                       </a>
                     </Link>
-                    <Link href='/user_login'>
-                      <a className={clsx('button','is-light','hoverzoom')}>
-                        Log in
+                    <Link href='/user_signup'>
+                      <a className={clsx('button','is-inverted','is-rounded','is-info','centeralignment','hoverzoom')}>
+                        <strong>Sign up</strong>
                       </a>
                     </Link>
                   </div>);
@@ -125,16 +135,36 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
   useEffect(async()=>{
     try{
       const response = await axios.get(fetchCategoryUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-      setCategoryData(response.data.data.categories)
+      // console.log(':::::')
+      // console.log(response)
+      // const data = response.data.data.categories.map(item=>{return {id:item.id,name:CONSTANTS.commandModes.CATEGORIES,param:item.name}})
+      // console.log(data)
+      const data = response.data.data.categories;
+      setCategoryData(data)
     }catch(error){
       //No Category data
     }
   },[])
 
+  useEffect(async()=>{
+    if(user.role==='REGISTERED'){
+      router.push('/verify_account')
+    }
+  },[user.role])
+
 
   return (
-    <BaseLayout>
-   
+    <div>
+   <div className={clsx('sidenav',sidebar?'sidebar-max':'sidebar-min','is-hidden-desktop')}>
+   <div className={clsx('box')}>
+   <GenericCategories onSelectItem={handleGenericCategories} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.TRENDING||displayState.mode===CONSTANTS.commandModes.FRESH||displayState.mode===CONSTANTS.commandModes.POPULAR||displayState.mode===CONSTANTS.commandModes.MYLISTS||displayState.mode===CONSTANTS.commandModes.MYFEED||displayState.mode===CONSTANTS.commandModes.SAVED||displayState.mode===CONSTANTS.commandModes.BOOKMARKED?false:true}/>
+
+     </div>   
+     <div className={clsx('box')}>
+     <Categories className={clsx('pl-4')} onSelectItem={handleCategoryMenuItem} data={categoryData} activeIndex={displayState.activeItem} reset={displayState.mode===CONSTANTS.commandModes.CATEGORIES?false:true}/>
+
+     </div> 
+             </div>
     <div>
      <Header/>
       <div>
@@ -156,7 +186,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
             </p>
     
           </a>
-           <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navBarMenu">
+           <a role="button" className={clsx('navbar-burger',sidebar?'is-active':'')} aria-label="menu" aria-expanded="false" data-target="navBarMenu" onClick={()=>setSidebar(!sidebar)}>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -164,44 +194,63 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
           
         </div>
 
+        <div className={clsx('navbar-menu','is-active')}>
        
-        <div id="navBarMenu" className="navbar-menu is-active">
+        <div className={clsx('navbar-item','navbar-end','is-expanded','is-align-items-center')}>
+        <SearchBar className={clsx('ml-6')} onSearch={handleSearch} reset={displayState.mode===CONSTANTS.commandModes.SEARCH?false:true}/>
+            </div>
+        <div className="navbar-item navbar-end level-item is-expanded">
+        {/* <SearchBar onSearch={handleSearch} reset={displayState.mode===CONSTANTS.commandModes.SEARCH?false:true}/> */}
+             
+            </div>
+          <div className={'navbar-item'}>
+          {navButtons}
+        </div>
+        </div>
+
+
+       
+        {/* <div id="navBarMenu" className="navbar-menu is-active">
           <div className={clsx("navbar-end",'is-align-content-center')}>
             <div className={clsx('navbar-item','is-expanded','is-align-items-center')}>
               <SearchBar onSearch={handleSearch} reset={displayState.mode===CONSTANTS.commandModes.SEARCH?false:true}/>
             </div>
           </div>
-      <div className="level navbar-end">
+          <div className="level navbar-end">
     
-      <div className="navbar-item level-item is-expanded">
-        {navButtons}
-      </div>
+            <div className="navbar-item level-item is-expanded">
+              {navButtons}
+            </div>
   
-    </div>
-  </div>
+          </div>
+        </div> */}
 </nav>
 
-      <div className="columns is-gapless">
-        <div className="column ml-2 mr-1 is-one-fifth">
+
+      <div className="columns is-gapless ">
+        <div className="column is-2"/>
+     
+
+        <div className="column is-hidden-mobile ml-2 mr-1 is-2">
           <div className="box mt-2 has-background-white">
             
          
 
-          <GenericCategories onSelectItem={handleGenericCategories} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.TRENDING||displayState.mode===CONSTANTS.commandModes.POPULAR||displayState.mode===CONSTANTS.commandModes.MYLISTS||displayState.mode===CONSTANTS.commandModes.MYFEED||displayState.mode===CONSTANTS.commandModes.SAVED||displayState.mode===CONSTANTS.commandModes.BOOKMARKED?false:true}/>
+          <GenericCategories onSelectItem={handleGenericCategories} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.TRENDING||displayState.mode===CONSTANTS.commandModes.FRESH||displayState.mode===CONSTANTS.commandModes.POPULAR||displayState.mode===CONSTANTS.commandModes.MYLISTS||displayState.mode===CONSTANTS.commandModes.MYFEED||displayState.mode===CONSTANTS.commandModes.SAVED||displayState.mode===CONSTANTS.commandModes.BOOKMARKED?false:true}/>
          
           </div>
          
-          <div className={clsx('box')}>
+          <div className={clsx('box','pl-4')}>
             <Categories onSelectItem={handleCategoryMenuItem} data={categoryData} activeIndex={displayState.activeItem} reset={displayState.mode===CONSTANTS.commandModes.CATEGORIES?false:true}/>
           </div>
         </div>                                                                                                                                           
-        <div className={clsx('column','mr-2','is-auto','min-screen-fill')}>
-         <NavigationContext.Provider value={displayState}><DisplayArea  isLoggedIn={user.isLoggedIn} command={displayState}/></NavigationContext.Provider>
+        <div className={clsx('column','mr-2','is-auto')}>
+         <NavigationContext.Provider value={displayState}><DisplayArea  command={displayState}/></NavigationContext.Provider>
           <div>
            
         </div> 
         </div>
-        <div className="column is-one-fifth">
+        <div className="column is-hidden-mobile is-2">
           <div className="box has-background-white mt-2">
           <aside className="menu">
             <ul className="menu-list">
@@ -209,7 +258,8 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
                 <a onClick={handleCreatePost}>
                   <span className="icon-text">
                     <span className="icon">
-                      <i className="mdi mdi-plus has-text-success p-2"></i>
+                      {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
+                      <Icon path={mdiPlus} size={1}></Icon>
                     </span>
                     <span>Create a post</span>
                   </span>
@@ -222,7 +272,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
           </aside>
           </div>
         </div>
-       
+        <div className={clsx('column','is-2')}/>
       </div>
       </div>
       </div>
@@ -230,7 +280,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
 
 
 
-
-    </BaseLayout>
+    <Footer/>
+    </div>
   )
 }

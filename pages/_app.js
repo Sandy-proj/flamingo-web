@@ -8,6 +8,7 @@ import { buildGuestUser,buildUser } from '../components/Util/Session'
 import {CONSTANTS} from './../components/Util/Constants'
 import '@mdi/font/css/materialdesignicons.min.css'
 import { AuthorizationContext } from '../components/Util/AuthContext'
+import clsx from 'clsx'
 
 
 function MyApp({ Component, pageProps }) {
@@ -36,7 +37,7 @@ function MyApp({ Component, pageProps }) {
   
     try{
 
-      console.log('checking login.')
+
       setInProgress(true)
       const response = await axios.get(loginCheckUrl);
       
@@ -44,25 +45,27 @@ function MyApp({ Component, pageProps }) {
       if(response.data.result==='SUCCESS'){
 
         if(response.data.data.userId===0){
+          localStorage.setItem(CONSTANTS.HOPS_USERNAME_KEY,'')
           user = buildGuestUser();
         }else{
+          localStorage.setItem(CONSTANTS.HOPS_USERNAME_KEY,response.data.data.username)
           user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences)
         }
 
          
       }else{
 
-        
+        localStorage.setItem(CONSTANTS.HOPS_USERNAME_KEY,'')
         user = buildGuestUser();
         
       }
       user.handshake=true;
       user.initiateHandshake = handleIntiateRequest;
-      console.log(user)
+
       setLoginStatus(user);
     
   }catch(error){
-    console.log(error)
+
     //On failure to communicate with the server.
     setErrorCode(CONSTANTS.FAILED_TO_CONNECT)
     setInProgress(false)
@@ -95,7 +98,9 @@ function MyApp({ Component, pageProps }) {
     }
   },[loginStatus.handshake])
 
-  const AuthorizedComponent = withAuthorization(Component)
-  return <AuthorizationContext.Provider value={loginStatus}><AuthorizedComponent displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/></AuthorizationContext.Provider>
- }
+
+  //const AuthorizedComponent = withAuthorization(Component)
+  //return <AuthorizationContext.Provider value={loginStatus}>{!loginStatus.handshake?<div className={clsx('container')}>Loading...</div>:<Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>}</AuthorizationContext.Provider>
+  return <AuthorizationContext.Provider value={loginStatus}><Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/></AuthorizationContext.Provider> 
+}
 export default MyApp
