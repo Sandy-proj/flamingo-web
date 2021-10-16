@@ -13,7 +13,7 @@ export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}
     //const [resource,setResource] = useState([])
     const router = useRouter();
     const[id,setId] = useState(router.query.id?router.query.id:-1)
-    console.log('path: '+id)
+ 
 
     
     function onEdit(){
@@ -40,13 +40,13 @@ export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}
       
         //Read the login status of the request and return either the resource requested or redirect to a client page with the id.
 
-        console.log('on the server '+context.query.id)
+
         const id = context.query.id;
         var data={}
         try{
-            const response = await axios.get(`http://localhost:3001/resources/resource?id=${id}`,{timeout:10000});
-            data = { resource:response.data}
-            console.log('server data:'+data)
+            const response = await axios.get(`${CONSTANTS.HOPS_GET_SERVER_RESOURCE}?res=${id}`,{timeout:10000});
+            data = { resource:response.data.data}
+
         }catch(error){
             console.error(error)
             data = { error:'FAIL'}

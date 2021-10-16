@@ -3,7 +3,7 @@ import styles from '../../styles/Home.module.css'
 import Link from 'next/link'
 
 export default function UserHome({permissions}) {
-    console.log('status:'+permissions)
+
     return (
       <div className={styles.container}>
         <Head>

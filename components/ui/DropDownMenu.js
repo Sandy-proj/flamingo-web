@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import {Icon} from '@mdi/react'
 import { mdiMenu } from '@mdi/js';
-export default function DropDownMenu({onSelectItem,list,trigger,data,reset,activeItem,children}){
+export default function DropDownMenu({onSelectItem,list,trigger,isOwner}){
   const [isActive,setIsActive]=useState(false)
   
   const ref = useRef();
@@ -12,7 +12,7 @@ export default function DropDownMenu({onSelectItem,list,trigger,data,reset,activ
         setIsActive(!isActive)
     }
 
-    console.log(list);
+
 
     useEffect(()=>{
         function checkBoundary(e){
@@ -20,7 +20,7 @@ export default function DropDownMenu({onSelectItem,list,trigger,data,reset,activ
                 setIsActive(false)
             }
         }
-        console.log('adding listener'+ref.current)
+
         document.addEventListener('mousedown',checkBoundary)
 
         //Cleanup
@@ -40,7 +40,7 @@ export default function DropDownMenu({onSelectItem,list,trigger,data,reset,activ
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
             <div class="dropdown-content"> 
                 {list.map((item,index)=>{
-                    return <a onClick={()=>{setIsActive(false);onSelectItem(index)}} key={item.id} className={'dropdown-item'}>{item.name}</a>
+                    return <a visible={item.isOwner} onClick={()=>{setIsActive(false);onSelectItem(index)}} key={item.id} className={clsx('dropdown-item')}>{item.name}</a>
                     })
   
                 }

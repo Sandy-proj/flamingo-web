@@ -49,6 +49,14 @@ hr.solid {
     overflow: hidden;
     transition: max-height 0.2s ease-out;
   }
+
+  .tray-quick {
+    padding: 0 18px;
+    background-color:#ffffff;
+    transition: max-height 0.2s ease-out;
+    overflow: hidden;
+
+  }
   .expandable-list-item {
     color: #444;
     cursor: pointer;
@@ -60,6 +68,8 @@ hr.solid {
     font-size: 15px;
     transition: 0.4s;
   }
+
+  
   .active-item, .expandable-list-item :hover {
     background-color: #fff;
   }
@@ -102,3 +112,27 @@ hr.solid {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+/*Home screen slide menu*/
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 100; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #fff; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.3s; /* 0.5 second transition effect to slide in the sidenav */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.sidebar-min{
+  width: 0;
+}
+.sidebar-max{
+  width: 250px;
+}
+

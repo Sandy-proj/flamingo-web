@@ -14,12 +14,11 @@ export default function UserActivity({onFetch,resourceId,children}){
 
 
   function handleFetch(activity){
-      console.log('activity loading')
-      console.log(activity)
+
       onFetch(activity.actions)
   }
 
- console.log('resource id:'+resourceId)
+
 
   useEffect(async ()=>{
    
@@ -27,16 +26,13 @@ export default function UserActivity({onFetch,resourceId,children}){
     return;
     const fetchUrl = dataUrl+'?res='+resourceId;
     try{
-        console.log('fetching here')
         const response = await axios.get(fetchUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT});
-        console.log('-----')
-        console.log(response)
+
         if(response.data&&response.data.result==='SUCCESS'){
           handleFetch(response.data.data)
         }
         
     }catch(error){
-       console.log(error)
     
     }
   },[resourceId])

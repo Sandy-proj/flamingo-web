@@ -1,6 +1,6 @@
 import SearchBar from './SearchBar'
 import {Icon} from '@mdi/react'
-import {mdiAccount,mdiLock,mdiHeart} from '@mdi/js'
+import {mdiAccount,mdiLock,mdiHeart, mdiEye,mdiDownload} from '@mdi/js'
 import clsx from 'clsx'
 import { AuthorizationContext } from '../Util/AuthContext'
 import { useRouter } from 'next/router'
@@ -18,49 +18,55 @@ export default function Header({resourceData,onSelection}){
         onSelection(resourceData.id)
     }
 
+
     return (
     <div>
-        <div className="box mt-1 is-radiusless is-shadowless is-clickable" onClick={handleClick}>
-                <div class="media">
+        <div className="box mt-1 is-radiusless is-shadowless is-clickable pt-5 pb-3 pl-4 pr-4" onClick={handleClick}>
+                <div class="media mt-4 mb-1">
                     <div class="media-left">
                         <figure class="image is-36x36 is-rounded">
-                            <i className="mdi mdi-account"></i>
+                           {/* <Icon path={mdiAccount} size={1}></Icon> */}
                         </figure>
                     </div>
-                    <div class="media-content">
-                        <p class="title is-5 has-text-weight-light has-text-grey-dark">{resourceData.title}</p>
-                        <p class="subtitle is-info-light is-6"><a>{resourceData.author_id}<strong>{resourceData.author_name}</strong></a></p>
-                        <p class="content">{resourceData.preview&&resourceData.preview.name}<br></br>....</p>
+                    <div className={clsx('media-content')}>
+                        <p class="title is-5 has-text-weight-light">{resourceData.title}</p>
+                        <p className={clsx('subtitle','is-6','has-text-gray','mb-4')}>{resourceData.author_name}</p>
+                        {/* <p class="content">{resourceData.preview&&resourceData.preview.name}<br></br>....</p> */}
                     </div>
                 </div>
-                <div class="nav mt-3">
-                <div class="columns">
+                {resourceData&&resourceData.status==='DOWNLOADED'?<div><div className={clsx('tag','has-background-grey-light','has-text-grey','ml-4','is-light')}>Downloaded</div></div>:
+                <div class="nav mt-1 mb-1">
+                <div class="columns is-mobile">
+
+                <div className = {clsx('column','is-one-third','centeralignment')}>
+                    <span className={clsx('icon-text','is-clickable','has-text-grey')}>
+                    <span class="has-text-danger">
+                        <Icon path={mdiHeart} size={0.5}></Icon>
+                    </span>
+                    <span className={clsx('ml-1')}>{resourceData.likes?resourceData.likes:0}</span>
+                    </span>
+                    </div>
+
+
                     <div className = {clsx('column','is-one-third','centeralignment')}>
                     <span className={clsx('icon-text','is-clickable',)}>
-                    <span class="icon mdi mdi-eye p-2 has-text-warning">
-                        
+                    <span class="has-text-info">
+                        <Icon path={mdiEye} size={0.5}></Icon>
                     </span>
-                    <span>{resourceData.views?resourceData.views:0}</span>
+                    <span className={clsx('ml-1')}>{resourceData.views?resourceData.views:0}</span>
                  </span>
                     </div>
 
 
-                    <div className = {clsx('column','is-one-third','centeralignment')}>
-                    <span className={clsx('icon-text','is-clickable','has-text-grey')}>
-                    <span class="icon mdi mdi-heart p-2 has-text-danger">
-                        
-                    </span>
-                    <span>{resourceData.likes?resourceData.likes:0}</span>
-                 </span>
-                    </div>
+                  
 
                     
                     <div className = {clsx('column','is-one-third','centeralignment')}>
                     <span className={clsx('icon-text','is-clickable',)}>
-                    <span class="icon mdi mdi-download p-2 has-text-success">
-                        
+                    <span class="has-text-success">
+                         <Icon path={mdiDownload} size={0.5}></Icon>
                     </span>
-                    <span>{resourceData.bookmarks?resourceData.bookmarks:0}</span>
+                    <span className={clsx('ml-1')}>{resourceData.bookmarks?resourceData.bookmarks:0}</span>
                  </span>
                     </div>
                 
@@ -72,8 +78,9 @@ export default function Header({resourceData,onSelection}){
             
             </div>
             </div>
+}
         </div>
-
+    
 
         {/* <div className="card mt-2">
      

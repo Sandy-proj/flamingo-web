@@ -29,7 +29,7 @@ export default function Menu({onSelectItem,heading,data,reset,activeItem,childre
                       <i className={item.icon}></i>
                     </span>}
                    
-                    <span> {item.name}</span>
+                    <span> <strong>{item.name}</strong></span>
                   </span>
                     
                   </a>  
