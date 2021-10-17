@@ -66,5 +66,6 @@
     
     
     static HOPS_SERVER_BASE='http://api.hopsquare.com/'
+    static HOPS_WEB_SERVER_BASE='http://www.hopsquare.com/'
     static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
 }
