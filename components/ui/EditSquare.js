@@ -344,7 +344,7 @@ export default function EditSquare({resourceId,resource,onSave}) {
             
             </div>
           
-              <div className={clsx('columns','is-gapless', 'is-mobile','mt-0.5')}>
+              <div className={clsx('columns','is-gapless', 'is-mobile','mt-0.5','mb-2')}>
 
                 <div className={clsx('column', 'is-auto','box','mr-0')}>
                 {list.length>itemLimit?<div className={clsx('has-background-gray')}><p className={clsx('title','has-background-gray','tag','has-text-info','container','is-6')}>You have reached the maximum items on a list({itemLimit}).</p></div>:
@@ -353,7 +353,7 @@ export default function EditSquare({resourceId,resource,onSave}) {
                 }
                                  </div>
                 <div className={clsx('column', 'ml-0','is-1','p-1')}>
-                  <button className={clsx('button','pl-6','pr-6','is-info','bottom-panel-dimensions','is-fullwidth')}
+                  <button className={clsx('button','is-info','bottom-panel-dimensions','is-fullwidth')}
                     onClick={handleEntry}>
                     <span className={clsx('icon')}><Icon path={mdiPlus} size={2}></Icon></span>
                   </button>

@@ -132,31 +132,31 @@ export default function DisplayArea({command}){
     //Select the url and header based on the command - search/popular/trending.
     if(command.mode===CONSTANTS.commandModes.SEARCH){
        fetchUrl= dataUrl + '?cmd='+command.mode+'&param='+command.param+(page.pageIndex>0?'&page='+page.pageIndex:'')
-       resultHeader = <div className="is-size-5 has-text-info"><i>Search results for <strong>'{command.param}'</strong></i></div>
+       resultHeader = <div className="is-size-5 has-text-info">Search results for <strong>'{command.param}'</strong></div>
     }else if(command.mode===CONSTANTS.commandModes.POPULAR){
         fetchUrl = dataUrl  + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-grey">{CONSTANTS.commandModes.POPULAR}</div>
+        resultHeader = <div className="title is-5 has-text-info">{CONSTANTS.commandModes.POPULAR}</div>
     }else if(command.mode===CONSTANTS.commandModes.FRESH){
         fetchUrl = dataUrl  + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-grey">{CONSTANTS.commandModes.FRESH}</div>
+        resultHeader = <div className="title is-5 has-text-info">{CONSTANTS.commandModes.FRESH}</div>
     }else if(command.mode === CONSTANTS.commandModes.TRENDING){
         fetchUrl =dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-grey">{CONSTANTS.commandModes.TRENDING}</div>
+        resultHeader = <div className="title is-5 has-text-info">{CONSTANTS.commandModes.TRENDING}</div>
     }else if(command.mode===CONSTANTS.commandModes.MYFEED){
         fetchUrl = dataUrl  + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-grey">{command.param}'s feed</div>
+        resultHeader = <div className="title is-5 has-text-info">{command.param}'s feed</div>
     }else if(command.mode===CONSTANTS.commandModes.CATEGORIES){
         fetchUrl = dataUrl + '?cmd='+command.mode+'&param='+command.param+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className='title is-5 has-text-grey'>{command.param}</div>
+        resultHeader = <div className="title is-5 has-text-info">{command.param}</div>
     }else if(command.mode===CONSTANTS.commandModes.MYLISTS){
         fetchUrl = dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className='title is-5 has-text-grey'>{CONSTANTS.commandModes.MYLISTS}</div>
+        resultHeader = <div className="title is-5 has-text-info">{CONSTANTS.commandModes.MYLISTS}</div>
     }else if(command.mode===CONSTANTS.commandModes.BOOKMARKED){
         fetchUrl = dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className='title is-5 has-text-grey'>{CONSTANTS.commandModes.BOOKMARKED}</div>
+        resultHeader = <div className="title is-5 has-text-info">{CONSTANTS.commandModes.BOOKMARKED}</div>
     }else if(command.mode===CONSTANTS.commandModes.SAVED){
         fetchUrl = dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className='title is-5 has-text-grey'>{CONSTANTS.commandModes.SAVED}</div>
+        resultHeader = <div className="title is-5 has-text-info">{CONSTANTS.commandModes.SAVED}</div>
     }
     else{
         return  <div className="auto title is-6 is-danger">Unable to find results for this operation!!</div>
@@ -214,7 +214,7 @@ export default function DisplayArea({command}){
     return (
         
         <div>
-                {<div className="box is-shadowless is-radiusless p-3 mb-0">
+                {<div className="box is-shadowless is-radiusless p-3 mb-0 mt-1">
                     
                     {resultHeader}
                     </div>
