@@ -87,7 +87,7 @@ hr.solid {
   max-height: 100vh;
 }
 .min-screen-fill{
-  height: 90vh;
+  min-height: 90vh;
 }
 
 /*Stylized input*/

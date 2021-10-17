@@ -16,7 +16,7 @@ import axios from 'axios'
 import GenericCategories from '../components/ui/GenericCategories'
 import { buildGuestUser } from '../components/Util/Session'
 import Icon from '@mdi/react'
-import { mdiClockTimeSix, mdiPlus } from '@mdi/js'
+import { mdiAccount, mdiClockTimeSix, mdiPlus } from '@mdi/js'
 import Footer from '../components/ui/Footer'
 
 export default function Home({onLoginChange,displayState,onDisplayStateChange}) {
@@ -108,12 +108,13 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
   if(user.isLoggedIn){
     navButtons =  (<div className={clsx('buttons')}>
                     <Link href='/usrview/profile'>
-                      <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
+                      <button className={clsx('button','is-info','is-light')}><span><Icon path={mdiAccount} size={1.25}></Icon></span><span><strong>{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</strong></span></button>
+                      {/* <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
                         <strong>Profile</strong>
-                      </a>
+                      </a> */}
                     </Link>
-                    <a className={clsx('button','is-light','hoverzoom')} onClick={handleLogout}>
-                        Sign out
+                    <a className={clsx('button','is-light')} onClick={handleLogout}>
+                        <strong>Sign out</strong>
                       </a>
                     </div>);    
   }else{
@@ -156,7 +157,25 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
   return (
     <div>
    <div className={clsx('sidenav',sidebar?'sidebar-max':'sidebar-min','is-hidden-desktop')}>
-   <div className={clsx('box')}>
+   <aside className="menu pl-4">
+            <ul className="menu-list">
+            <li key={1}>
+                <a onClick={handleCreatePost}>
+                  <span className="icon-text">
+                    <span className="icon">
+                      {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
+                      <Icon path={mdiPlus} size={1}></Icon>
+                    </span>
+                    <span>Create a post</span>
+                  </span>
+                </a>
+                
+                </li>
+              
+              
+            </ul>
+          </aside>
+   <div className={clsx('box','is-shadowless')}>
    <GenericCategories onSelectItem={handleGenericCategories} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.TRENDING||displayState.mode===CONSTANTS.commandModes.FRESH||displayState.mode===CONSTANTS.commandModes.POPULAR||displayState.mode===CONSTANTS.commandModes.MYLISTS||displayState.mode===CONSTANTS.commandModes.MYFEED||displayState.mode===CONSTANTS.commandModes.SAVED||displayState.mode===CONSTANTS.commandModes.BOOKMARKED?false:true}/>
 
      </div>   
@@ -172,21 +191,21 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
      {
        //Header
      }
-      <nav className="navbar is-transparent pr-4 pl-3" role="navigation" aria-label="main navigation">
+      <nav className="navbar is-transparent pr-4 pl-3 pt-1 pb-1" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <figure className = {clsx('image','is-24x24')}> 
+            <figure className = {clsx('image')}> 
             <img src="/headerlogo.png"/>
             </figure>
     
           </a>
           <a className="navbar-item" href="/">
-            <p className = "title is-4"> 
+            <p className={clsx('title','is-4')}>
             Hop<strong>Square</strong>
-            </p>
+            </p> 
     
           </a>
-           <a role="button" className={clsx('navbar-burger',sidebar?'is-active':'')} aria-label="menu" aria-expanded="false" data-target="navBarMenu" onClick={()=>setSidebar(!sidebar)}>
+           <a role="button" className={clsx('navbar-burger','has-text-black',sidebar?'is-active':'')} aria-label="menu" aria-expanded="false" data-target="navBarMenu" onClick={()=>setSidebar(!sidebar)}>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>

@@ -84,7 +84,7 @@ export default function VerifyAccount({}){
         try{
             const response = await axios.post(verificationRequestUrl,{},{timeout:CONSTANTS.REQUEST_TIMEOUT})
 
-            if(response.data.status==='SUCCESS'){
+            if(response.data.result==='SUCCESS'){
 
             }else{
                 if(response.data.result==='FAIL'&&response.data.error.code===CommonErrorCodes.TOO_MANY_REQUESTS){

@@ -100,7 +100,7 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
    let offsetCurrentPage = currentPage%CONSTANTS.MAX_PAGES;
    if(offsetCurrentPage==0){offsetCurrentPage=CONSTANTS.MAX_PAGES}
     return (
-      <div className={'min-screen-fills'}>
+      <div className={'min-screen-fill'}>
         <ul>
             
           {

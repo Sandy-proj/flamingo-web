@@ -105,11 +105,11 @@ export default function Square({handshake,onLoginChange}) {
         pageBody = <EditSquare onSave={onSave} resource={resourceObject}/>
     }
     return (
-        <BaseLayout>
+        <div>
         
          <UserActivity resourceId={resourceObject.id} onFetch={handleUserActivity}/> 
             {pageBody}
-        </BaseLayout>
+        </div>
         
     );
 }
