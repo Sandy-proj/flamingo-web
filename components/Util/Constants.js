@@ -10,7 +10,7 @@
         MYLISTS:'My Lists',
         CATEGORIES:'Categories'
     }
-    static PAGE_SIZE=5;
+    static PAGE_SIZE=10;
     static MAX_PAGES=3;
     static messageTypes = {
         SUCCESS :1,
@@ -42,7 +42,7 @@
     static NO_ERROR=0;
     static FAILED_TO_CONNECT=1;
     static SUCCESS='SUCCESS'
-    static REQUEST_TIMEOUT=1000*20; //20 Seconds for a request timeout
+    static REQUEST_TIMEOUT=1000*60; //30 Seconds for a request timeout
     static SIGN_UP_URL = '/hopsapi/user/sign_up';
     static USER_NAME_AVAILABLE_URL = '/hopsapi/user/check_username_availability/'
     static EMAIL_VALIDATION_PATTERN = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -62,9 +62,9 @@
     static LIST_ITEM_MAX_LENGTH = 75;
     static LIST_ITEM_DETAIL_MAX_LENGTH = 240;
     static LIST_ITEM_TITLE_MAX_LENGTH = 100;
-    static LIST_ITEM_LIMIT=5;
+    static LIST_ITEM_LIMIT=100;
     
     
-    static HOPS_SERVER_BASE='http://localhost:3001/'
+    static HOPS_SERVER_BASE='http://api.hopsquare.com/'
     static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
 }
