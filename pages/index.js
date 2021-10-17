@@ -251,7 +251,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
      
 
         <div className="column is-hidden-mobile ml-2 mr-1 is-2">
-          <div className="box mt-2 has-background-white">
+          <div className="box mt-2 has-background-white is-shadowless">
             
          
 
@@ -259,7 +259,7 @@ export default function Home({onLoginChange,displayState,onDisplayStateChange}) 
          
           </div>
          
-          <div className={clsx('box','pl-4')}>
+          <div className={clsx('box','is-shadowless','pl-4')}>
             <Categories onSelectItem={handleCategoryMenuItem} data={categoryData} activeIndex={displayState.activeItem} reset={displayState.mode===CONSTANTS.commandModes.CATEGORIES?false:true}/>
           </div>
         </div>                                                                                                                                           
