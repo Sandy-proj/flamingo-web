@@ -32,7 +32,7 @@ export default function DisplayArea({command}){
             router.push(`/usrview/square?id=${id}&pageIndex=${page.pageIndex}`)
         }else{
             //window.location.href=`hops/view_square?id=${id}&pageIndex=${page.pageIndex}`
-            window.location.href = CONSTANTS.HOPS_SERVER_BASE+`view_square?id=${id}`;
+            window.location.href = CONSTANTS.HOPS_WEB_SERVER_BASE+`view_square?id=${id}`;
         }
     }
     
