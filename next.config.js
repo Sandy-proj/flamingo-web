@@ -3,11 +3,11 @@ module.exports = {
       return [
         {
           source: '/hopsapi/:path*',
-          destination: 'http://localhost:3001/:path*',
+          destination: 'https://api.hopsquare.com/:path*',
         },
         {
           source: '/hopsapp/:path*',
-          destination: 'http://localhost:3000/:path*',
+          destination: 'https://hopsquare.com/:path*',
         }
       ]
     }, 
