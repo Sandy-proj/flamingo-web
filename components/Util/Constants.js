@@ -65,7 +65,11 @@
     static LIST_ITEM_LIMIT=100;
     
     
-    static HOPS_SERVER_BASE='http://api.hopsquare.com/'
-    static HOPS_WEB_SERVER_BASE='http://www.hopsquare.com/'
+    static HOPS_SERVER_BASE='http://localhost:3001/'
+    static HOPS_WEB_SERVER_BASE='http://localhost:3000/'
     static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
+
+        // static HOPS_SERVER_BASE='http://api.hopsquare.com/'
+    // static HOPS_WEB_SERVER_BASE='http://www.hopsquare.com/'
+    // static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
 }
