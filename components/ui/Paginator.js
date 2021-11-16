@@ -21,7 +21,7 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
   //Update Current page.
   function updateCurrentPage(e){
     e.preventDefault();
-
+    window.scrollTo({top: 0, behavior: 'smooth'})
     if(e.target.id==firstPage){
       if(firstPage==1){
         return;
@@ -47,6 +47,7 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
 
   function handlePrevious(e){
     e.preventDefault();
+    window.scrollTo({top: 0, behavior: 'smooth'})
     if(currentPage<=firstPage+1){
       if(currentPage==1){
         return;
@@ -62,6 +63,7 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
 
 
   function handleNext(e){
+    window.scrollTo({top: 0, behavior: 'smooth'})
     e.preventDefault();
     if(currentPage>=lastPage+1){
       if(lastPage<firstPage+CONSTANTS.MAX_PAGES+1){
@@ -91,6 +93,18 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
 
     return tileBody;
   }
+
+
+
+  function Row({items,id}){
+    console.log('--')
+    console.log(items)
+    return <div className={clsx('tile','is-parent','ml-3','mr-4','p-0','mb-0','mt-1','is-shadowless')}>
+     {items.map((item,index)=><ResourceCard isLoggedIn={isLoggedIn} resourceData={item}  onSelection={onSelection}></ResourceCard>
+      )}
+     </div>
+  
+  }
    if(!data){
      return 
    }
@@ -98,7 +112,9 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
    //Generate a sequence for processing 
    const pageSequence = Array.from({ length: pageCount+2 }, (_, i) => i+firstPage)
    let offsetCurrentPage = currentPage%CONSTANTS.MAX_PAGES;
+  
    if(offsetCurrentPage==0){offsetCurrentPage=CONSTANTS.MAX_PAGES}
+
     return (
       <div className={'min-screen-fill'}>
         <ul>
@@ -110,40 +126,25 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
               </li>)
           }
         </ul>
+
+
+        
         
         {/* <div className={clsx('tile','is-ancestor')}>
           <div className={clsx('tile','is-vertical')}>
 
-          
-
             {
               
-
-              data.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE,(offsetCurrentPage)*CONSTANTS.PAGE_SIZE).map((item,index)=><Tile id={item.id} index={index}></Tile>)
-
-
-               
-              //  data.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE,(offsetCurrentPage)*CONSTANTS.PAGE_SIZE).map((index,item)=>(
-              //  <div>{(index+1)%3==1&&<div className={clsx('tile','is-parent')}>}
-              //  <div className={clsx('tile','is-6','is-child','box')} id={item.id}>
-              //  <div className={'title'}>
-              //    {item.title}
-              //  </div>
-              //  </div>
-              //  </div>))
-              
+              data.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE,(offsetCurrentPage)*CONSTANTS.PAGE_SIZE).filter((item,index)=>index%2==0).map((item,index)=><Row items={data.slice((offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE+index*2,(offsetCurrentPage-1)*CONSTANTS.PAGE_SIZE+index*2+2)}></Row>)
+            
             }
            
            </div>
 
-
-            
-        
-
         </div> */}
 
           {
-            displayFlag?<div className="box mt-1 mb-1 has-background-white is-radiusless is-shadowless">
+            displayFlag&&<div className="box mt-0 mb-1 has-background-white is-radiusless is-shadowless">
             <nav className={clsx("pagination",'centeralignment','is-centered','is-rounded')} role="navigation" aria-label="pagination">
                 <a className="pagination-previous" onClick={handlePrevious}><span><Icon path={mdiChevronLeft} size={1}></Icon></span></a>
                
@@ -152,8 +153,7 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
                   </ul>
                   <a className="pagination-next" onClick={handleNext}><span><Icon path={mdiChevronRight} size={1}></Icon></span></a>
             </nav>    
-          </div>:
-          <div></div>
+          </div>
           }
        
       </div>

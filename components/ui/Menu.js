@@ -23,7 +23,7 @@ export default function Menu({onSelectItem,heading,data,reset,activeItem,childre
             
                 {items.map((item,index)=><li key={item.id} >
 
-                <a className={clsx(index==activeItem&&!reset?'is-active':'')} onClick={()=>{onSelectItem(item.name,index)}}>
+                <a className={clsx(index==activeItem&&!reset?'is-active is-light':'')} onClick={()=>{onSelectItem(item.name,index)}}>
                 <span className="icon-text">
                     {item.icon&& <span className="icon">
                       <i className={item.icon}></i>

@@ -10,8 +10,9 @@ import {AuthorizationContext} from '../Util/AuthContext'
 import DropDownMenu from './DropDownMenu'
 import { CONSTANTS } from './../Util/Constants'
 import ConfirmationDialog from './ConfirmationDialog'
+import CommentBox from './CommentBox'
 
-export default function UseSquare({resourceId,resource,onEdit,activity,isEditable,onDownload}) {
+export default function UseSquare({resourceId,resource,onEdit,activity,isEditable,onDownload,onGetList}) {
 
     var downloadUrl = '/hopsapi/resources/resource/download'
     var updateActionsUrl = '/hopsapi/resources/resource/actionupdate?'
@@ -20,6 +21,8 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     let list=[];
     if(resource.data){
       list = resource.data?resource.data.resource:[]
+      console.log('resource')
+      console.log(list)
     }
      
     let menu = [{id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
@@ -63,7 +66,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       return false;
     }
     function handleEdit(e){
-      if(isUserAuthor())
+      if(isUserOwner())
         onEdit()
     }
 
@@ -101,7 +104,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
 
     async function handleDownload(){
-      if(userAction.download||isUserAuthor()||isUserOwner())
+      if(userAction.download||resource.status==='DOWNLOADED')
       return;
       downloadUrl = downloadUrl+`?res=${resource.id}`
       try{
@@ -172,7 +175,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
     function handleMenuItemSelection(index){
       if(mainMenu[index].name===CONSTANTS.ACTION_MENU.EDIT){
-        if(isUserAuthor())
+        if(isUserOwner())
         handleEdit();
       }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.DOWNLOAD){
         handleDownload();
@@ -228,7 +231,8 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       
 
       actions.current.view = true;
-
+      console.log('90900');
+      console.log(resource)
       
       return <li className="mb-0 ml-0 p-1">
         
@@ -241,7 +245,9 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       
          
           <div className={clsx('column','is-10','ml-1','mr-1')}>
-            <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>
+
+            <div className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}>{itemData.type===CONSTANTS.LINK_TYPE?
+            <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>:itemData.name}</div>
             <div className={clsx('tray',isExpanded?'tray-max':'tray-min')}>
             <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
          <textarea className={clsx('textarea','entrystyle','has-text-grey','has-background-grey-light')} rows={3} type="text" defaultValue={''} onChange={handleDetailChange} value={itemData.detail} placeholder="Add details"/>
@@ -318,19 +324,19 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
         counterObject['bookmarks']=resource.bookmarks?resource.bookmarks:0;
         counterObject['downloads']=resource.downloads?resource.downloads:0;
       }
-
-      if(isUserAuthor()){
-        setMainMenu([{id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
-          // {id:2,name:CONSTANTS.ACTION_MENU.DOWNLOAD,isOwner:false},
-          {id:2,name:CONSTANTS.ACTION_MENU.BOOKMARK,isOwner:false},
-          {id:3,name:CONSTANTS.ACTION_MENU.LIKE,isOwner:false},
-          {id:4,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
-          {id:5,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
-          ])
-      }else if(resource.status==='DOWNLOADED'){
+      if(resource.status==='DOWNLOADED'){
         setMainMenu([
-          {id:1,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
-          {id:2,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
+          {id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
+          {id:2,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
+          {id:3,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
+          ])
+      }else if(isUserAuthor()){
+        setMainMenu([{id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
+          {id:2,name:CONSTANTS.ACTION_MENU.DOWNLOAD,isOwner:false},
+          {id:3,name:CONSTANTS.ACTION_MENU.BOOKMARK,isOwner:false},
+          {id:4,name:CONSTANTS.ACTION_MENU.LIKE,isOwner:false},
+          {id:5,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
+          {id:6,name:CONSTANTS.ACTION_MENU.CLOSE,isOwner:false}
           ])
       }else{
 
@@ -348,7 +354,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
 
     return (
-      <div>
+      <div className={clsx('mb-0')}>
         <Head>
           <title>HopSquare</title>
           <link rel="icon" href="/tinylogo.png" />
@@ -357,20 +363,20 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
        
         <div>
         <Modal activate={downloading}/>
-        <ConfirmationDialog message={"Are you sure you want to delete this list?"} isVisible={deleting} onCancel={handleDialogCancel} onConfirm={handleDialogCofirm}/>s
+        <ConfirmationDialog message={"Are you sure you want to delete this list?"} isVisible={deleting} onCancel={handleDialogCancel} onConfirm={handleDialogCofirm}/>
           
         <div className={clsx('columns')}>
           <div className="column is-one-fifth">
 
             
           </div>
-          <div className={clsx('column','box','is-auto','mt-5')}>
+          <div className={clsx('column','box','is-auto','is-shadowless','mt-2','mb-1')}>
             <div className={clsx('columns is-mobile')}>
               <div className={clsx('column','is-narrow')}>
                 <DropDownMenu list={mainMenu} isAuthor={isUserAuthor()} isOwner={isUserOwner()} onSelectItem={handleMenuItemSelection}/>
               </div>
               <div className={clsx('column','is-auto')}>
-                <div className="is-title is-4"><span className="title is-4">{resource.data&&resource.data.title}</span>
+                <div className="is-title has-text-grey is-5"><span className="title is-5">{resource.data&&resource.data.title}</span>
                 <p className='has-text-link is-6'>{resource.status==='DOWNLOADED'?'Downloaded copy':resource.data&&resource.data.author_name}</p></div>
               </div>
               <div className={clsx('column','is-narrow')}>
@@ -392,7 +398,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
               <div class="column is-auto is-narrow">
                 
                  <button className={clsx('button','is-light',userAction.download?'has-text-link':'has-text-grey')} onClick={handleDownload}>
-            <span className={clsx(userAction.download?'has-text-link':'has-text-grey')}><Icon path={userAction.download||isUserAuthor()||isUserOwner()?mdiDownload:mdiDownloadOutline} size={1}></Icon></span>
+            <span className={clsx(userAction.download?'has-text-link':'has-text-grey')}><Icon path={userAction.download||resource.status==='DOWNLOADED'?mdiDownload:mdiDownloadOutline} size={1}></Icon></span>
             <span className="label is-6 has-text-info">{counters.downloads}</span>
           </button>
               
@@ -411,8 +417,9 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
 
             <ul className={clsx('p-2','listbox')}>
-              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={isUserAuthor()||isUserOwner()}/>})}
+              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={resource.status==='DOWNLOADED'}/>})}
             </ul>
+          
           </div>
           <div className="column has-text-centered is-one-fifth">
           </div>

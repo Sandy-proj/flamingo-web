@@ -9,6 +9,8 @@ import {CONSTANTS} from './../components/Util/Constants'
 import '@mdi/font/css/materialdesignicons.min.css'
 import { AuthorizationContext } from '../components/Util/AuthContext'
 import clsx from 'clsx'
+import UserNameDialog from '../components/ui/UserNameDialog'
+import ErrorPage from '../components/ui/ErrorPage'
 
 
 function MyApp({ Component, pageProps }) {
@@ -33,13 +35,13 @@ function MyApp({ Component, pageProps }) {
 
 
   //Try to refresh expired access using refresh token 
-  async function handleIntiateRequest(){
-  
+  async function handleIntiateRequest(hardRefresh){
+ 
     try{
 
 
       setInProgress(true)
-      const response = await axios.get(loginCheckUrl);
+      const response = await axios.get(loginCheckUrl+(hardRefresh?'?hard_refresh=true':''));
       
       var user = null;
       if(response.data.result==='SUCCESS'){
@@ -49,7 +51,7 @@ function MyApp({ Component, pageProps }) {
           user = buildGuestUser();
         }else{
           localStorage.setItem(CONSTANTS.HOPS_USERNAME_KEY,response.data.data.username)
-          user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences)
+          user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences,response.data.data.username)
         }
 
          
@@ -101,6 +103,10 @@ function MyApp({ Component, pageProps }) {
 
   //const AuthorizedComponent = withAuthorization(Component)
   //return <AuthorizationContext.Provider value={loginStatus}>{!loginStatus.handshake?<div className={clsx('container')}>Loading...</div>:<Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>}</AuthorizationContext.Provider>
-  return <AuthorizationContext.Provider value={loginStatus}><Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/></AuthorizationContext.Provider> 
+  return <AuthorizationContext.Provider value={loginStatus}>
+            <UserNameDialog onDeactivate={()=>{}}></UserNameDialog>
+            <ErrorPage error={errorCode} onClose={setErrorCode}></ErrorPage>
+            <Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>
+        </AuthorizationContext.Provider> 
 }
 export default MyApp

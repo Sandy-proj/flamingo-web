@@ -7,6 +7,7 @@ import {useRouter} from 'next/router'
 import axios from 'axios'
 import BaseLayout from '../components/ui/BaseLayout';
 import UseSquarePublic from '../components/ui/UseSquarePublic';
+import CommentBox from '../components/ui/CommentBox';
 
 export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}) {
     const [mode,setMode] = useState(CONSTANTS.modes.USE)
@@ -29,6 +30,7 @@ export default function ViewSquare({isLoggedIn,role,user,onLoginChange,resource}
     return (
         <BaseLayout>
             {pageBody}
+            <CommentBox getComments={true} resourceId={resource.id}/>
         </BaseLayout>
         
     );

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import {Icon} from '@mdi/react'
 import { mdiMenu } from '@mdi/js';
-export default function DropDownMenu({onSelectItem,list,trigger,isOwner}){
+export default function DropDownMenu({onSelectItem,list,trigger,isOwner,up}){
   const [isActive,setIsActive]=useState(false)
   
   const ref = useRef();
@@ -31,13 +31,13 @@ export default function DropDownMenu({onSelectItem,list,trigger,isOwner}){
 
     return (
 
-    <div ref={ref} class={clsx('dropdown',isActive?'is-active':'')}>
+    <div ref={ref} class={clsx('dropdown',up?'is-up':'',isActive?'is-active':'')}>
         <div className={clsx("dropdown-trigger")} onClick={handleActivateMenu}>
             {trigger?trigger():
             <a  className={clsx('p-3','mt-2')}><Icon path={mdiMenu} size={1.5}></Icon></a>
             }
         </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className={clsx("dropdown-menu")} id="dropdown-menu" role="menu">
             <div class="dropdown-content"> 
                 {list.map((item,index)=>{
                     return <a visible={item.isOwner} onClick={()=>{setIsActive(false);onSelectItem(index)}} key={item.id} className={clsx('dropdown-item')}>{item.name}</a>
