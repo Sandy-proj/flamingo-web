@@ -4,10 +4,10 @@
         POPULAR:'Popular',
         TRENDING:'Trending',
         FRESH:'Fresh',
-        MYFEED:'Home',
-        SAVED:'Saved',
+        MYFEED:'My Posts',
+        SAVED:'Saved lists',
         BOOKMARKED:'Bookmarked',
-        MYLISTS:'My Lists',
+        MYLISTS:'Saved',
         CATEGORIES:'Categories'
     }
     static PAGE_SIZE=10;
@@ -46,7 +46,7 @@
     static SIGN_UP_URL = '/hopsapi/user/sign_up';
     static USER_NAME_AVAILABLE_URL = '/hopsapi/user/check_username_availability/'
     static EMAIL_VALIDATION_PATTERN = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    static PASSWORD_VALIDATION_PATTERN= /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    static PASSWORD_VALIDATION_PATTERN= /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^()_])[A-Za-z\d@$!%*?&^()_]{8,}$/
     //static USERNAME_VALIDATION_PATTERN = /^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/;(/^[a-zA-Z0-9_]{5,32}/)
     static USERNAME_VALIDATION_PATTERN = (/^[a-zA-Z0-9_]{5,32}$/);
     static GET_SUCCESS = 200;
@@ -58,14 +58,30 @@
     static VERIFY_PASSWORD_RESET = '/hopsapi/user/verify_password'
     static RESET_PASSWORD_URL = '/hopsapi/user/update_password'
     static PROFILE_URL = '/hopsapi/user/user_profile'
+    static USERNAME_UPDATE_URL = '/hopsapi/user/update_username'
+    static GET_COMMENTS_URL = '/hopsapi/resources/comments'
+    static POST_COMMENTS_URL = '/hopsapi/resources/addcomment'
+    static DELETE_COMMENT_URL = '/hopsapi/resources/comment/delete'
     static HOPS_USERNAME_KEY='hops_username'
     static LIST_ITEM_MAX_LENGTH = 75;
     static LIST_ITEM_DETAIL_MAX_LENGTH = 240;
     static LIST_ITEM_TITLE_MAX_LENGTH = 100;
     static LIST_ITEM_LIMIT=100;
+    static REQUEST_PARAM_KEY = 'param_k'
+    static REQUEST_COOKIE_KEY = 'header_k'
+    static LINK_TYPE = 'LINK'
+    static TEXT_TYPE = 'TEXT'
+
     
-    
-    static HOPS_SERVER_BASE='http://api.hopsquare.com/'
-    static HOPS_WEB_SERVER_BASE='http://www.hopsquare.com/'
+    static OAUTH_CLIENT_ID = "788036490312-dnncf6lf0gj1h1qp8nnqeuri5ssksrp9.apps.googleusercontent.com"
+
+    static HOPS_SERVER_BASE='http://localhost:3001/'
+    static HOPS_WEB_SERVER_BASE='http://localhost:3000/'
     static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
+   
+
+
+        // static HOPS_SERVER_BASE='http://api.hopsquare.com/'
+    // static HOPS_WEB_SERVER_BASE='http://www.hopsquare.com/'
+    // static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
 }

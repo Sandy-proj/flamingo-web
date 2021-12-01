@@ -22,6 +22,7 @@ export default function SignUp({onError,onLoginChange}){
     const [termsAndConditions,setTermsAndConditions] = useState(false);
     const [privacyPolicy, setPrivacyPolicy] = useState(false);
     const[isAgreed,setIsAgreed] = useState(false)
+    const socialLoginUrl = '/hopsapi/user/social_login';
     const [credentials,setCredentials] = useState({emailId:'',username:'',password:'',passwordshadow:''}); 
     const [isSigningUp,setIsSigningUp] = useState(false)
     const [validations,setValidations] = useState({emailLengthFail:false,passwordLengthFail:false,validEmailFail:false,validPasswordFail:false,emailInUse:false,signUpAttempFail:false,validCopyPasswordFail:false})
@@ -56,7 +57,7 @@ export default function SignUp({onError,onLoginChange}){
 
                 if(response.status===CONSTANTS.POST_SUCCESS){
                     if(response.data.result&&response.data.result.signup==='SUCCESS'&&response.data.result.email==='SUCCESS'){
-                        var user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences)
+                        var user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences,response.data.data.username)
                         onLoginChange(user)
                         router.push('/')
                     }else if(response.data.result.email==='FAIL'){
@@ -180,13 +181,17 @@ export default function SignUp({onError,onLoginChange}){
     }
 
     function handleTermsAndConditions(e){
-        e.preventDefault();
-        setTermsAndConditions(true);
+         e.preventDefault();
+        // setTermsAndConditions(true);
+        window.open('/tos','_blank')
     }
+
+   
 
     function handlePrivacyPolicy(e){
         e.preventDefault();
-        setPrivacyPolicy(true);
+       // setPrivacyPolicy(true);
+        window.open('/p_pol','_blank')
     }
    useEffect(()=>{
         if(user.isLoggedIn){
@@ -241,6 +246,7 @@ export default function SignUp({onError,onLoginChange}){
             <Head>
                 <title>HopSquare</title>
                 <link rel="icon" href="/tinylogo.png" />
+                <script src={'https://accounts.google.com/gsi/client'} ></script>
             </Head>
         </div>
         
@@ -250,13 +256,14 @@ export default function SignUp({onError,onLoginChange}){
                 <div className="box pt-4 pb-4 pl-6 pr-6">
                    
                     <form>
-                    <div className="block level mb-8">
-                            <div className="level-left">
+                    <div className="block columns is-mobile level mb-8">
+                            <div className="level-left column is-narrow">
                                 <figure className = {clsx('image','is-24x24','mr-2','level-item') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure>
                                 <p className="level-item title is-5 is-grouped is-grouped-centered">HopSquare</p>
                             </div>
+                            <div className={clsx('column','is-auto')}></div>
                         </div>
                         <div className="field mt-4">
                         <p className="control has-icons-left">
@@ -302,41 +309,62 @@ export default function SignUp({onError,onLoginChange}){
                             {validations.serverError&&<p className={'is-light','has-text-danger'}>&#8226;An error occured on the server.</p>}
                         </div>
                   
-                    <div className={clsx('mt-6')}>
+                   
+                   
+                   
+                    
+                    
+                        <div className={clsx('buttons','centeralignment','mt-2')}>
+                   
+                        <div className={clsx('is-full','column','centeralignment','mt-2','mb-0')}>
+                              <div className="button is-rounded is-info is-fullwidth" onClick={handleSubmit}><strong>Sign up</strong></div>
+                         </div>
+                    
+                  
+                  </div>
+                  <hr className={clsx('divider')}></hr>
+                        <div>
+                            
+                         <div className={clsx('mb-6','mt-4','centeralignment')}>
+                        <div id="g_id_onload"
+                       data-client_id={CONSTANTS.OAUTH_CLIENT_ID}
+                       data-context="signin"
+                       data-ux_mode="popup"
+                       data-login_uri={socialLoginUrl}
+                       data-auto_prompt="false">
+                  </div>
+
+                  <div class="g_id_signin"
+                       data-type="standard"
+                       data-shape="pill"
+                       data-theme="outline"
+                       data-text="continue_with"
+                       data-size="large"
+                       data-logo_alignment="left">
+                  </div>
+                
+                        </div>
+                       
+                               </div>
+                               <div className={clsx('mt-6')}>
                           <div className={clsx('level')}>
                             
-                            <Icon onClick={handleAgreement} className={clsx('level-item','mr-2')} path={isAgreed?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon>
-                            <label className={clsx('level-item','label','has-text-grey',)} >
-                            <span>
+                            {/* <Icon onClick={handleAgreement} className={clsx('level-item','mr-2')} path={isAgreed?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon> */}
+                            <p className={clsx('has-text-grey',)} >
                            
-                            </span>
-                            I agree to the &nbsp; <a href="#" onClick={handleTermsAndConditions}>  &nbsp;Terms of service  &nbsp; </a> .
-                            </label>
+                            By continuing, I agree to HopSquare's <br/> <a href="#" onClick={handleTermsAndConditions}>  &nbsp;Terms of service  &nbsp; </a> &nbsp;& <a href="#" onClick={handlePrivacyPolicy}>  &nbsp;Privacy policy. &nbsp; </a>  .
+                            </p>
                            
                           </div>
                         
                     </div>
-                   
-                   
-                    
-
-                        <div className={clsx('buttons','centeralignment','mt-2')}>
-                   
-                      <a className={clsx('button','is-info','hoverzoom')} onClick={handleSubmit}>
-                        <strong>Sign up</strong>
-                      </a>
-                    
-                    <Link href='/'>
+                               <div className={clsx('buttons','centeralignment','mt-2')}>
+                               <Link href='/'>
                       <a className={clsx('button','is-info','is-light','hoverzoom')}>
                         <strong>Home</strong>
                       </a>
                     </Link>
-                  </div>
-                      
-                        <div>
-                            
-
-                               </div>
+                    </div>
                     </form>
         
                    

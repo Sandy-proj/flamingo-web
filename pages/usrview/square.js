@@ -10,9 +10,11 @@ import axios from 'axios'
 import BaseLayout from '../../components/ui/BaseLayout';
 import { AuthorizationContext } from '../../components/Util/AuthContext';
 import UserActivity from '../../components/ui/UserActivity';
+import CommentBox from '../../components/ui/CommentBox';
 
-export default function Square({handshake,onLoginChange}) {
+export default function Square({handshake,onLoginChange,onError,error}) {
     const [mode,setMode] = useState(CONSTANTS.modes.USE)
+    const [comment,setComment] = useState(false)
     const [resourceObject,setResourceObject] = useState({resource:[],id:-1,title:''})
     const [serverError,setServerError] = useState(false)
     const [userActivity,setUserActivity]=useState({like:false,bookmark:false,download:false});
@@ -26,22 +28,24 @@ export default function Square({handshake,onLoginChange}) {
 
     //     router.push('/')
     // }
+   
     function onEdit(){
         setMode(CONSTANTS.modes.EDIT); 
     }
+
+    function setCommentFlag(getComments){
+        setComment(getComments)
+    }
+
     function onSave(savedList){
-        //console.log('setting view mode')
-        //console.log(savedList)
+        console.log('setting view mode')
+        console.log(savedList)
+        
         setId(savedList.id)
-        setResourceObject({id:savedList.id,resource:savedList.data,title:savedList.title})
+        //setResourceObject({id:savedList.id,resource:savedList.data,title:savedList.title})
+        setResourceObject(savedList)
         setMode(CONSTANTS.modes.USE)
     }
-
-    function onDialogOk(){
-
-    }
-    //console.log('list:'+ resourceObject)
-    //console.log(user)
 
     function handleUserActivity(activity){
         setUserActivity(activity);
@@ -49,6 +53,9 @@ export default function Square({handshake,onLoginChange}) {
     }
     
     useEffect(async ()=>{
+        if(!router.isReady){
+            return ;
+        }
         if(user.handshake===false||user.handshakeInProgress===true){
             readyToFetch.current=true
             return;
@@ -78,6 +85,7 @@ export default function Square({handshake,onLoginChange}) {
                             readyToFetch.current=false;
                             if(response.data&&response.data.result==='SUCCESS'){
                                 setResourceObject(response.data.data)
+                                setComment(true)
                             }else if(response.data&&response.data.result==='FAIL'){
                                 setServerError(true)
                             }
@@ -96,19 +104,21 @@ export default function Square({handshake,onLoginChange}) {
             }
         }
         
-    },[id,mode,user.handshakeInProgress])
+    },[id,mode,user.handshakeInProgress,router.isReady])
     var pageBody;
     //console.log('rendering with '+resourceObject)
     if(mode===CONSTANTS.modes.USE){
-        pageBody = <UseSquare onEdit={onEdit} activity={userActivity} resource={resourceObject} onDownload={setId} isEditable={true}/>
+
+        pageBody = <UseSquare onEdit={onEdit} activity={userActivity} resource={resourceObject} onGetList={setComment} onDownload={setId} isEditable={true}/>
     }else{
-        pageBody = <EditSquare onSave={onSave} resource={resourceObject}/>
+        pageBody = <EditSquare onSave={onSave} resource={resourceObject} onError={onError}/>
     }
     return (
         <div>
         
          <UserActivity resourceId={resourceObject.id} onFetch={handleUserActivity}/> 
             {pageBody}
+            {(mode===CONSTANTS.modes.USE&&resourceObject&&resourceObject.status!=='DOWNLOADED')&&<CommentBox getComments={comment} resourceId={id}/>}
         </div>
         
     );

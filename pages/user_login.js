@@ -23,6 +23,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
     const [loginAttempts,setLoginAttempts] = useState(0);
     const user = useContext(AuthorizationContext)
     const loginUrl = CONSTANTS.LOGIN_URL;
+    const socialLoginUrl = '/hopsapi/user/social_login';
     const [validations,setValidations] = useState({emailLengthFail:false,passwordLengthFail:false,validEmailFail:false,validPasswordFail:false,loginFail:false,notUser:false,serverError:false})
     const forgotPasswordUrl= CONSTANTS.FORGOT_PASSWORD_URL
     const handleSubmit = async (e)=>{
@@ -34,7 +35,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
 
 
                 if(response.data.result===CONSTANTS.SUCCESS&&response.data.data){
-                    var user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences)
+                    var user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences,response.data.data.username)
                     localStorage.setItem(CONSTANTS.HOPS_USERNAME_KEY,response.data.data.username)
                     onLoginChange(user);
                 }else{
@@ -118,6 +119,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
             <Head>
                 <title>HopSquare</title>
                 <link rel="icon" href="/tinylogo.png" />
+                <script src={'https://accounts.google.com/gsi/client'} ></script>
             </Head>
         </div>
         
@@ -128,13 +130,14 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                 <div className="box pt-4 pb-4 pl-6 pr-6">
              
                     <form>
-                        <div className="block level mb-8">
-                            <div className="level-left">
+                        <div className="columns is-mobile block level mb-8">
+                            <div className="level-left column is-narrow">
                                 <span><figure className = {clsx('image','is-24x24','mr-2') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure></span>
                                 <span><p className="title is-5 is-grouped is-grouped-centered">HopSquare</p></span>
                             </div>
+                            <div className={clsx('column','is-auto')}></div>
                         </div>
 
                         <div className="field">
@@ -165,13 +168,32 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                             {validations.notUser&&<p className={'is-light','has-text-danger'}>&#8226;emailId is invalid.</p>}
                             {loginAttempts>3&&<p className={'is-light','has-text-danger'}>&#8226;Exceeded maximum attempts, try <br/>to reset your password.<br/></p>}
                         </div>
-                         <div className={clsx('is-full','column','centeralignment','mt-6','mb-2')}>
-                              <div className="button is-rounded is-info is-align-self-stretch" onClick={handleSubmit}><strong>Login</strong></div>
+                         <div className={clsx('is-full','column','centeralignment','mt-2','mb-0')}>
+                              <div className="button is-rounded is-info is-fullwidth" onClick={handleSubmit}><strong>Login</strong></div>
                          </div>
+                        <hr className={clsx('divider','mb-4')}></hr>
+                        <div className={clsx('mb-6','mt-4')}>
+                        <div id="g_id_onload"
+                       data-client_id={CONSTANTS.OAUTH_CLIENT_ID}
+                       data-context="signin"
+                       data-ux_mode="popup"
+                       data-login_uri={socialLoginUrl}
+                       data-auto_prompt="false">
+                  </div>
 
-                        <div className={clsx('level mb-1')}>
-                            <div className="level-item"><Link href='/user_signup'><a className="is-size-6"><span className="is-link">Sign up</span></a></Link></div>
-                            <div className="level-item"><Link href='/forgot_password'><a className="is-size-6">Forgot Password?</a></Link></div>
+                  <div class="g_id_signin"
+                       data-type="standard"
+                       data-shape="pill"
+                       data-theme="outline"
+                       data-text="continue_with"
+                       data-size="large"
+                       data-logo_alignment="left">
+                  </div>
+                
+                        </div>
+                        <div className={clsx('level mb-1 mt-4')}>
+                            <div className="level-left"><Link href='/user_signup'><a className="is-size-6"><p className="is-link is-light is-small">Sign up</p></a></Link></div>
+                            <div className="level-right"><Link href='/forgot_password'><a className="is-size-6"><span className="is-link is-light is-small">Forgot password?</span></a></Link></div>
                             
                         </div>
 

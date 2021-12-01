@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { isValidElement, useState } from 'react';
 import {Icon} from '@mdi/react'
-import {mdiCheckBold} from '@mdi/js'
+import {mdiChatQuestion, mdiCheckBold, mdiHeadQuestion} from '@mdi/js'
 import { CONSTANTS } from '../Util/Constants';
 
 export default function ConfirmationDialog({message,onCancel,onClose,isVisible,onConfirm,children}){
@@ -18,17 +18,17 @@ export default function ConfirmationDialog({message,onCancel,onClose,isVisible,o
 
 <div className={clsx('modal',isVisible?'is-active':false)}>
   <div class="modal-background"></div>
-  <div class="card">
+  <div className={clsx('card','is-radiusless')}>
     <header class="modal-card-head has-background-white">
-      <p class="modal-card-title"><strong>Confirmation</strong></p>
-      <button class="delete ml-3 is-info" aria-label="close" onClick={onClose}></button>
+      <span className={clsx('has-text-link')}><Icon path={mdiChatQuestion} size={1.5}></Icon></span><span className={clsx('title','is-5','ml-3')}>Confirmation</span>
+     
     </header>
     <section class="modal-card-body is-loading">
         {modalBody}
      </section>
-    <footer class="modal-card-foot">
-      <button class="button is-success" onClick={onConfirm}>Yes</button>
-      <button class="button"aria-label="close" onClick={onCancel}>No</button>
+    <footer class="modal-card-foot has-background-white">
+      <button className={clsx('button','is-inverted','is-rounded','is-info')} onClick={onConfirm}><strong>Yes</strong></button>
+      <button className={clsx('button','is-inverted','is-rounded','is-info')} aria-label="close" onClick={onCancel}><strong>No</strong></button>
     </footer>
   </div>
 </div>

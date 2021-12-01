@@ -25,6 +25,9 @@ $control-border-width: 2px;
 $input-shadow: none;
 $input-border-color:$border-gray;
 $input-focus-border-color:$action-green;
+$menu-item-active-background-color:hsl(0, 0%, 96%);
+$menu-item-active-color:hsl(0, 0%, 21%);
+
 
 // Import only what you need from Bulma
 @import "../node_modules/bulma/sass/utilities/_all.sass";
