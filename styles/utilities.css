@@ -40,7 +40,7 @@ hr.solid {
 .listbox{
     height: 70vh;
     overflow: auto;
-    background-color: #fdfdfd;
+    background-color: #ffffff;
 }
 .tray {
     padding: 0 18px;
@@ -159,7 +159,7 @@ hr.solid {
 .editlistbackground{
   height: 60vh;
   overflow: auto;
-  background-color: #fdfdfd;
+  background-color: #ffffff;
 }
 .cloud{
   border-style: dashed;

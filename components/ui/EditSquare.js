@@ -96,9 +96,9 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   },[resource])
 
   useEffect(async()=>{
-    console.log(user.handshakeInProgress)
+    //console.log(user.handshakeInProgress)
     if(refreshFlag&&!user.handshakeInProgress){
-      console.log('refreshing')
+      //console.log('refreshing')
       setRefreshFlag(false);
       handleSave();
     }
@@ -127,23 +127,23 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
     let resp = null;
     try {
       if (resource.id > 0) {
-        console.log('update request-'+resourceTitle)
+        //console.log('update request-'+resourceTitle)
 
         setRequestStatus({ status: CONSTANTS.messageTypes.PROGRESS, message: 'Updating your data', isVisible: true })
         const updateRequest = updateUrl + '?res=' + resource.id
         resp = await axios.post(updateUrl, { resource: list, category: selectedCategory, title: resourceTitle, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY), resource_id: resource.id ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
-        console.log(resp)
+        //console.log(resp)
       } else {
-        console.log('insert request')
+       //console.log('insert request')
         setRequestStatus({ status: CONSTANTS.messageTypes.PROGRESS, message: 'Saving your data', isVisible: true })
         resp = await axios.post(addResourcesUrl, { resource: list, category: selectedCategory, title: resourceTitle, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY) ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
-        console.log(resp)
+        //console.log(resp)
       }
       setRequestStatus({ status: CONSTANTS.messageTypes.SUCCESS, message: 'Done', isVisible: true })
 
       //If the Secure token expires, set the refreshe flag and initiate a handshake(refresh of access). Wait for the effect to trigger this method.
       if(resp.data&&resp.data.data&&resp.data.data.action==='REFRESH'){
-        console.log('refreshing')
+        //console.log('refreshing')
         setRefreshFlag(true);
         user.initiateHandshake();
         return;
@@ -152,7 +152,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
       if(resp&&resp.data&&resp.data.data)
       onSave(resp.data.data);
     } catch (error) {
-           console.log(error)
+          // console.log(error)
            onError(403)
       
     }finally{
@@ -247,7 +247,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
         return;
       }
       if(isLink){
-        console.log('isvalid'+currentBoxEntry+'-'+isValidUrl(currentBoxEntry))
+        //console.log('isvalid'+currentBoxEntry+'-'+isValidUrl(currentBoxEntry))
         if(!isValidUrl(currentBoxEntry)){
           setValidation(false);
           return;
@@ -275,7 +275,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
       )
     }
 
-    console.log('is-link'+isLink)
+    //console.log('is-link'+isLink)
     return (<div className={clsx('columns', 'is-gapless', 'is-mobile', 'mb-2')}>
       <Alert isVisible={!validation} message={'The link is not supported.'} onCancel={validationAcknowledgement}/>
       <div className={clsx('column','is-narrow','has-background-white')}>
@@ -301,7 +301,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
          </span>
        </div> :<div>
      
-         <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0',  'has-text-blue', 'p-2', 'thin-border-button','ghost','bottom-panel-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e)=>window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e=>setCurrentBoxEntry(e.target.value)} onKeyPress={handleTextKeyPress}></input>
+         <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0',  'has-text-blue', 'p-2', 'thin-border-button','ghost','bottom-panel-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e)=>window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e=>setCurrentBoxEntry(e.target.value)} autoFocus={true} onKeyPress={handleTextKeyPress}></input>
          </span>
          </div>
        }
@@ -416,7 +416,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
     setTitleValidation(false)
   }
 
-console.log(runningNumber+'--')
+//console.log(runningNumber+'--')
   return (
     <div>
       <Head>

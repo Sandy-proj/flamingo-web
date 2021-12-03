@@ -97,8 +97,8 @@ export default function Paginator({displayFlag,onNextFetch,onSelection,pageIndex
 
 
   function Row({items,id}){
-    console.log('--')
-    console.log(items)
+    //console.log('--')
+    //console.log(items)
     return <div className={clsx('tile','is-parent','ml-3','mr-4','p-0','mb-0','mt-1','is-shadowless')}>
      {items.map((item,index)=><ResourceCard isLoggedIn={isLoggedIn} resourceData={item}  onSelection={onSelection}></ResourceCard>
       )}

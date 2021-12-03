@@ -15,7 +15,7 @@ export default function ErrorPage({error,onClose}){
         <div className="button is-info" onClick={handleClose}><strong>OK</strong></div>
     </div>
 
-console.log(error+','+modalStatus)
+//console.log(error+','+modalStatus)
 
 
 useEffect(()=>{

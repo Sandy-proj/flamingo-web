@@ -14,7 +14,7 @@ export default function Header({resourceData,onSelection}){
         onSelection(resourceData.id)
     }
 
-    console.log(resourceData)
+    //console.log(resourceData)
     return (
     // <div className={clsx('tile','is-parent','is-6','is-shadowless','pl-0','pr-4','pt-0')}>
     // <article className={clsx('tile','is-child','box','is-radiusless')}>

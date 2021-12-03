@@ -22,7 +22,7 @@ export default function CommentBox({ resourceId,getComments }) {
         if(getComments){
             try{
                 const comments = await axios.get(getCommentsUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-                console.log(comments)
+                //console.log(comments)
                 if(comments.status===CONSTANTS.GET_SUCCESS&&comments.data&&comments.data.result===CONSTANTS.SUCCESS){
                     if(comments.data&&comments.data.data){
                         setCommentList(comments.data.data)
@@ -44,16 +44,16 @@ export default function CommentBox({ resourceId,getComments }) {
         const securityToken = getCookie(CONSTANTS.REQUEST_COOKIE_KEY)
         try{
             result = await axios.post(postCommentUrl,{comment:commentValue,resource:resourceId,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken},{timeout:CONSTANTS.REQUEST_TIMEOUT})
-            console.log(result.data.data)
+            //console.log(result.data.data)
             if(result.status===CONSTANTS.POST_SUCCESS&&result.data&&result.data.data){
 
                 setCommentList([result.data.data,...commentList]);
                 setCommentValue('')
             }
         }catch(error){
-            console.log(error)
+            //console.log(error)
         }
-        console.log(result)
+        //console.log(result)
     }
 
 
@@ -61,9 +61,9 @@ export default function CommentBox({ resourceId,getComments }) {
         
         try{
             const deleteCommentUrl = CONSTANTS.DELETE_COMMENT_URL+'?cmt_id='+id;
-            console.log(deleteCommentUrl)
+            //console.log(deleteCommentUrl)
             const deleteResult = await axios.delete(deleteCommentUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT})
-            console.log(deleteResult)
+            //console.log(deleteResult)
             if(deleteResult.status===200&&deleteResult.data&&deleteResult.data.data===1){
                 commentList.splice(index,1)
                 setCommentList([...commentList])

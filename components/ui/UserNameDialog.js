@@ -26,7 +26,7 @@ export default function UserNameDialog({visible,onDeactivate}) {
         if(username.trim()==='') //Return without any action in case of empty string.
         return;
         await handleUserNameQuery(e);
-        console.log(isAvailable+"-"+validation+'-'+serverError)
+        //console.log(isAvailable+"-"+validation+'-'+serverError)
         if(!validation&&!serverError&&(isAvailable==='YES')){
             const response = await axios.post(updateUsernameUrl,{username:username},{timeout:CONSTANTS.REQUEST_TIMEOUT});
             
@@ -42,7 +42,7 @@ export default function UserNameDialog({visible,onDeactivate}) {
     }
 
     useEffect(()=>{
-        console.log('username:'+user&&user.username)
+        //console.log('username:'+user&&user.username)
         if(user&&user.isLoggedIn&&user.username.trim()!=''){
             setIsVisible(false)
         }
@@ -94,7 +94,7 @@ export default function UserNameDialog({visible,onDeactivate}) {
            
 
         }catch(e){
-            console.log(e)
+            //console.log(e)
             setServerError(true)
         }finally{
             setIsAvailabilityCheck(false)
