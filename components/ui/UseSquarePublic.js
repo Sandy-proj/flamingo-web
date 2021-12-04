@@ -140,7 +140,8 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
       
          
           <div className={clsx('column','is-10','ml-1','mr-1')}>
-            <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item"></input>
+            <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.type===CONSTANTS.LINK_TYPE?
+            <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>:itemData.name} placeholder="Enter an item"></input>
           </div>
           <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
          
