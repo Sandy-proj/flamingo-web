@@ -96,28 +96,28 @@ export default function DisplayArea({command}){
        resultHeader = <div className="is-size-5 has-text-info ml-4">Search results for <span className={clsx('has-text-weight-bold')}>'{command.param}'</span></div>
     }else if(command.mode===CONSTANTS.commandModes.POPULAR){
         fetchUrl = dataUrl  + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <span className="title is-5 has-text-info has-text-weight-bold ml-4">{CONSTANTS.commandModes.POPULAR}</span>
+        resultHeader = <span className="title is-5 has-text-info has-text-weight-medium ml-4">{CONSTANTS.commandModes.POPULAR}</span>
     }else if(command.mode===CONSTANTS.commandModes.FRESH){
         fetchUrl = dataUrl  + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-info ml-4">{CONSTANTS.commandModes.FRESH}</div>
+        resultHeader = <div className="title is-5 has-text-info has-text-weight-medium ml-4">{CONSTANTS.commandModes.FRESH}</div>
     }else if(command.mode === CONSTANTS.commandModes.TRENDING){
         fetchUrl =dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-info ml-4">{CONSTANTS.commandModes.TRENDING}</div>
+        resultHeader = <div className="title is-5 has-text-info has-text-weight-medium ml-4">{CONSTANTS.commandModes.TRENDING}</div>
     }else if(command.mode===CONSTANTS.commandModes.MYFEED){
         fetchUrl = dataUrl  + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'')
-        resultHeader = <div className="title is-5 has-text-info ml-4">My posts</div>
+        resultHeader = <div className="title is-5 has-text-info has-text-weight-medium ml-4">My posts</div>
     }else if(command.mode===CONSTANTS.commandModes.CATEGORIES){
         fetchUrl = dataUrl + '?cmd='+command.mode+'&param='+command.param+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className="title is-5 has-text-info ml-4">{command.param}</div>
+        resultHeader = <div className="title is-5 has-text-info has-text-weight-medium ml-4">{command.param}</div>
     }else if(command.mode===CONSTANTS.commandModes.MYLISTS){
         fetchUrl = dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className="title is-5 has-text-info ml-4">{CONSTANTS.commandModes.MYLISTS}</div>
+        resultHeader = <div className="title is-5 has-text-info has-text-weight-medium ml-4">{CONSTANTS.commandModes.MYLISTS}</div>
     }else if(command.mode===CONSTANTS.commandModes.BOOKMARKED){
         fetchUrl = dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className="title is-5 has-text-info ml-4">{CONSTANTS.commandModes.BOOKMARKED}</div>
+        resultHeader = <div className="title is-5 has-text-info  has-text-weight-medium ml-4">{CONSTANTS.commandModes.BOOKMARKED}</div>
     }else if(command.mode===CONSTANTS.commandModes.SAVED){
         fetchUrl = dataUrl + '?cmd='+command.mode+(page.pageIndex>0?'&page='+page.pageIndex:'');
-        resultHeader = <div className="title is-5 has-text-info ml-4">{CONSTANTS.commandModes.SAVED}</div>
+        resultHeader = <div className="title is-5 has-text-info has-text-weight-medium ml-4">{CONSTANTS.commandModes.SAVED}</div>
     }
     else{
         return  <div className="auto title is-6 is-danger">Unable to find results for this operation!!</div>

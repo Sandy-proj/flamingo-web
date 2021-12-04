@@ -195,28 +195,17 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
             
           </div>
           <div className={clsx('column','box','is-auto','mt-5')}>
-            <div className={clsx('columns','is-mobile')}>
-              <div className={clsx('column','is-narrow')}>
+
+          <nav class="columns is-mobile">
+            {/* <div class='columns is-mobile'> */}
+            <div className={clsx('column','is-narrow')}>
                 <DropDownMenu list={menu} onSelectItem={handleMenuItemSelection}/>
               </div>
-              <div className={clsx('column','is-auto')}>
-              <div className="is-title is-4"><span className="title is-4">{resource.data.title}</span></div>
-                <p className='has-text-link is-6'>{resource.data.author_name}</p>
-              </div>
-              <div className={clsx('column','is-narrow')}>
-                <a onClick={handleClose}><Icon path={mdiClose} size={1.5}></Icon></a>
-              </div>
-            </div>
-           
-           
-            <nav class="columns is-mobile">
-            {/* <div class='columns is-mobile'> */}
-             <div class="column is-1 is-narrow"/>
              <div class="column is-auto is-narrow">
                 
-                <button className={clsx('button','is-light','has-text-danger')} onClick={suggestLogin}>
-            <span className={clsx('has-text-danger')}><Icon path={mdiHeart} size={1}></Icon></span>
-            <span className="label is-6 has-text-info">{resource.likes}</span>
+                <button className={clsx('button','is-white','has-text-danger')} onClick={suggestLogin}>
+            <span className={clsx('has-text-danger')}><Icon path={mdiHeart} size={0.50}></Icon></span>
+            <span className={clsx('label','is-size-65','kandyjar-grey','has-text-weight-normal')}>{resource.likes}</span>
           </button>
                   {/* <a onClick={handleLike} className={clsx(userAction.like?'has-text-danger':'has-text-gray')}><Icon path={userAction.like?mdiHeart:mdiHeartOutline} size={1}></Icon></a>
                   <span className="label is-6 has-text-info">{counters.likes}</span> */}
@@ -224,9 +213,9 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
               </div>
               <div class="column is-auto is-narrow">
                 
-                 <button className={clsx('button','is-light','has-text-link')} onClick={suggestLogin}>
-            <span className={clsx('has-text-link')}><Icon path={mdiDownload} size={1}></Icon></span>
-            <span className="label is-6 has-text-info">{resource.downloads}</span>
+                 <button className={clsx('button','is-white','has-text-link')} onClick={suggestLogin}>
+            <span className={clsx('has-text-link')}><Icon path={mdiDownload} size={0.5}></Icon></span>
+            <span className={clsx('label','is-size-65','kandyjar-grey','has-text-weight-normal')}>{resource.downloads}</span>
           </button>
                    {/* <a onClick={handleDownload}><p class={clsx(userAction.download?'has-text-link':'has-text-gray')}><Icon path={userAction.download||isUserAuthor()||isUserOwner()?mdiDownload:mdiDownloadOutline} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.downloads}</p> */}
@@ -235,17 +224,17 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
               </div>
               <div class="column is-auto is-narrow">
               
-       <button className={clsx('button','is-light','has-text-success')} onClick={suggestLogin}>
-            <span className={clsx('has-text-success')}><Icon path={mdiBookmark} size={1}></Icon></span>
-            <span className="label is-6 has-text-info">{resource.bookmarks}</span>
+       <button className={clsx('button','is-white','has-text-success')} onClick={suggestLogin}>
+            <span className={clsx('has-text-success')}><Icon path={mdiBookmark} size={0.5}></Icon></span>
+            <span className={clsx('label','is-size-65','kandyjar-grey','has-text-weight-normal')}>{resource.bookmarks}</span>
           </button>
                   {/* <a onClick={handleBookmark}><p class={clsx(userAction.bookmark?'has-text-success':'has-text-gray')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.bookmarks}</p> */}
                 </div>
                 <div class="column is-auto is-narrow">
               
-       <button className={clsx('button','has-text-success',showDetails?'is-info':'is-light')} onClick={()=>setShowDetails(!showDetails)}>
-            <span className={clsx(showDetails?'has-text-white':'has-text-grey')}><Icon path={mdiDotsHorizontal} size={1}></Icon></span>
+       <button className={clsx('button','has-text-success',showDetails?'is-info':'is-white')} onClick={()=>setShowDetails(!showDetails)}>
+            <span className={clsx(showDetails?'has-text-white':'has-text-grey')}><Icon path={mdiDotsHorizontal} size={0.75}></Icon></span>
             {/* <span className="label is-6 has-text-info">{resource.bookmarks}</span> */}
           </button>
                   {/* <a onClick={handleBookmark}><p class={clsx(userAction.bookmark?'has-text-success':'has-text-gray')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></p></a>
@@ -253,7 +242,23 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
                 </div>
              <div className={clsx('is-auto')}></div>
               {/* </div> */}
+              <div class="column is-auto"/>
+              <div className={clsx('column','is-narrow')}>
+                <button className={clsx('button','is-white','has-text-grey')} onClick={handleClose}><Icon path={mdiClose} size={1}></Icon></button>
+              </div>
             </nav>
+
+            <div className={clsx('columns','is-mobile')}>
+            <div class="column is-auto is-narrow"/>
+              <div className={clsx('column','is-auto')}>
+              <div className="is-title is-4"><span className="title is-5">{resource.data.title}</span></div>
+                <p className={clsx('is-size-65','kandyjar-grey')}>{resource.data.author_name}</p>
+              </div>
+              
+            </div>
+           
+           
+
 
 
             <ul className={clsx('p-2','listbox')}>

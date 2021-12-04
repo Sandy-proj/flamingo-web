@@ -28,7 +28,7 @@ export function buildUser(id,role,preferences,username){
 export function getCookie(cname) {
     let name = cname + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
-    console.log('cookie string'+decodedCookie)
+    //console.log('cookie string'+decodedCookie)
     let ca = decodedCookie.split(';');
     for(let i = 0; i <ca.length; i++) {
       let c = ca[i];
@@ -36,7 +36,7 @@ export function getCookie(cname) {
         c = c.substring(1);
       }
       if (c.indexOf(name) == 0) {
-        console.log('csrf:'+c.substring(name.length,c.length))
+        //console.log('csrf:'+c.substring(name.length,c.length))
         return c.substring(name.length, c.length);
       }
     } 

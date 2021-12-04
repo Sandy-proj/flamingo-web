@@ -4,7 +4,7 @@ import { useContext, useState } from 'react'
 import { useRef } from 'react'
 import { useEffect } from 'react'
 import BaseLayout from '../../components/ui/BaseLayout'
-import { mdiDragVertical, mdiPlus, mdiMinus, mdiHeart, mdiBookmark, mdiSwapVertical, mdiBookmarkOutline, mdiHeartOutline, mdiClose, mdiMinuss, mdiArrowDown, mdiMenuDown, mdiCheck, mdiCancel, mdiMenuUp } from '@mdi/js'
+import { mdiDragVertical, mdiPlus, mdiMinus, mdiHeart, mdiBookmark, mdiSwapVertical, mdiBookmarkOutline, mdiHeartOutline, mdiClose, mdiMinuss, mdiArrowDown, mdiMenuDown, mdiCheck, mdiCancel, mdiMenuUp, mdiDelete } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import axios from 'axios'
 import clsx from 'clsx';
@@ -29,6 +29,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   const [selectedCategory, setSelectedCategory] = useState('Anything goes');
   const [resourceTitle, setResourceTitle] = useState('')
   const [swapMode, setSwapMode] = useState(false);
+  const [deleteMode,setDeleteMode] = useState(false);
   const [discarding, setDiscarding] = useState(false)
   const [titleValidation, setTitleValidation] = useState(false);
   const [requestStatus, setRequestStatus] = useState({ status: CONSTANTS.messageTypes.HIDDEN, message: '', error: false, isVisible: false })
@@ -40,6 +41,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   const inputLengthLimit = 150;
   const inputTypes = [{id:1,name:'Text'},{id:2,name:'Link'}]
   const itemLimit = CONSTANTS.LIST_ITEM_LIMIT;
+  const titleRef = useRef('');
 
   
   function handleCancel() {
@@ -50,14 +52,16 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   function toggleSwap() {
     setSwapMode(!swapMode);
   }
+  function toggleDelete(){
+    setDeleteMode(!deleteMode);
+  }
   function handleKeyChange(e) {
-
-
     setCurrentItem(e.target.value)
   }
 
   function handleTitlechange(e) {
-    setResourceTitle(e.target.value)
+    //setResourceTitle(e.target.value)
+    titleRef.current=e.target.value;
   }
 
   function onDeleteItem(index) {
@@ -116,9 +120,9 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
     if (requestStatus.status === CONSTANTS.messageTypes.PROGRESS) {
       return;
     }
-
     //Do not proceed if the title is empty.
-    if (resourceTitle.length === 0) {
+    if (titleRef&&titleRef.current.length === 0) {
+
       setTitleValidation(true);
       return;
     }
@@ -131,12 +135,12 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
         setRequestStatus({ status: CONSTANTS.messageTypes.PROGRESS, message: 'Updating your data', isVisible: true })
         const updateRequest = updateUrl + '?res=' + resource.id
-        resp = await axios.post(updateUrl, { resource: list, category: selectedCategory, title: resourceTitle, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY), resource_id: resource.id ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
+        resp = await axios.post(updateUrl, { resource: list, category: selectedCategory, title: titleRef.current, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY), resource_id: resource.id ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
         //console.log(resp)
       } else {
        //console.log('insert request')
         setRequestStatus({ status: CONSTANTS.messageTypes.PROGRESS, message: 'Saving your data', isVisible: true })
-        resp = await axios.post(addResourcesUrl, { resource: list, category: selectedCategory, title: resourceTitle, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY) ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
+        resp = await axios.post(addResourcesUrl, { resource: list, category: selectedCategory, title: titleRef.current, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY) ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
         //console.log(resp)
       }
       setRequestStatus({ status: CONSTANTS.messageTypes.SUCCESS, message: 'Done', isVisible: true })
@@ -163,7 +167,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
   function DropDownMenuTrigger() {
     return (
-      <button className={clsx("button", 'ml-2','is-white','is-light', 'mr-2','is-small')} aria-haspopup="true" aria-controls="dropdown-menu">
+      <button className={clsx("button", 'ml-2','is-white', 'mr-2','is-small')} aria-haspopup="true" aria-controls="dropdown-menu">
         <span className={clsx('has-text-grey-darker')}><strong>{selectedCategory}</strong></span>
         <span class="icon is-small">
           <Icon path={mdiMenuDown} />
@@ -376,14 +380,14 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
           {itemData.type===CONSTANTS.TEXT_TYPE?<input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'is-hovered', 'entrystyle','thin-border-button')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>:<div className={clsx('p-2')}><a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a></div>}
           
           <div className={clsx('mt-1','tray', isExpanded ? 'tray-max' : 'tray-min')}>
-            <textarea maxLength={CONSTANTS.LIST_ITEM_DETAIL_MAX_LENGTH} className={clsx('textarea','mt-2', 'entrystyle','ghost','has-background-light')} rows={3} autoFocus={isExpanded} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details" />
+            <textarea maxLength={CONSTANTS.LIST_ITEM_DETAIL_MAX_LENGTH} className={clsx('textarea','mt-2', 'entrystyle','ghost','has-background-lighter')} rows={3} autoFocus={isExpanded} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details" />
           </div>
         </div>
-        <div className={clsx('column', 'is-1', 'is-narrow', isExpanded ? 'active-item' : false)}>
+        {deleteMode&&<div className={clsx('column', 'is-1', 'is-narrow', isExpanded ? 'active-item' : false)}>
           <button className={clsx('button', 'is-white')} onClick={handleDelete}>
-            <span className='has-text-grey'><Icon path={mdiClose} size={1}></Icon></span>
+            <span className='kandyjar-grey'><Icon path={mdiDelete} size={1}></Icon></span>
           </button>
-        </div>
+        </div>}
       </div>
 
 
@@ -445,10 +449,12 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
                   <div className='level-item'>
                   <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
                   <button className={clsx('is-white','is-rounded','button',swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
-                    <span className={clsx(swapMode ? 'has-text-white' : 'has-text-grey-darker')}><Icon path={mdiSwapVertical} size={1}></Icon></span>
+                    <span className={clsx(swapMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiSwapVertical} size={1}></Icon></span>
                   </button>
                 </div>
-                   
+                <button className={clsx('is-white','is-rounded','button',deleteMode ? 'has-background-info' : '')} onClick={toggleDelete}>
+                    <span className={clsx(deleteMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiDelete} size={1}></Icon></span>
+                  </button>
                   
                   </div>
                   <div class="level-item has-text-centered pl-5">
@@ -457,7 +463,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
                     </div>
 
                   </div>
-                  <div className='levl-right'>
+                  <div className='level-right'>
                     <div class="level-item pl-5">
                       <div>
 
@@ -478,9 +484,9 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
                   </div>
                 </nav>
                 { <div className={clsx('dropdown-divider')}></div> }
-                <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost','title', 'pl-5','is-6', 'entrystyle','has-text-weight-lighter')} placeholder="It's a list of..." value={resourceTitle} onChange={handleTitlechange}></input>
+                <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost','title', 'pl-5','is-5', 'entrystyle','has-text-weight-normal')} placeholder="It's a list of..."  onChange={handleTitlechange}></input>
                 {/* <TitleInput inputValue={resource.title} onInputChange={handleInputChange}/> */}
-                {/* <div>
+                {/* <div
                   <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
                   <button className={clsx('is-light','is-rounded','button',  swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
                     <span className={clsx(swapMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiSwapVertical} size={1}></Icon></span>

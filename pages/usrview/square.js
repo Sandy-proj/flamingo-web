@@ -38,8 +38,8 @@ export default function Square({handshake,onLoginChange,onError,error}) {
     }
 
     function onSave(savedList){
-        console.log('setting view mode')
-        console.log(savedList)
+        //console.log('setting view mode')
+        //console.log(savedList)
         
         setId(savedList.id)
         //setResourceObject({id:savedList.id,resource:savedList.data,title:savedList.title})

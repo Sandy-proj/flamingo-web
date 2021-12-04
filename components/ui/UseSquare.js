@@ -10,6 +10,8 @@ import {AuthorizationContext} from '../Util/AuthContext'
 import DropDownMenu from './DropDownMenu'
 import { CONSTANTS } from './../Util/Constants'
 import ConfirmationDialog from './ConfirmationDialog'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import CommentBox from './CommentBox'
 
 export default function UseSquare({resourceId,resource,onEdit,activity,isEditable,onDownload,onGetList}) {
@@ -21,8 +23,8 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     let list=[];
     if(resource.data){
       list = resource.data?resource.data.resource:[]
-      console.log('resource')
-      console.log(list)
+      // gconsole.log('resource')
+      //console.log(list)
     }
      
     let menu = [{id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
@@ -41,7 +43,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     const [userAction,setUserAction] = useState({like:false,bookmark:false,download:false});
     const [counters,setCounters]=useState({views:0,likes:0,downloads:0,bookmarks:0})
     const [listAction,setListAction]=useState({});
-
+    const [todoMode,setTodoMode]=useState(false);
 
  
 
@@ -69,7 +71,12 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       if(isUserOwner())
         onEdit()
     }
-
+    function toggleTodo(){
+      setTodoMode(!todoMode);
+    }
+    function notify(message){
+      toast.success(message)
+    }
     async function handleClose(e){
       e.preventDefault();
       const actions_performed = Object.keys(actions.current).length;
@@ -116,12 +123,19 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
             actions.current.download = true;
             let requestUrl = updateActionsUrl+`?res=${resource.id}`
             const upDateresponse =  await axios.post(requestUrl,{...actions.current,listactions:listAction},{timeout:CONSTANTS.REQUEST_TIMEOUT})
-            setUserAction({like:false,bookmark:false,download:false});
-          actions.current = {};
+          //   setUserAction({like:false,bookmark:false,download:false});
+          // actions.current = {};
 
-            setDownloading(false)
+          //   setDownloading(false)
 
-            onDownload(downloadResponse.data.data.id)
+          //   onDownload(downloadResponse.data.data.id)
+
+          var newAction = Object.assign({},userAction)
+          newAction.download=true;
+          counters.downloads++;
+          notify("Added to 'Saved Lists'")
+          setUserAction(newAction);
+          setDownloading(false)
          }
       }catch(error){
         if(downloading){
@@ -146,6 +160,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       actions.current.bookmark = userAction.bookmark?false:true;
       userAction.bookmark?counters.bookmarks--:counters.bookmarks++;
       setUserAction(newAction);
+      userAction.bookmark?notify("Removed from 'Bookmarked'"):notify("Added to 'Bookmarked'");
     }
 
     async function  handleDialogCofirm(){
@@ -179,7 +194,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
         handleEdit();
       }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.DOWNLOAD){
         handleDownload();
-      }else if(menu[index].name===CONSTANTS.ACTION_MENU.BOOKMARK){
+      }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.BOOKMARK){
         handleBookmark();
       }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.SHOW_NUMBERS){
         
@@ -231,13 +246,13 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       
 
       actions.current.view = true;
-      console.log('90900');
-      console.log(resource)
+      //console.log('90900');
+      //console.log(resource)
       
       return <li className="mb-0 ml-0 p-1">
         
         <div className={clsx('columns','is-gapless','is-mobile','mb-1','mt-4')}>
-        {actionable?  <div className={clsx('column','is-auto',isSelected?'active-item':false)}>
+        {actionable&&todoMode?  <div className={clsx('column','is-auto',isSelected?'active-item':false)}>
             <button className={clsx('button','is-white')} onClick={handleSelection}>
               <span className='icon'><Icon path={isSelected?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon></span>
             </button>
@@ -363,6 +378,16 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
        
         <div>
         <Modal activate={downloading}/>
+        <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover/>
         <ConfirmationDialog message={"Are you sure you want to delete this list?"} isVisible={deleting} onCancel={handleDialogCancel} onConfirm={handleDialogCofirm}/>
           
         <div className={clsx('columns')}>
@@ -371,48 +396,64 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
             
           </div>
           <div className={clsx('column','box','is-auto','is-shadowless','mt-2','mb-1')}>
-            <div className={clsx('columns is-mobile')}>
-              <div className={clsx('column','is-narrow')}>
+          
+          {resource.status!=='DOWNLOADED'?<nav class="columns is-mobile">
+            {/* <div class='columns is-mobile'> */}
+            <div className={clsx('column','is-narrow')}>
                 <DropDownMenu list={mainMenu} isAuthor={isUserAuthor()} isOwner={isUserOwner()} onSelectItem={handleMenuItemSelection}/>
               </div>
-              <div className={clsx('column','is-auto')}>
-                <div className="is-title has-text-grey is-5"><span className="title is-5">{resource.data&&resource.data.title}</span>
-                <p className='has-text-link is-6'>{resource.status==='DOWNLOADED'?'Downloaded copy':resource.data&&resource.data.author_name}</p></div>
+             <div class="column is-auto is-narrow">
+                
+                <button className={clsx('button','is-white',userAction.like?'has-text-danger':'has-text-grey')} onClick={handleLike}>
+            <span className={clsx(userAction.like?'has-text-danger':'has-text-grey')}><Icon path={userAction.like?mdiHeart:mdiHeartOutline} size={0.5}></Icon></span>
+            <span className="label is-size-65 has-text-grey has-text-weight-normal">{counters.likes}</span>
+          </button>
+              </div>
+              <div class="column is-auto is-narrow">
+                
+                 <button className={clsx('button','is-white',userAction.download?'has-text-link':'has-text-grey')} onClick={handleDownload}>
+            <span className={clsx(userAction.download?'has-text-info':'has-text-grey')}><Icon path={userAction.download||resource.status==='DOWNLOADED'?mdiDownload:mdiDownloadOutline} size={0.5}></Icon></span>
+            <span className="label is-size-65 has-text-grey has-text-weight-normal">{counters.downloads}</span>
+          </button>
+              
+              </div>
+              <div class="column is-auto is-narrow">
+              
+       <button className={clsx('button','is-white',userAction.bookmark?'has-text-success':'has-text-grey')} onClick={handleBookmark}>
+            <span className={clsx(userAction.bookmark?'has-text-success':'has-text-grey')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={0.5}></Icon></span>
+            <span className="label is-size-65 has-text-grey has-text-weight-normal">{counters.bookmarks}</span>
+          </button>
+                  </div>
+             <div className={clsx('column','is-auto')}></div>
+             <div className={clsx('column','is-narrow')}>
+                <button className={clsx('button','is-white')} onClick={handleClose}><Icon path={mdiClose} size={1}></Icon></button>
+              </div>
+              {/* </div> */}
+            </nav>:<nav className={clsx('columns','is-mobile')}>
+            <div className={clsx('column','is-narrow')}>
+                <DropDownMenu list={mainMenu} isAuthor={isUserAuthor()} isOwner={isUserOwner()} onSelectItem={handleMenuItemSelection}/>
               </div>
               <div className={clsx('column','is-narrow')}>
-                <a onClick={handleClose}><Icon path={mdiClose} size={1.5}></Icon></a>
+              <button className={clsx('is-white','is-rounded','button',todoMode ? 'has-background-info' : '')} onClick={toggleTodo}>
+                    <span className={clsx(todoMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiCheckboxBlankOutline} size={1}></Icon></span>
+                  </button>
+                  </div>
+              <div className={clsx('column','is-auto')}></div>
+             <div className={clsx('column','is-narrow')}>
+                <button className={clsx('button','is-white')} onClick={handleClose}><Icon path={mdiClose} size={1}></Icon></button>
               </div>
+              </nav>}
+            <div className={clsx('columns is-mobile')}>
+            <div class="column is-auto is-narrow"/>
+              <div className={clsx('column','is-auto')}>
+                <div className="is-title has-text-grey is-5"><span className="title is-5">{resource.data&&resource.data.title}</span>
+                <p className='has-text-grey has-font-weight-light is-6'>{resource.status==='DOWNLOADED'?'':resource.data&&resource.data.author_name}</p></div>
+              </div>
+
             </div>
            
           
-            {resource.status!=='DOWNLOADED'&&<nav class="columns is-mobile">
-            {/* <div class='columns is-mobile'> */}
-             <div class="column is-1 is-narrow"/>
-             <div class="column is-auto is-narrow">
-                
-                <button className={clsx('button','is-light',userAction.like?'has-text-danger':'has-text-grey')} onClick={handleLike}>
-            <span className={clsx(userAction.like?'has-text-danger':'has-text-grey')}><Icon path={userAction.like?mdiHeart:mdiHeartOutline} size={1}></Icon></span>
-            <span className="label is-6 has-text-info">{counters.likes}</span>
-          </button>
-              </div>
-              <div class="column is-auto is-narrow">
-                
-                 <button className={clsx('button','is-light',userAction.download?'has-text-link':'has-text-grey')} onClick={handleDownload}>
-            <span className={clsx(userAction.download?'has-text-link':'has-text-grey')}><Icon path={userAction.download||resource.status==='DOWNLOADED'?mdiDownload:mdiDownloadOutline} size={1}></Icon></span>
-            <span className="label is-6 has-text-info">{counters.downloads}</span>
-          </button>
-              
-              </div>
-              <div class="column is-auto is-narrow">
-              
-       <button className={clsx('button','is-light',userAction.bookmark?'has-text-success':'has-text-grey')} onClick={handleBookmark}>
-            <span className={clsx(userAction.bookmark?'has-text-success':'has-text-grey')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></span>
-            <span className="label is-6 has-text-info">{counters.bookmarks}</span>
-          </button>
-                  </div>
-             <div className={clsx('is-auto')}></div>
-              {/* </div> */}
-            </nav>}
+            
 
 
 

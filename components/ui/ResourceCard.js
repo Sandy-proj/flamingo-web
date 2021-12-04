@@ -31,12 +31,13 @@ export default function Header({resourceData,onSelection}){
                                                </figure>
                     </div>
                     <div className={clsx('media-content')}>
-                        <p class="title is-6 has-text-weight-semibold is-family-primary mb-2">{resourceData.title}</p>
-                        <span className={clsx('mt-0','mb-4')}><span className={clsx('subtitle','is-6','mb-4','has-text-weight-light')}>{resourceData.author_name}</span><span className={clsx('ml-2')}><span className={clsx('mr-2','grey-dot')}><Icon path={mdiCircle} size={0.3}></Icon></span>{getTimeString(Number(resourceData.updated_at))}</span></span>
+                        <p class="title is-6 has-text-weight-medium is-family-primary mb-2">{resourceData.title}</p>
+                        <span className={clsx('mt-0','mb-4')}>
+                        {resourceData&&resourceData.status!=='DOWNLOADED'&&<span className={clsx('subtitle','is-size-65','mb-4','kandyjar-grey','has-text-weight-normal')}>{resourceData.author_name}</span>}<span className={clsx('ml-2','kandyjar-grey','is-size-65')}><span className={clsx('mr-2','grey-dot')}><Icon path={mdiCircle} size={0.3}></Icon></span>{getTimeString(Number(resourceData.updated_at))}</span></span>
                         {/* <p class="content">{resourceData.preview&&resourceData.preview.name}<br></br>....</p> */}
                     </div>
                 </div>
-                {resourceData&&resourceData.status==='DOWNLOADED'?<div><div className={clsx('tag','has-background-grey-light','has-text-grey','ml-4','is-light')}>Downloaded</div></div>:
+                {resourceData&&resourceData.status==='DOWNLOADED'?<div></div>:
                 <div class="nav mt-4 mb-1">
                 <div class="columns is-mobile">
 
@@ -45,7 +46,7 @@ export default function Header({resourceData,onSelection}){
                     <span class="has-text-danger">
                         <Icon path={mdiHeart} size={0.5}></Icon>
                     </span>
-                    <span className={clsx('ml-1')}>{resourceData.likes?resourceData.likes:0}</span>
+                    <span className={clsx('ml-1','is-size-7','kandyjar-grey')}>{resourceData.likes?resourceData.likes:0}</span>
                     </span>
                     </div>
 
@@ -55,7 +56,7 @@ export default function Header({resourceData,onSelection}){
                     <span class="has-text-info">
                         <Icon path={mdiEye} size={0.5}></Icon>
                     </span>
-                    <span className={clsx('ml-1')}>{resourceData.views?resourceData.views:0}</span>
+                    <span className={clsx('ml-1','is-size-7','kandyjar-grey')}>{resourceData.views?resourceData.views:0}</span>
                  </span>
                     </div>
 
@@ -68,7 +69,7 @@ export default function Header({resourceData,onSelection}){
                     <span class="has-text-success">
                          <Icon path={mdiDownload} size={0.5}></Icon>
                     </span>
-                    <span className={clsx('ml-1')}>{resourceData.bookmarks?resourceData.bookmarks:0}</span>
+                    <span className={clsx('ml-1','is-size-7','kandyjar-grey')}>{resourceData.bookmarks?resourceData.bookmarks:0}</span>
                  </span>
                     </div>
                 

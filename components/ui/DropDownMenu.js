@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 
 import {Icon} from '@mdi/react'
-import { mdiMenu } from '@mdi/js';
+import { mdiDotsVertical, mdiMenu } from '@mdi/js';
 export default function DropDownMenu({onSelectItem,list,trigger,isOwner,up}){
   const [isActive,setIsActive]=useState(false)
   
@@ -34,7 +34,7 @@ export default function DropDownMenu({onSelectItem,list,trigger,isOwner,up}){
     <div ref={ref} class={clsx('dropdown',up?'is-up':'',isActive?'is-active':'')}>
         <div className={clsx("dropdown-trigger")} onClick={handleActivateMenu}>
             {trigger?trigger():
-            <a  className={clsx('p-3','mt-2')}><Icon path={mdiMenu} size={1.5}></Icon></a>
+            <button  className={clsx('button','is-white','has-text-grey','has-text-weight-normal','p-3','mt-0')}><Icon path={mdiDotsVertical} size={1}></Icon></button>
             }
         </div>
         <div className={clsx("dropdown-menu")} id="dropdown-menu" role="menu">

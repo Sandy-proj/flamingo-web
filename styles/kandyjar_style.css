@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap");
 /* Bulma Utilities */
 .input, .textarea, .select select, .file-cta,
 .file-name, .button, .pagination-previous,
@@ -10933,6 +10933,8 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 
 .is-size-6 {
   font-size: 1rem !important; }
+  .is-size-65 {
+    font-size: 0.90rem !important; }  
 
 .is-size-7 {
   font-size: 0.75rem !important; }

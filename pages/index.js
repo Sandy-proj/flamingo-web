@@ -125,7 +125,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
         </a>
       </Link>
       <Link href='/user_signup'>
-        <a className={clsx('button', 'is-info', 'is-rounded', 'is-outlined', 'is-info', 'centeralignment', 'hoverzoom')} onClick={()=>setNavigateAway(true)}>
+        <a className={clsx('button', 'is-white', 'is-rounded', 'is-outlined', 'centeralignment', 'hoverzoom')} onClick={()=>setNavigateAway(true)}>
           <p className={clsx('has-text-weight-bold')}>Sign up</p>
         </a>
       </Link>
@@ -193,14 +193,14 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
             //Header
           }
           <Loader visible={navigateAway}/>
-          <nav className="navbar has-background-grey-darker pr-4 pl-3 pt-1 pb-1 mb-1" role="navigation" aria-label="main navigation">
+          <nav className={clsx('navbar','kandyjar-black-belt','pr-4','pl-3','pt-1','pb-1','mb-1')} role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
               <a className="navbar-item" href="/">
                 <figure className={clsx('image')}>
                   <img src="/headerlogo.png" width='48' height='48' />
                 </figure>
                 <p className={clsx('title', 'is-4', 'ml-1')}>
-                  <strong className={clsx('has-text-white', 'has-text-weight-bold')}>Hop<span className={clsx('has-text-info', 'has-text-weight-bold')}>Square</span></strong>
+                  <strong className={clsx('has-text-white', 'has-text-weight-light')}>Hop<span className={clsx('has-text-white', 'has-text-weight-bold')}>Square</span></strong>
                 </p>
 
               </a>
@@ -213,7 +213,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
 
             </div>
 
-            <div className={clsx('navbar-menu', 'has-background-grey-darker', 'is-active')}>
+            <div className={clsx('navbar-menu', 'kandyjar-black-belt', 'is-active')}>
 
               <div className={clsx('navbar-item', 'navbar-end', 'is-dark', 'is-expanded', 'is-align-items-center')}>
                 <SearchBar className={clsx('ml-6')} onSearch={handleSearch} reset={displayState.mode === CONSTANTS.commandModes.SEARCH ? false : true} />
@@ -255,13 +255,13 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                 <aside className={clsx('menu', 'ceneralignment')}>
                   <ul className="menu-list">
                     <li key={1}>
-                      <button className={clsx('button', 'is-info', 'is-rounded', 'is-outlined', 'thin-border-button')} onClick={handleCreatePost}>
+                      <button className={clsx('button', 'is-info', 'is-rounded', 'thin-border-button')} onClick={handleCreatePost}>
                         <span className="icon-text">
                           <span className="icon">
                             {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                             <Icon path={mdiPlus} size={1}></Icon>
                           </span>
-                          <span><strong>Share a list</strong></span>
+                          <span><strong>Post a list</strong></span>
                         </span>
                       </button>
 
