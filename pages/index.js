@@ -284,7 +284,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                             {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                             <Icon path={mdiEmail} size={0.75}></Icon>
                           </span>
-                          <span ><strong className={clsx('is-small', 'has-text-weight-medium', 'has-text-gray-dark')}>Login with email</strong></span>
+                          <span ><strong className={clsx('is-small', 'has-text-weight-medium', 'has-text-grey-dark')}>Login with email</strong></span>
                         </span>
                       </button>
 

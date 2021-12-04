@@ -23,7 +23,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
     const [loginAttempts,setLoginAttempts] = useState(0);
     const user = useContext(AuthorizationContext)
     const loginUrl = CONSTANTS.LOGIN_URL;
-    const socialLoginUrl = '/hopsapi/user/social_login';
+    const socialLoginUrl = CONSTANTS.HOPS_SOCIAL_URL;
     const [validations,setValidations] = useState({emailLengthFail:false,passwordLengthFail:false,validEmailFail:false,validPasswordFail:false,loginFail:false,notUser:false,serverError:false})
     const forgotPasswordUrl= CONSTANTS.FORGOT_PASSWORD_URL
     const handleSubmit = async (e)=>{

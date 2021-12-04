@@ -22,7 +22,7 @@ export default function SignUp({onError,onLoginChange}){
     const [termsAndConditions,setTermsAndConditions] = useState(false);
     const [privacyPolicy, setPrivacyPolicy] = useState(false);
     const[isAgreed,setIsAgreed] = useState(false)
-    const socialLoginUrl = '/hopsapi/user/social_login';
+    const socialLoginUrl = CONSTANTS.HOPS_SOCIAL_URL;
     const [credentials,setCredentials] = useState({emailId:'',username:'',password:'',passwordshadow:''}); 
     const [isSigningUp,setIsSigningUp] = useState(false)
     const [validations,setValidations] = useState({emailLengthFail:false,passwordLengthFail:false,validEmailFail:false,validPasswordFail:false,emailInUse:false,signUpAttempFail:false,validCopyPasswordFail:false})
