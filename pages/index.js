@@ -28,7 +28,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   const [navigateAway,setNavigateAway] = useState(false)
   const fetchCategoryUrl = '/hopsapi/resources/categories'
   const logoutUrl = '/hopsapi/user/logout'
-  const socialLoginUrl = '/hopsapi/user/social_login'
+  const socialLoginUrl = CONSTANTS.HOPS_SOCIAL_URL;
 
 
   //Event handlers. 
