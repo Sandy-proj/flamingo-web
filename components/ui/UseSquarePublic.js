@@ -245,9 +245,9 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
              <div className={clsx('is-auto')}></div>
               {/* </div> */}
               <div class="column is-auto"/>
-              <div className={clsx('column','is-narrow','is-desktop')}>
+              {/* <div className={clsx('column','is-narrow','is-desktop')}>
                 <button className={clsx('button','is-white','has-text-grey')} onClick={handleClose}><Icon path={mdiClose} size={1}></Icon></button>
-              </div>
+              </div> */}
             </nav>
 
             <div className={clsx('columns','is-mobile')}>
