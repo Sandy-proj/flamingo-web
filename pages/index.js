@@ -25,6 +25,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   const user = useContext(AuthorizationContext);
   const [categoryData, setCategoryData] = useState([]);
   const [sidebar, setSidebar] = useState(false)
+  const [loadSignIn,setLoadSignIn] = useState(false)
   const [navigateAway,setNavigateAway] = useState(false)
   const fetchCategoryUrl = '/hopsapi/resources/categories'
   const logoutUrl = '/hopsapi/user/logout'
@@ -142,6 +143,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
     } catch (error) {
       //No Category data
     }
+    setLoadSignIn(true)
   }, [])
 
 
@@ -156,7 +158,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   //Element
   return (
     <div>
-      <Head><script src={'https://accounts.google.com/gsi/client'} async defer></script></Head>
+      <Head><script src={'https://accounts.google.com/gsi/client'} onLoad={()=>{}}></script></Head>
       <div className={clsx('sidenav', sidebar ? 'sidebar-max' : 'sidebar-min', 'is-hidden-desktop')}>
         <aside className={clsx('menu', 'centeralignment')}>
           <ul className="menu-list">
@@ -261,7 +263,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                             {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                             <Icon path={mdiPlus} size={1}></Icon>
                           </span>
-                          <span><strong>Post a list</strong></span>
+                          <span><strong>Share a list</strong></span>
                         </span>
                       </button>
 
@@ -289,8 +291,28 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                       </button>
 
                     </li>
+                    {
+                      !loadSignIn?<li key={2}>
+                      
+                      <div id="g_id_onload"
+                        data-client_id={CONSTANTS.OAUTH_CLIENT_ID}
+                        data-context="signin"
+                        data-ux_mode="popup"
+                        data-login_uri={socialLoginUrl}
+                        data-auto_prompt="false">
+                      </div>
 
-                    <li key={2}>
+                      <div class="g_id_signin"
+                        data-type="standard"
+                        data-shape="pill"
+                        data-theme="outline"
+                        data-text="continue_with"
+                        data-size="large"
+                        data-logo_alignment="left">
+                      </div>
+
+                    </li>:<li key={2}>
+                      
                       <div id="g_id_onload"
                         data-client_id={CONSTANTS.OAUTH_CLIENT_ID}
                         data-context="signin"
@@ -309,6 +331,8 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                       </div>
 
                     </li>
+                    }
+                    
                   </ul>
                 </aside>
 

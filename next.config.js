@@ -6,6 +6,10 @@ module.exports = {
           destination: 'http://localhost:3001/:path*',
         },
         {
+          source: '/socialapi/:path*',
+          destination: 'http://api.hopsquare.com/:path*',
+        },
+        {
           source: '/hopsapp/:path*',
           // destination: 'http://localhost:3000/:path*',
           destination: 'http://hopsquare.com/:path*'

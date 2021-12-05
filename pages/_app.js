@@ -11,6 +11,7 @@ import { AuthorizationContext } from '../components/Util/AuthContext'
 import clsx from 'clsx'
 import UserNameDialog from '../components/ui/UserNameDialog'
 import ErrorPage from '../components/ui/ErrorPage'
+import Head from 'next/head'
 
 
 function MyApp({ Component, pageProps }) {
@@ -104,6 +105,7 @@ function MyApp({ Component, pageProps }) {
   //const AuthorizedComponent = withAuthorization(Component)
   //return <AuthorizationContext.Provider value={loginStatus}>{!loginStatus.handshake?<div className={clsx('container')}>Loading...</div>:<Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>}</AuthorizationContext.Provider>
   return <AuthorizationContext.Provider value={loginStatus}>
+          {/* <Head><script src={'https://accounts.google.com/gsi/client'}></script></Head> */}
             <UserNameDialog onDeactivate={()=>{}}></UserNameDialog>
             <ErrorPage error={errorCode} onClose={setErrorCode}></ErrorPage>
             <Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>

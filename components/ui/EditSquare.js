@@ -20,16 +20,16 @@ import SimpleAlert from './SimpleAlert'
 import { getCookie, isValidUrl } from '../Util/Session'
 import Alert from './AlertBox'
 
-export default function EditSquare({ resourceId, resource, onSave,onError }) {
+export default function EditSquare({ resourceId, resource, onSave, onError }) {
   const [list, setList] = useState([]);
-  const [runningNumber,setRunningNumber] = useState(0);
+  const [runningNumber, setRunningNumber] = useState(0);
   const [currentItem, setCurrentItem] = useState('')
   const [categories, setCategories] = useState([])
-  const [refreshFlag,setRefreshFlag] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Anything goes');
   const [resourceTitle, setResourceTitle] = useState('')
   const [swapMode, setSwapMode] = useState(false);
-  const [deleteMode,setDeleteMode] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
   const [discarding, setDiscarding] = useState(false)
   const [titleValidation, setTitleValidation] = useState(false);
   const [requestStatus, setRequestStatus] = useState({ status: CONSTANTS.messageTypes.HIDDEN, message: '', error: false, isVisible: false })
@@ -39,11 +39,11 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   const addResourcesUrl = '/hopsapi/resources/resource/add'
   const updateUrl = '/hopsapi/resources/resource/update'
   const inputLengthLimit = 150;
-  const inputTypes = [{id:1,name:'Text'},{id:2,name:'Link'}]
+  const inputTypes = [{ id: 1, name: 'Text' }, { id: 2, name: 'Link' }]
   const itemLimit = CONSTANTS.LIST_ITEM_LIMIT;
   const titleRef = useRef('');
 
-  
+
   function handleCancel() {
     setDiscarding(true);
   }
@@ -52,16 +52,20 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   function toggleSwap() {
     setSwapMode(!swapMode);
   }
-  function toggleDelete(){
+  function toggleDelete() {
     setDeleteMode(!deleteMode);
   }
   function handleKeyChange(e) {
     setCurrentItem(e.target.value)
   }
 
+  function handleTitleKeyChange(e){
+    titleRef.current = e.target.value;
+  }
+
   function handleTitlechange(e) {
     //setResourceTitle(e.target.value)
-    titleRef.current=e.target.value;
+    titleRef.current = e.target.value;
   }
 
   function onDeleteItem(index) {
@@ -75,8 +79,8 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
     // var newId = list.reduce((maxId, item) => Math.max(maxId, item.id), 0);
     // //console.log(newId+1)
     // return newId + 1;
-    setRunningNumber(runningNumber+1)
-    return runningNumber+1;
+    setRunningNumber(runningNumber + 1)
+    return runningNumber + 1;
   }
 
   function onItemChange(index, value) {
@@ -88,25 +92,25 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   }
 
 
-  useEffect(()=>{
-    if(resource.id===-1)
-    return;
-    if(resource&&resource.data&&resource.data.resource)
-     
-    var newId = resource.data.resource.reduce((maxId, item) => Math.max(maxId, item.id), 0);
+  useEffect(() => {
+    if (resource.id === -1)
+      return;
+    if (resource && resource.data && resource.data.resource)
+
+      var newId = resource.data.resource.reduce((maxId, item) => Math.max(maxId, item.id), 0);
     //console.log(newId+1)
     setRunningNumber(newId);
 
-  },[resource])
+  }, [resource])
 
-  useEffect(async()=>{
+  useEffect(async () => {
     //console.log(user.handshakeInProgress)
-    if(refreshFlag&&!user.handshakeInProgress){
+    if (refreshFlag && !user.handshakeInProgress) {
       //console.log('refreshing')
       setRefreshFlag(false);
       handleSave();
     }
-  },[user.handshakeInProgress])
+  }, [user.handshakeInProgress])
 
 
 
@@ -121,7 +125,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
       return;
     }
     //Do not proceed if the title is empty.
-    if (titleRef&&titleRef.current.length === 0) {
+    if (titleRef && titleRef.current.length === 0) {
 
       setTitleValidation(true);
       return;
@@ -135,31 +139,31 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
         setRequestStatus({ status: CONSTANTS.messageTypes.PROGRESS, message: 'Updating your data', isVisible: true })
         const updateRequest = updateUrl + '?res=' + resource.id
-        resp = await axios.post(updateUrl, { resource: list, category: selectedCategory, title: titleRef.current, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY), resource_id: resource.id ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
+        resp = await axios.post(updateUrl, { resource: list, category: selectedCategory, title: titleRef.current, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY), resource_id: resource.id, [CONSTANTS.REQUEST_PARAM_KEY]: securityToken }, { timeout: 10000 });
         //console.log(resp)
       } else {
-       //console.log('insert request')
+        //console.log('insert request')
         setRequestStatus({ status: CONSTANTS.messageTypes.PROGRESS, message: 'Saving your data', isVisible: true })
-        resp = await axios.post(addResourcesUrl, { resource: list, category: selectedCategory, title: titleRef.current, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY) ,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken}, { timeout: 10000 });
+        resp = await axios.post(addResourcesUrl, { resource: list, category: selectedCategory, title: titleRef.current, author_id: user.id, author_name: localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY), [CONSTANTS.REQUEST_PARAM_KEY]: securityToken }, { timeout: 10000 });
         //console.log(resp)
       }
       setRequestStatus({ status: CONSTANTS.messageTypes.SUCCESS, message: 'Done', isVisible: true })
 
       //If the Secure token expires, set the refreshe flag and initiate a handshake(refresh of access). Wait for the effect to trigger this method.
-      if(resp.data&&resp.data.data&&resp.data.data.action==='REFRESH'){
+      if (resp.data && resp.data.data && resp.data.data.action === 'REFRESH') {
         //console.log('refreshing')
         setRefreshFlag(true);
         user.initiateHandshake();
         return;
 
       }
-      if(resp&&resp.data&&resp.data.data)
-      onSave(resp.data.data);
+      if (resp && resp.data && resp.data.data)
+        onSave(resp.data.data);
     } catch (error) {
-          // console.log(error)
-           onError(403)
-      
-    }finally{
+      // console.log(error)
+      onError(403)
+
+    } finally {
       setRequestStatus({ status: CONSTANTS.messageTypes.HIDDEN, message: 'Updating your data', isVisible: false })
 
     }
@@ -167,7 +171,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
   function DropDownMenuTrigger() {
     return (
-      <button className={clsx("button", 'ml-2','is-white', 'mr-2','is-small')} aria-haspopup="true" aria-controls="dropdown-menu">
+      <button className={clsx("button", 'ml-2', 'is-white', 'mr-2', 'is-small')} aria-haspopup="true" aria-controls="dropdown-menu">
         <span className={clsx('has-text-grey-darker')}><strong>{selectedCategory}</strong></span>
         <span class="icon is-small">
           <Icon path={mdiMenuDown} />
@@ -176,11 +180,11 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
     )
   }
 
-  function addItem(itemString,type,bookmark) {
+  function addItem(itemString, type, bookmark) {
     const newValue = itemString;
     if (newValue.trim() === '') return;
     var newId = getNewItemId();
-    setList([...list, { id: newId, name: newValue,type:type,bookmark:bookmark}])
+    setList([...list, { id: newId, name: newValue, type: type, bookmark: bookmark }])
     setCurrentItem('')
   }
 
@@ -223,112 +227,112 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
   }
 
 
-  function EntryBox(){
-    const [isLink,setIsLink] = useState(false);
-    const [currentBoxEntry,setCurrentBoxEntry] = useState('')
-    const [bookmark,setBookmark] = useState('')
-    const [validation,setValidation] = useState(true)
-    const [focus,setFocus] = useState(false);
+  function EntryBox() {
+    const [isLink, setIsLink] = useState(false);
+    const [currentBoxEntry, setCurrentBoxEntry] = useState('')
+    const [bookmark, setBookmark] = useState('')
+    const [validation, setValidation] = useState(true)
+    const [focus, setFocus] = useState(false);
     function handleTextKeyPress(e) {
       if (e.key === 'Enter') {
-        addItem(e.target.value,isLink?CONSTANTS.LINK_TYPE:CONSTANTS.TEXT_TYPE)
+        addItem(e.target.value, isLink ? CONSTANTS.LINK_TYPE : CONSTANTS.TEXT_TYPE)
         setFocus(true)
       }
     }
-    function validationAcknowledgement(e){
+    function validationAcknowledgement(e) {
       setValidation(true)
     }
     function handleLinkKeyPress(e) {
       // if (e.key === 'Enter') {
       //   addItem(e.target.value,isLink?CONSTANTS.LINK_TYPE:CONSTANTS.TEXT_TYPE)
-  
+
       // }
     }
 
-    function handleTextEntry(e){
-      if(currentBoxEntry.trim()===''){
+    function handleTextEntry(e) {
+      if (currentBoxEntry.trim() === '') {
         //setValidation(false)
         return;
       }
-      if(isLink){
+      if (isLink) {
         //console.log('isvalid'+currentBoxEntry+'-'+isValidUrl(currentBoxEntry))
-        if(!isValidUrl(currentBoxEntry)){
+        if (!isValidUrl(currentBoxEntry)) {
           setValidation(false);
           return;
         }
-        
+
       }
-      addItem(currentBoxEntry,isLink?CONSTANTS.LINK_TYPE:CONSTANTS.TEXT_TYPE,bookmark?bookmark:'Link')
+      addItem(currentBoxEntry, isLink ? CONSTANTS.LINK_TYPE : CONSTANTS.TEXT_TYPE, bookmark ? bookmark : 'Link')
       setFocus(true)
     }
 
-    function handleLinkEntry(e){
+    function handleLinkEntry(e) {
       addItem(currentBoxEntry)
     }
 
     function DropDownChoice() {
       return (
-      
-        <button className={clsx("button", 'ml-2','is-white', 'mr-2','bottom-panel-dimensions')} aria-haspopup="true" aria-controls="dropdown-menu">
-          <span><strong>{isLink?'Link':'Text'}</strong></span>
+
+        <button className={clsx("button", 'ml-2', 'is-white', 'mr-2', 'bottom-panel-dimensions')} aria-haspopup="true" aria-controls="dropdown-menu">
+          <span><strong>{isLink ? 'Link' : 'Text'}</strong></span>
           <span class="icon is-small">
             <Icon path={mdiMenuUp} />
           </span>
         </button>
-       
+
       )
     }
 
     //console.log('is-link'+isLink)
     return (<div className={clsx('columns', 'is-gapless', 'is-mobile', 'mb-2')}>
-      <Alert isVisible={!validation} message={'The link is not supported.'} onCancel={validationAcknowledgement}/>
-      <div className={clsx('column','is-narrow','has-background-white')}>
-     
-        <DropDownMenu  up={true} list={inputTypes} trigger={DropDownChoice} onSelectItem={(index) => { setIsLink(inputTypes[index].name==='Link'?true:false) }} />
+      <Alert isVisible={!validation} message={'The link is not supported.'} onCancel={validationAcknowledgement} />
+      <div className={clsx('column', 'is-narrow', 'has-background-white')}>
+
+        <DropDownMenu up={true} list={inputTypes} trigger={DropDownChoice} onSelectItem={(index) => { setIsLink(inputTypes[index].name === 'Link' ? true : false) }} />
 
       </div>
       {
-        isLink?   <div className={clsx('column', 'is-auto', 'box', 'mr-0')}>
-        {list.length > itemLimit ? <div className={clsx('has-background-gray')}><p className={clsx('title', 'has-background-gray', 'tag', 'has-text-info', 'container', 'is-6')}>You have reached the maximum items on a list({itemLimit}).</p></div> :
-          <div>
-          <input key={1} maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'p-2', 'thin-border-button','ghost','entrystyle', 'is-small','bottom-panel-small-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e)=>{}} placeholder={`Paste your url.`} value={currentBoxEntry}  onChange={e=>setCurrentBoxEntry(e.target.value)}></input>
-          <input key={2} maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'p-2', 'thin-border-button','ghost', 'is-small','entrystyle','bottom-panel-small-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e)=>{}} placeholder={`Add label`} value={bookmark}  onChange={e=>setBookmark(e.target.value)}></input>
- 
-           </div>
-        }
-      </div>: <div className={clsx('column', 'is-auto', 'box', 'mr-0')}>
-       
-       {list.length > itemLimit ? <div className={clsx('has-background-gray')}> 
-     
-       <span>
-       <p className={clsx('title', 'has-background-gray', 'tag', 'has-text-info', 'container', 'is-6')}>You have reached the maximum items on a list({itemLimit}).</p>
-         </span>
-       </div> :<div>
-     
-         <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0',  'has-text-blue', 'p-2', 'thin-border-button','ghost','bottom-panel-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e)=>window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e=>setCurrentBoxEntry(e.target.value)} autoFocus={true} onKeyPress={handleTextKeyPress}></input>
-         </span>
-         </div>
-       }
-     </div>
+        isLink ? <div className={clsx('column', 'is-auto', 'box', 'mr-0')}>
+          {list.length > itemLimit ? <div className={clsx('has-background-gray')}><p className={clsx('title', 'has-background-gray', 'tag', 'has-text-info', 'container', 'is-6')}>You have reached the maximum items on a list({itemLimit}).</p></div> :
+            <div>
+              <input key={1} maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'p-2', 'thin-border-button', 'ghost', 'entrystyle', 'is-small', 'bottom-panel-small-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e) => { }} placeholder={`Paste your url.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)}></input>
+              <input key={2} maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'p-2', 'thin-border-button', 'ghost', 'is-small', 'entrystyle', 'bottom-panel-small-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e) => { }} placeholder={`Add label`} value={bookmark} onChange={e => setBookmark(e.target.value)}></input>
+
+            </div>
+          }
+        </div> : <div className={clsx('column', 'is-auto', 'box', 'mr-0')}>
+
+          {list.length > itemLimit ? <div className={clsx('has-background-gray')}>
+
+            <span>
+              <p className={clsx('title', 'has-background-gray', 'tag', 'has-text-info', 'container', 'is-6')}>You have reached the maximum items on a list({itemLimit}).</p>
+            </span>
+          </div> : <div>
+
+            <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} autoFocus={true} onKeyPress={handleTextKeyPress}></input>
+            </span>
+          </div>
+          }
+        </div>
       }
-       <div className={clsx('column', 'ml-0', 'is-1', 'p-1')}>
+      <div className={clsx('column', 'ml-0', 'is-1', 'p-1')}>
         <button className={clsx('button', 'bottom-panel-dimensions', 'is-fullwidth')}
           onClick={handleTextEntry}>
-          <span className={clsx('icon','is-info')}><Icon path={mdiPlus} size={2}></Icon></span>
+          <span className={clsx('icon', 'is-info')}><Icon path={mdiPlus} size={2}></Icon></span>
         </button>
       </div>
 
     </div>
     )
 
-   
+
   }
 
   function ExpandableListItem({ item, index, onDelete, onItemChange, onDetailChange }) {
     const [isExpanded, setExpanded] = useState(false);
     const [itemData, setData] = useState(item)
     const itemRef = useRef();
-    const [detailFocus,setDetailFocus] = useState(false)
+    const [detailFocus, setDetailFocus] = useState(false)
 
     function handleExpansion() {
       setDetailFocus(true)
@@ -376,14 +380,14 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
             <span className={clsx('kandyjar-grey')}><Icon path={isExpanded ? mdiMinus : mdiPlus} size={1}></Icon></span>
           </button>
         </div>
-        <div className={clsx('column', 'is-auto', 'ml-1', 'mr-1','mb-1')}>
-          {itemData.type===CONSTANTS.TEXT_TYPE?<input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'is-hovered', 'entrystyle','thin-border-button')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>:<div className={clsx('p-2')}><a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a></div>}
-          
-          <div className={clsx('mt-1','tray', isExpanded ? 'tray-max' : 'tray-min')}>
-            <textarea maxLength={CONSTANTS.LIST_ITEM_DETAIL_MAX_LENGTH} className={clsx('textarea','mt-2', 'entrystyle','ghost','has-background-lighter')} rows={3} autoFocus={isExpanded} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details" />
+        <div className={clsx('column', 'is-auto', 'ml-1', 'mr-1', 'mb-1')}>
+          {itemData.type === CONSTANTS.LINK_TYPE ? <div className={clsx('p-2')}><a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark ? itemData.bookmark : 'link'}</a></div>:<input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'is-hovered', 'entrystyle', 'thin-border-button')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>}
+
+          <div className={clsx('mt-1', 'tray', isExpanded ? 'tray-max' : 'tray-min')}>
+            <textarea maxLength={CONSTANTS.LIST_ITEM_DETAIL_MAX_LENGTH} className={clsx('textarea', 'mt-2', 'entrystyle', 'ghost', 'has-background-lighter')} rows={3} autoFocus={isExpanded} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details" />
           </div>
         </div>
-        {deleteMode&&<div className={clsx('column', 'is-1', 'is-narrow', isExpanded ? 'active-item' : false)}>
+        {deleteMode && <div className={clsx('column', 'is-1', 'is-narrow', isExpanded ? 'active-item' : false)}>
           <button className={clsx('button', 'is-white')} onClick={handleDelete}>
             <span className='kandyjar-grey'><Icon path={mdiDelete} size={1}></Icon></span>
           </button>
@@ -420,7 +424,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
     setTitleValidation(false)
   }
 
-//console.log(runningNumber+'--')
+  //console.log(runningNumber+'--')
   return (
     <div>
       <Head>
@@ -428,7 +432,7 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
         <link rel="icon" href="/tinylogo.png" />
       </Head>
       {/* <SimpleAlert isVisible={titleValidation} message={'Enter a title to save the list.'} onCancel={closeDialog} onConfirm={closeDialog} onClose={closeDialog} /> */}
-      <Alert isVisible={titleValidation} message={'Enter a title to post the list'} onCancel={closeDialog}/>
+      <Alert isVisible={titleValidation} message={'Enter a title to post the list'} onCancel={closeDialog} />
       <div>
         <div>
 
@@ -446,16 +450,16 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
                 <nav class="level has-background-white mt-1 pr-2 is-mobile">
                   <div className="level-left">
-                  <div className='level-item'>
-                  <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
-                  <button className={clsx('is-white','is-rounded','button',swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
-                    <span className={clsx(swapMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiSwapVertical} size={1}></Icon></span>
-                  </button>
-                </div>
-                <button className={clsx('is-white','is-rounded','button',deleteMode ? 'has-background-info' : '')} onClick={toggleDelete}>
-                    <span className={clsx(deleteMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiDelete} size={1}></Icon></span>
-                  </button>
-                  
+                    <div className='level-item'>
+                      <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
+                      <button className={clsx('is-white', 'is-rounded', 'button', swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
+                        <span className={clsx(swapMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiSwapVertical} size={1}></Icon></span>
+                      </button>
+                    </div>
+                    <button className={clsx('is-white', 'is-rounded', 'button', deleteMode ? 'has-background-info' : '')} onClick={toggleDelete}>
+                      <span className={clsx(deleteMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiDelete} size={1}></Icon></span>
+                    </button>
+
                   </div>
                   <div class="level-item has-text-centered pl-5">
                     <div>
@@ -469,12 +473,12 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
                         <div className={clsx('buttons')}>
                           <div>
-                           <a onClick={handleCancel} className={clsx('button', 'is-white','is-rounded','has-text-grey')}>
-                           <span className={clsx('kandyjar-grey')}><Icon path={mdiClose} size={1}></Icon></span>
+                            <a onClick={handleCancel} className={clsx('button', 'is-white', 'is-rounded', 'has-text-grey')}>
+                              <span className={clsx('kandyjar-grey')}><Icon path={mdiClose} size={1}></Icon></span>
                             </a>
                           </div>
                           <div >
-                            <a onClick={handleSave} className={clsx('button', 'is-white','is-rounded','grey-dot')}>
+                            <a onClick={handleSave} className={clsx('button', 'is-white', 'is-rounded', 'grey-dot')}>
                               <span className={clsx('kandyjar-grey')}> <Icon path={mdiCheck} size={1}></Icon></span>
                             </a>
                           </div>
@@ -483,8 +487,8 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
                     </div>
                   </div>
                 </nav>
-                { <div className={clsx('dropdown-divider')}></div> }
-                <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost','title', 'pl-5','is-5', 'entrystyle','has-text-weight-normal')} placeholder="It's a list of..."  onChange={handleTitlechange}></input>
+                {<div className={clsx('dropdown-divider')}></div>}
+                <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleRef.current} placeholder="It's a list of..." onKeyDown={handleTitleKeyChange} onChange={handleTitlechange}></input>
                 {/* <TitleInput inputValue={resource.title} onInputChange={handleInputChange}/> */}
                 {/* <div
                   <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
@@ -494,8 +498,8 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
                 </div> */}
               </div>
               <div className={clsx('box', 'editlistbackground', 'mb-0', 'is-shadowless', 'has-background-gray')}>
-                {isListEmpty() ? <div className={clsx( 'container', 'centeralignment')}>
-                  <p className={clsx('mt-6','is-size-6','basic-placeholder','has-text-weight-light','p-4','is-rounded','cloud')}>Lists are fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
+                {isListEmpty() ? <div className={clsx('container', 'centeralignment')}>
+                  <p className={clsx('mt-6', 'is-size-6', 'basic-placeholder', 'has-text-weight-light', 'p-4', 'is-rounded', 'cloud')}>Lists are fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
                 </div> :
                   <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                     {list.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> })}
@@ -508,8 +512,8 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
 
 
-                <EntryBox/>
-              
+              <EntryBox />
+
               {/* <div className={clsx('columns', 'is-gapless', 'is-mobile', 'mt-0.5', 'mb-2')}>
 
                 <div className={clsx('column', 'is-auto', 'box', 'mr-0')}>
@@ -532,12 +536,12 @@ export default function EditSquare({ resourceId, resource, onSave,onError }) {
 
             </div>
           </div> */}
-           </div>
+            </div>
 
-<div className="column is-one-fifth">
+            <div className="column is-one-fifth">
 
-</div>
-</div>
+            </div>
+          </div>
 
 
 

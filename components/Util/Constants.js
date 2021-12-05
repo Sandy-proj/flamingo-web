@@ -74,7 +74,8 @@
 
     
     static OAUTH_CLIENT_ID = "788036490312-dnncf6lf0gj1h1qp8nnqeuri5ssksrp9.apps.googleusercontent.com"
-    static HOPS_SOCIAL_URL = 'http://api.hopsquare.com/user/social_login'
+    //static HOPS_SOCIAL_URL = 'https://api.hopsquare.com/user/social_login'
+    static HOPS_SOCIAL_URL = '/socialapi/user/social_login'
     // static HOPS_SERVER_BASE='http://localhost:3001/'
     // static HOPS_WEB_SERVER_BASE='http://localhost:3000/'
     // static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'

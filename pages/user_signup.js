@@ -246,7 +246,7 @@ export default function SignUp({onError,onLoginChange}){
             <Head>
                 <title>HopSquare</title>
                 <link rel="icon" href="/tinylogo.png" />
-                <script src={'https://accounts.google.com/gsi/client'} ></script>
+                <script src={'https://accounts.google.com/gsi/client'} onLoad={()=>{}} ></script>
             </Head>
         </div>
         
@@ -350,7 +350,7 @@ export default function SignUp({onError,onLoginChange}){
                           <div className={clsx('level')}>
                             
                             {/* <Icon onClick={handleAgreement} className={clsx('level-item','mr-2')} path={isAgreed?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon> */}
-                            <p className={clsx('has-text-grey',)} >
+                            <p className={clsx('has-text-grey','is-size-7')} >
                            
                             By continuing, I agree to HopSquare's <br/> <a href="#" onClick={handleTermsAndConditions}>  &nbsp;Terms of service  &nbsp; </a> &nbsp;& <a href="#" onClick={handlePrivacyPolicy}>  &nbsp;Privacy policy. &nbsp; </a>  .
                             </p>

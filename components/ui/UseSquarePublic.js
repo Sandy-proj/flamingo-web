@@ -140,8 +140,9 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
       
          
           <div className={clsx('column','is-10','ml-1','mr-1')}>
-            <input className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.type===CONSTANTS.LINK_TYPE?
-            <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>:itemData.name} placeholder="Enter an item"></input>
+            <div className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.type===CONSTANTS.LINK_TYPE?
+            <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>:itemData.name}>
+            </div>
           </div>
           <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
          
@@ -244,7 +245,7 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
              <div className={clsx('is-auto')}></div>
               {/* </div> */}
               <div class="column is-auto"/>
-              <div className={clsx('column','is-narrow')}>
+              <div className={clsx('column','is-narrow','is-desktop')}>
                 <button className={clsx('button','is-white','has-text-grey')} onClick={handleClose}><Icon path={mdiClose} size={1}></Icon></button>
               </div>
             </nav>
