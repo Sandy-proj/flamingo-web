@@ -21,7 +21,7 @@ export default function SignUp({onError,onLoginChange}){
     const user = useContext(AuthorizationContext)
     const [termsAndConditions,setTermsAndConditions] = useState(false);
     const [privacyPolicy, setPrivacyPolicy] = useState(false);
-    const[isAgreed,setIsAgreed] = useState(false)
+    const[isAgreed,setIsAgreed] = useState(true)
     const socialLoginUrl = CONSTANTS.HOPS_SOCIAL_URL;
     const [credentials,setCredentials] = useState({emailId:'',username:'',password:'',passwordshadow:''}); 
     const [isSigningUp,setIsSigningUp] = useState(false)
@@ -54,7 +54,6 @@ export default function SignUp({onError,onLoginChange}){
             
                 const response = await axios.post(signupUrl,qs.stringify({emailId:credentials.emailId.toLowerCase(),username:credentials.username,password:credentials.password}));
                 //const response = await axios.post(loginUrl,params)
-
                 if(response.status===CONSTANTS.POST_SUCCESS){
                     if(response.data.result&&response.data.result.signup==='SUCCESS'&&response.data.result.email==='SUCCESS'){
                         var user = buildUser(response.data.data.userId,response.data.data.role,response.data.data.preferences,response.data.data.username)
@@ -82,7 +81,6 @@ export default function SignUp({onError,onLoginChange}){
                
     
             }catch(e){
-
                 let newObj = {}
                 newObj.signUpAttempFail = true;
                 setValidations(newObj)

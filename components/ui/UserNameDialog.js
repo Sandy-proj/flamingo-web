@@ -43,7 +43,7 @@ export default function UserNameDialog({visible,onDeactivate}) {
 
     useEffect(()=>{
         //console.log('username:'+user&&user.username)
-        if(user&&user.isLoggedIn&&user.username.trim()!=''){
+        if(user&&user.isLoggedIn&&user.username&&user.username.trim()!=''){
             setIsVisible(false)
         }
     },[user.username])
