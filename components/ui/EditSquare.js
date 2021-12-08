@@ -488,7 +488,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   </div>
                 </nav>
                 {<div className={clsx('dropdown-divider')}></div>}
-                <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleRef.current} placeholder="It's a list of..." onKeyDown={handleTitleKeyChange} onChange={handleTitlechange}></input>
+                <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')}  placeholder="It's a list of..."   onChange={handleTitlechange}></input>
                 {/* <TitleInput inputValue={resource.title} onInputChange={handleInputChange}/> */}
                 {/* <div
                   <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
