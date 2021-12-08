@@ -331,10 +331,11 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
     const [titleText,setTitleText]=useState(initialTitle)
     function handleTitleTextEntry(e){
       titleRef.current = e.target.value;
+      setTitleText(e.target.value)
     } 
 
-    useEffect(()=>{if(initialTitle) titleRef.current = initialTitle})
-    return  <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={} placeholder="It's a list of..."  onChange={handleTitleTextEntry}></input>
+    useEffect(()=>{if(initialTitle) titleRef.current = initialTitle},[initialTitle])
+    return  <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleText} placeholder="It's a list of..."  onChange={handleTitleTextEntry}></input>
     
   }
   function ExpandableListItem({ item, index, onDelete, onItemChange, onDetailChange }) {
