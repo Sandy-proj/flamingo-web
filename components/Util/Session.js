@@ -52,15 +52,17 @@ export function getCookie(cname) {
   export function getTimeString(timestamp){
     const timeString = new Date(timestamp);
     const nowString = new Date();
-    const elapsedTime = Math.floor((nowString.getTime()-timeString.getTime())/1000);
+    let elapsedTime = Math.floor((nowString.getTime()-timeString.getTime())/1000);
     if(elapsedTime>0&&elapsedTime<60){
       return elapsedTime+'s ago'
     }else if(elapsedTime>60&&elapsedTime<3600){
       return Math.floor(elapsedTime/60)+'m ago'
     }else if(elapsedTime>3600 && elapsedTime<3600*24){
-      return Math.floor(elapsedTime/(3600))+' hrs ago'
+      elapsedTime = Math.floor(elapsedTime/(3600));
+      return elapsedTime+(elapsedTime>1?' hrs ago':' hr ago')
     }else if(elapsedTime>(3600*24)&&elapsedTime<(3600*24*30)){
-      return Math.floor(elapsedTime/(3600*24))+' days ago'
+      elapsedTime = Math.floor(elapsedTime/(3600*24));
+      return elapsedTime + (elapsedTime>1?'days ago':'day ago'); 
     }else{
       return timeString.toDateString()
     }

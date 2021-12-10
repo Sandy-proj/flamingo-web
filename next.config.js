@@ -8,7 +8,7 @@ module.exports = {
       {
         source: '/socialapi/:path*',
         destination: 'http://api.hopsquare.com/:path*',
-        //destination:'http://localhost:3001/path',
+        //destination:'http://localhost:3001/:path*',
       },
       {
         source: '/hopsapp/:path*',

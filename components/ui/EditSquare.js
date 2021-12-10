@@ -327,14 +327,19 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
 
   }
-  function TitleEntry(initialTitle){
+  function TitleEntry({initialTitle}){
     const [titleText,setTitleText]=useState(initialTitle)
     function handleTitleTextEntry(e){
       titleRef.current = e.target.value;
       setTitleText(e.target.value)
     } 
 
-    useEffect(()=>{if(initialTitle) titleRef.current = initialTitle},[initialTitle])
+    useEffect(()=>{
+      if(initialTitle) {
+        titleRef.current = initialTitle;
+        setTitleText(initialTitle);
+      }
+    },[initialTitle])
     return  <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleText} placeholder="It's a list of..."  onChange={handleTitleTextEntry}></input>
     
   }
@@ -462,33 +467,28 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   <div className="level-left">
                     <div className='level-item'>
                       <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
-                      <button className={clsx('is-white', 'is-rounded', 'button', swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
+                      <button className={clsx('is-white', 'is-small', 'button', swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
                         <span className={clsx(swapMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiSwapVertical} size={1}></Icon></span>
                       </button>
                     </div>
-                    <button className={clsx('is-white', 'is-rounded', 'button', deleteMode ? 'has-background-info' : '')} onClick={toggleDelete}>
+                    <button className={clsx('is-white','is-small','button', deleteMode ? 'has-background-info' : '')} onClick={toggleDelete}>
                       <span className={clsx(deleteMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiDelete} size={1}></Icon></span>
                     </button>
 
                   </div>
-                  <div class="level-item has-text-centered pl-5">
-                    <div>
 
-                    </div>
-
-                  </div>
                   <div className='level-right'>
-                    <div class="level-item pl-5">
+                    <div class="level-item">
                       <div>
 
                         <div className={clsx('buttons')}>
                           <div>
-                            <a onClick={handleCancel} className={clsx('button', 'is-white', 'is-rounded', 'has-text-grey')}>
+                            <a onClick={handleCancel} className={clsx('button', 'is-white', 'is-small', 'has-text-grey')}>
                               <span className={clsx('kandyjar-grey')}><Icon path={mdiClose} size={1}></Icon></span>
                             </a>
                           </div>
                           <div >
-                            <a onClick={handleSave} className={clsx('button', 'is-white', 'is-rounded', 'grey-dot')}>
+                            <a onClick={handleSave} className={clsx('button', 'is-white','is-small',  'grey-dot')}>
                               <span className={clsx('kandyjar-grey')}> <Icon path={mdiCheck} size={1}></Icon></span>
                             </a>
                           </div>
@@ -498,7 +498,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   </div>
                 </nav>
                 {<div className={clsx('dropdown-divider')}></div>}
-                <TitleEntry initialTitle={resource&&resource.title?resource.title:''}/>
+                <TitleEntry initialTitle={resource&&resource.data&&resource.data.title?resource.data.title:''}/>
 
                 {/* <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')}  placeholder="It's a list of..."   onChange={handleTitlechange}></input> */}
                 {/* <TitleInput inputValue={resource.title} onInputChange={handleInputChange}/> */}
