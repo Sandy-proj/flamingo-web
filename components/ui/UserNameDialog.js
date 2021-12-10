@@ -43,10 +43,12 @@ export default function UserNameDialog({visible,onDeactivate}) {
 
     useEffect(()=>{
         //console.log('username:'+user&&user.username)
-        if(user&&user.isLoggedIn&&user.username&&user.username.trim()!=''){
+        if(user.isLoggedIn&&user.username===''){
+            setIsVisible(true)
+        }else{
             setIsVisible(false)
         }
-    },[user.username])
+    },[user.isLoggedIn,user.username])
 
     function isUserNameValid(){
         const pattern = CONSTANTS.USERNAME_VALIDATION_PATTERN;
