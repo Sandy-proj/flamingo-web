@@ -43,7 +43,7 @@ function MyApp({ Component, pageProps }) {
 
       setInProgress(true)
       const response = await axios.get(loginCheckUrl+(hardRefresh?'?hard_refresh=true':''));
-      
+    
       var user = null;
       if(response.data.result==='SUCCESS'){
 

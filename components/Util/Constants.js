@@ -72,8 +72,9 @@
     static LINK_TYPE = 'LINK'
     static TEXT_TYPE = 'TEXT'
 
+    static OAUTH_CLIENT_ID = "788036490312-qt8bglf554rd9afa19cov6ocmq4pse6l.apps.googleusercontent.com"
     
-    static OAUTH_CLIENT_ID = "788036490312-dnncf6lf0gj1h1qp8nnqeuri5ssksrp9.apps.googleusercontent.com"
+    //static OAUTH_CLIENT_ID = "788036490312-dnncf6lf0gj1h1qp8nnqeuri5ssksrp9.apps.googleusercontent.com"
     // static HOPS_SOCIAL_URL = '/socialapi/user/social_login'
     // static HOPS_SERVER_BASE='http://localhost:3001/'
     // static HOPS_WEB_SERVER_BASE='http://localhost:3000/'
