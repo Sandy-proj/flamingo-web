@@ -54,7 +54,7 @@ export default function VerifyAccount({}){
                         const response = await axios.get(verificationUrl+`/${mtoken}`,{timeout:CONSTANTS.REQUEST_TIMEOUT})
                   
                         if(response.data.result==='SUCCESS'){
-                                user.initiateHandshake();
+                                user.initiateHandshake(true);
                         }else if(response.data.result==='FAIL'){
                             if(response.data.error.code===CommonErrorCodes.USER.VERIFICATION_EXPIRED){
                                 setErrorFlags({EXPIRED:true})
