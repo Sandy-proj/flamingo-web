@@ -74,7 +74,7 @@ export default function ForgotPassword({props}){
         
     <div>
         <Head>
-            <title>HopSquare</title>
+            <title>KandyBag</title>
             <link rel="icon" href="/tinylogo.png" />
         </Head>
         </div>
@@ -88,7 +88,7 @@ export default function ForgotPassword({props}){
                                 <figure className = {clsx('image','is-24x24','mr-2','level-item') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure>
-                                <p className="level-item title is-5 is-grouped is-grouped-centered">HopSquare</p>
+                                <p className="level-item title is-5 is-grouped is-grouped-centered">KandyBag</p>
                             </div>
                         </div>
                     <form className={clsx('centeralignment')}>

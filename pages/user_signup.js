@@ -245,7 +245,7 @@ export default function SignUp({onError,onLoginChange}){
     return (<BaseLayout use="default">
          <div>
             <Head>
-                <title>HopSquare</title>
+                <title>KandyBag</title>
                 <link rel="icon" href="/tinylogo.png" />
                 <script src={'https://accounts.google.com/gsi/client'} onLoad={()=>{}} ></script>
             </Head>
@@ -262,7 +262,7 @@ export default function SignUp({onError,onLoginChange}){
                                 <figure className = {clsx('image','is-24x24','mr-2','level-item') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure>
-                                <p className="level-item title is-5 is-grouped is-grouped-centered">HopSquare</p>
+                                <p className="level-item title is-5 is-grouped is-grouped-centered">KandyBag</p>
                             </div>
                             <div className={clsx('column','is-auto')}></div>
                         </div>
@@ -353,7 +353,7 @@ export default function SignUp({onError,onLoginChange}){
                             {/* <Icon onClick={handleAgreement} className={clsx('level-item','mr-2')} path={isAgreed?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon> */}
                             <p className={clsx('has-text-grey','is-size-7')} >
                            
-                            By continuing, I agree to HopSquare's <br/> <a href="#" onClick={handleTermsAndConditions}>  &nbsp;Terms of service  &nbsp; </a> &nbsp;& <a href="#" onClick={handlePrivacyPolicy}>  &nbsp;Privacy policy. &nbsp; </a>  .
+                            By continuing, I agree to KandyBag's <br/> <a href="#" onClick={handleTermsAndConditions}>  &nbsp;Terms of service  &nbsp; </a> &nbsp;& <a href="#" onClick={handlePrivacyPolicy}>  &nbsp;Privacy policy. &nbsp; </a>  .
                             </p>
                            
                           </div>

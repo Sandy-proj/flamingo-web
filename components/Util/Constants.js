@@ -81,8 +81,8 @@
     // static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/resources/resource'
    
 
-    static HOPS_SOCIAL_URL = 'https://api.hopsquare.com/user/social_login'
-    static HOPS_SERVER_BASE='http://api.hopsquare.com/'
-    static HOPS_WEB_SERVER_BASE='http://www.hopsquare.com/'
-    static HOPS_GET_SERVER_RESOURCE='http://api.hopsquare.com/resources/resource'
+    static HOPS_SOCIAL_URL = 'https://api.kandybag.com/user/social_login'
+    static HOPS_SERVER_BASE='http://api.KandyBag.com/'
+    static HOPS_WEB_SERVER_BASE='http://www.KandyBag.com/'
+    static HOPS_GET_SERVER_RESOURCE='http://api.KandyBag.com/resources/resource'
 }

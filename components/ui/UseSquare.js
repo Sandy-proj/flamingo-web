@@ -371,7 +371,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     return (
       <div className={clsx('mb-0')}>
         <Head>
-          <title>HopSquare</title>
+          <title>KandyBag</title>
           <link rel="icon" href="/tinylogo.png" />
   
         </Head>

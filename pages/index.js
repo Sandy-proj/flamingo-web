@@ -199,10 +199,10 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
             <div className="navbar-brand">
               <a className="navbar-item" href="/">
                 <figure className={clsx('image')}>
-                  <img src="/headerlogo.png" width='48' height='48' />
+                  <img src="/basic_logo.png" width='48' height='48' />
                 </figure>
-                <p className={clsx('title', 'is-4', 'ml-1')}>
-                  <strong className={clsx('has-text-white', 'has-text-weight-light')}>Hop<span className={clsx('has-text-white', 'has-text-weight-bold')}>Square</span></strong>
+                <p className={clsx('title', 'is-4', 'ml-4')}>
+                  <strong className={clsx('has-text-white', 'has-text-weight-bold')}>Kandy<span className={clsx('has-text-white', 'has-text-weight-normal')}>Bag</span></strong>
                 </p>
 
               </a>
@@ -230,7 +230,6 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
             </div>
 
           </nav>
-
           <div className="columns is-gapless ">
             <div className="column is-2" />
 

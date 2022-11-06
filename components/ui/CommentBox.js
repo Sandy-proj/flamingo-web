@@ -44,14 +44,14 @@ export default function CommentBox({ resourceId,getComments }) {
         const securityToken = getCookie(CONSTANTS.REQUEST_COOKIE_KEY)
         try{
             result = await axios.post(postCommentUrl,{comment:commentValue,resource:resourceId,[CONSTANTS.REQUEST_PARAM_KEY]:securityToken},{timeout:CONSTANTS.REQUEST_TIMEOUT})
-            //console.log(result.data.data)
+            console.log(result)
             if(result.status===CONSTANTS.POST_SUCCESS&&result.data&&result.data.data){
 
                 setCommentList([result.data.data,...commentList]);
                 setCommentValue('')
             }
         }catch(error){
-            //console.log(error)
+            console.log(error)
         }
         //console.log(result)
     }

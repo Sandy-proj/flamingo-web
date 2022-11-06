@@ -113,7 +113,7 @@ export default function VerifyAccount({}){
                                 <figure className = {clsx('image','is-24x24','mr-2','level-item') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure>
-                                <p className="level-item title is-5 is-grouped is-grouped-centered">Welcome to Hopsquare!!</p>
+                                <p className="level-item title is-5 is-grouped is-grouped-centered">Welcome to KandyBag!!</p>
                             </div>
                         </div>
                         {(Object.keys(verfiyErrorFlags).length>0)?<div>

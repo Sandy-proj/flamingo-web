@@ -443,7 +443,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   return (
     <div>
       <Head>
-        <title>HopSquare</title>
+        <title>KandyBag</title>
         <link rel="icon" href="/tinylogo.png" />
       </Head>
       {/* <SimpleAlert isVisible={titleValidation} message={'Enter a title to save the list.'} onCancel={closeDialog} onConfirm={closeDialog} onClose={closeDialog} /> */}
