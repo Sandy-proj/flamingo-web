@@ -126,7 +126,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
         </a>
       </Link>
       <Link href='/user_signup'>
-        <a className={clsx('button', 'is-white', 'is-rounded', 'is-outlined', 'centeralignment', 'hoverzoom')} onClick={()=>setNavigateAway(true)}>
+        <a className={clsx('button', 'is-info', 'is-rounded', 'is-outlined', 'centeralignment', 'hoverzoom')} onClick={()=>setNavigateAway(true)}>
           <p className={clsx('has-text-weight-bold')}>Sign up</p>
         </a>
       </Link>
@@ -195,14 +195,14 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
             //Header
           }
           <Loader visible={navigateAway}/>
-          <nav className={clsx('navbar','kandyjar-black-belt','pr-4','pl-3','pt-1','pb-1','mb-1')} role="navigation" aria-label="main navigation">
+          <nav className={clsx('navbar','pr-4','pl-3','pt-1','pb-1','mb-1')} role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
               <a className="navbar-item" href="/">
                 <figure className={clsx('image')}>
                   <img src="/basic_logo.png" width='48' height='48' />
                 </figure>
                 <p className={clsx('title', 'is-4', 'ml-4')}>
-                  <strong className={clsx('has-text-white', 'has-text-weight-bold')}>Kandy<span className={clsx('has-text-white', 'has-text-weight-normal')}>Bag</span></strong>
+                  <strong className={clsx( 'has-text-weight-bold','logo-font')}>Kandybag<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></strong>
                 </p>
 
               </a>
@@ -215,7 +215,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
 
             </div>
 
-            <div className={clsx('navbar-menu', 'kandyjar-black-belt', 'is-active')}>
+            <div className={clsx('navbar-menu', 'is-active')}>
 
               <div className={clsx('navbar-item', 'navbar-end', 'is-dark', 'is-expanded', 'is-align-items-center')}>
                 <SearchBar className={clsx('ml-6')} onSearch={handleSearch} reset={displayState.mode === CONSTANTS.commandModes.SEARCH ? false : true} />
