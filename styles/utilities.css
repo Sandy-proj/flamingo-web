@@ -1,3 +1,7 @@
+@font-face{
+ 	font-family: "Jellee";
+	src: url('https://kandybag.com/fonts/Jelle-Roman.ttf') format('truetype');
+}
 .centeralignment{
     display: flex;
     justify-content: center;
@@ -194,4 +198,8 @@ hr.solid {
 .home-underline {
   border: 4px solid rgb(197, 9, 62);
   border-radius: 2px;
+}
+.logo-font{
+  font-family:'Pacifico';
+  color:#ffc000 !important;
 }

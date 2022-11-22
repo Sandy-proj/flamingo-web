@@ -38,7 +38,7 @@ export default function SearchBar({onSearch,reset,children}){
       // </div> 
       <div className={clsx("field",'has-addons','centeralignment')} >
       <div className="control has-icons-right">
-            <input className={clsx('input','is-rounded','ghost','thin-border-button')} value={searchString} type="text" placeholder="Find a list" onChange={updateSearchString} onKeyPress={handleKeyPress}/>
+            <input className={clsx('input','is-rounded','ghost')} value={searchString} type="text" placeholder="Find a list" onChange={updateSearchString} onKeyPress={handleKeyPress}/>
             <span className={clsx('icon', 'is-small', 'is-right')}><Icon path={mdiMagnify} size={1}></Icon></span>
       </div>
      
