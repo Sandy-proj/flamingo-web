@@ -19,6 +19,7 @@ import { AuthorizationContext } from '../Util/AuthContext'
 import SimpleAlert from './SimpleAlert'
 import { getCookie, isValidUrl } from '../Util/Session'
 import Alert from './AlertBox'
+import LinkCard from './LinkCard'
 
 export default function EditSquare({ resourceId, resource, onSave, onError }) {
   const [list, setList] = useState([]);
@@ -340,7 +341,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
         setTitleText(initialTitle);
       }
     },[initialTitle])
-    return  <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleText} placeholder="It's a list of..."  onChange={handleTitleTextEntry}></input>
+    return  <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleRef.current} placeholder="It's a list of..."  onChange={handleTitleTextEntry}></input>
     
   }
   function ExpandableListItem({ item, index, onDelete, onItemChange, onDetailChange }) {
@@ -390,13 +391,14 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
         </div>}
 
-        <div className={clsx('column', 'is-auto', 'is-narrow', isExpanded ? 'active-item' : false)}>
+        {itemData.type !== CONSTANTS.LINK_TYPE&&<div className={clsx('column', 'is-auto', 'is-narrow', isExpanded ? 'active-item' : false)}>
           <button className={clsx('button', 'is-white')} onClick={handleExpansion}>
             <span className={clsx('kandyjar-grey')}><Icon path={isExpanded ? mdiMinus : mdiPlus} size={1}></Icon></span>
           </button>
-        </div>
+        </div>}
         <div className={clsx('column', 'is-auto', 'ml-1', 'mr-1', 'mb-1')}>
-          {itemData.type === CONSTANTS.LINK_TYPE ? <div className={clsx('p-2')}><a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark ? itemData.bookmark : 'link'}</a></div>:<input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'is-hovered', 'entrystyle', 'thin-border-button')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>}
+          {itemData.type === CONSTANTS.LINK_TYPE ? <LinkCard url={itemData.name} label={itemData.bookmark}></LinkCard>:
+            <input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'is-hovered', 'entrystyle', 'thin-border-button')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}></input>}
 
           <div className={clsx('mt-1', 'tray', isExpanded ? 'tray-max' : 'tray-min')}>
             <textarea maxLength={CONSTANTS.LIST_ITEM_DETAIL_MAX_LENGTH} className={clsx('textarea', 'mt-2', 'entrystyle', 'ghost', 'has-background-lighter')} rows={3} autoFocus={isExpanded} type="text" defaultValue={''} value={itemData.detail} onChange={handleDetailChange} placeholder="Add details" />

@@ -11,6 +11,13 @@
 .entrystyle{
     border:none;
 }
+.author-name{
+  align-self:center;
+}
+
+.text-area-with-background{
+  background-color: #fafafa;
+}
 .hoverzoom{
     transition: all .2s ease-in-out; 
 }

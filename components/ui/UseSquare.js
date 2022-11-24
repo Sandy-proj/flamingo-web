@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useEffect, useRef, useState  } from 'react'
-import { mdiDragVertical, mdiPlus,  mdiHeartOutline, mdiMinus, mdiCheckboxBlankOutline, mdiCheck,mdiDotsHorizontal, mdiDownloadOutline, mdiBookMarkerOutline, mdiBookmarkOutline, mdiAccount, mdiDotsVertical, mdiBackburger, mdiHamburger, mdiMenu, mdiClose, mdiHeart, mdiDownload, mdiBookmark, mdiDelete} from '@mdi/js'
+import { mdiDragVertical, mdiPlus,  mdiHeartOutline, mdiMinus, mdiCheckboxBlankOutline, mdiCheck,mdiDotsHorizontal, mdiDownloadOutline, mdiBookMarkerOutline, mdiBookmarkOutline, mdiAccount, mdiDotsVertical, mdiBackburger, mdiHamburger, mdiMenu, mdiClose, mdiHeart, mdiDownload, mdiBookmark, mdiDelete, mdiArrowUp, mdiArrowDown, mdiChevronUp, mdiChevronDoubleDown, mdiChevronDown, mdiLink} from '@mdi/js'
 import {Icon} from '@mdi/react'
 import  axios from 'axios'
 import clsx from 'clsx';
@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { useContext } from 'react'
 import {AuthorizationContext} from '../Util/AuthContext'
 import DropDownMenu from './DropDownMenu'
+import LinkCard from './LinkCard'
 import { CONSTANTS } from './../Util/Constants'
 import ConfirmationDialog from './ConfirmationDialog'
 import { ToastContainer, toast } from 'react-toastify';
@@ -78,7 +79,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       toast.success(message)
     }
     async function handleClose(e){
-      e.preventDefault();
+      //e.preventDefault();
       const actions_performed = Object.keys(actions.current).length;
         //console.log(resource)
         //console.log('actions taken:'+actions_performed)
@@ -205,12 +206,14 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.DELETE){
         setDeleting(true);
       }else if(mainMenu[index].name===CONSTANTS.ACTION_MENU.CLOSE){
-          router.replace('/')
+          handleClose();  
+        //router.replace('/')
       }else{
 
       }
     }
 
+   
     function ExpandableListItem({item,actionable,itemIndex,onItemSelection}){
       const [isExpanded,setExpanded]=useState(false);
       //const itemId = item.id;
@@ -252,30 +255,37 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       return <li className="mb-0 ml-0 p-1">
         
         <div className={clsx('columns','is-gapless','is-mobile','mb-1','mt-4')}>
-        {actionable&&todoMode?  <div className={clsx('column','is-auto',isSelected?'active-item':false)}>
+        {actionable&&todoMode?  <div className={clsx('column','is-narrow',isSelected?'active-item':false)}>
             <button className={clsx('button','is-white')} onClick={handleSelection}>
-              <span className='icon'><Icon path={isSelected?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon></span>
+              <span className='icon'><Icon color={isSelected?'#00f':'#CCC'} path={isSelected?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon></span>
             </button>
           </div>:<div></div>}
       
          
-          <div className={clsx('column','is-10','ml-1','mr-1')}>
+          <div className={clsx('column','is-11','ml-1','mr-1')}>
 
-            <div className={clsx('input','is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}>{itemData.type===CONSTANTS.LINK_TYPE?
-            <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>:itemData.name}</div>
+            <div className={clsx(itemData.type===CONSTANTS.TEXT_TYPE?'input':false,'is-hovered','entrystyle')} type="text" value={itemData.name} placeholder="Enter an item" onChange={handleMainInput}>
+              {itemData.type===CONSTANTS.LINK_TYPE?
+              // <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>
+              // <RNUrlPreview text={itemData.name}/>:
+              <LinkCard url={itemData.name} label={itemData.bookmark}></LinkCard>:
+              itemData.name}
+            </div>
             <div className={clsx('tray',isExpanded?'tray-max':'tray-min')}>
             <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
-         <textarea className={clsx('textarea','entrystyle','has-text-grey','has-background-grey-light')} rows={3} type="text" defaultValue={''} onChange={handleDetailChange} value={itemData.detail} placeholder="Add details"/>
+         <textarea className={clsx('textarea','entrystyle','has-text-grey','text-area-with-background')} rows={3} type="text" defaultValue={''} onChange={handleDetailChange} value={itemData.detail} placeholder="Add details"/>
 
           </div>
         </div>
           </div>
-         
-          <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
-            <button className={clsx('button','is-white')} onClick={handleExpansion}>
-              <span className='icon'><Icon path={isExpanded?mdiMinus:mdiDotsHorizontal} size={1}></Icon></span>
-            </button>
-          </div>
+         {
+          itemData.detail&&<div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
+          <button className={clsx('button','is-white')} onClick={handleExpansion}>
+            <span className='icon'><Icon path={isExpanded?mdiChevronUp:mdiChevronDown} size={1}></Icon></span>
+          </button>
+        </div>
+         }
+          
         </div>
                         
   
@@ -435,7 +445,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
               </div>
               <div className={clsx('column','is-narrow')}>
               <button className={clsx('is-white','is-rounded','button',todoMode ? 'has-background-info' : '')} onClick={toggleTodo}>
-                    <span className={clsx(todoMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiCheckboxBlankOutline} size={1}></Icon></span>
+                    <span className={clsx(todoMode ? 'has-text-white' : 'has-text-grey')}><Icon color={todoMode?'#fff':'#00f'} path={mdiCheck} size={1}></Icon></span>
                   </button>
                   </div>
               <div className={clsx('column','is-auto')}></div>

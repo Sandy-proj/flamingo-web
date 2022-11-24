@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useEffect, useRef, useState  } from 'react'
-import { mdiDragVertical, mdiPlus,  mdiHeartOutline, mdiMinus, mdiCheckboxBlankOutline, mdiCheck,mdiDotsHorizontal, mdiDownloadOutline, mdiBookMarkerOutline, mdiBookmarkOutline, mdiAccount, mdiDotsVertical, mdiBackburger, mdiHamburger, mdiMenu, mdiClose, mdiHeart, mdiDownload, mdiBookmark, mdiDelete, mdiDetails} from '@mdi/js'
+import { mdiDragVertical, mdiPlus,  mdiHeartOutline, mdiMinus, mdiCheckboxBlankOutline, mdiCheck,mdiDotsHorizontal, mdiDownloadOutline, mdiBookMarkerOutline, mdiBookmarkOutline, mdiAccount, mdiDotsVertical, mdiBackburger, mdiHamburger, mdiMenu, mdiClose, mdiHeart, mdiDownload, mdiBookmark, mdiDelete, mdiDetails, mdiChevronUp, mdiChevronDown} from '@mdi/js'
 import {Icon} from '@mdi/react'
 import  axios from 'axios'
 import clsx from 'clsx';
@@ -9,6 +9,7 @@ import { useContext } from 'react'
 import {AuthorizationContext} from '../Util/AuthContext'
 import DropDownMenu from './DropDownMenu'
 import { CONSTANTS } from './../Util/Constants'
+import LinkCard from './LinkCard'
 import ConfirmationDialog from './ConfirmationDialog'
 import LoginSuggestion from './LoginSuggestion'
 
@@ -82,7 +83,7 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
       setDeleting(false)
     }
 
-    function handleMenuItemSelection(index){
+    async function handleMenuItemSelection(index){
       if(menu[index].name===CONSTANTS.ACTION_MENU.EDIT){
         suggestLogin();
       }else if(menu[index].name===CONSTANTS.ACTION_MENU.DOWNLOAD){
@@ -98,7 +99,14 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
       }else if(menu[index].name===CONSTANTS.ACTION_MENU.DELETE){
         suggestLogin();
       }else if(menu[index].name===CONSTANTS.ACTION_MENU.CLOSE){
-          router.push('/')
+        try{
+          let requestUrl = updateActionsUrl+`?res=${resource.id}`
+          const response =  await axios.post(requestUrl,{view:true},{timeout:CONSTANTS.REQUEST_TIMEOUT})
+
+        }catch(error){
+          console.error(error)
+        }  
+        router.push('/')
       }else{
 
       }
@@ -112,6 +120,7 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
 
       
       function handleExpansion(){
+      if(itemData.detail)
        setExpanded(!isExpanded)
       }
   
@@ -132,33 +141,37 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
       return <li className="mb-3 ml-0 p-1">
         
         <div className={clsx('columns','is-gapless','is-mobile','mb-1')}>
-        {actionable?  <div className={clsx('column','is-auto',isSelected?'active-item':false)}>
+        {actionable&&  <div className={clsx('column','is-auto',isSelected?'active-item':false)}>
             <button className={clsx('button','is-white')} onClick={handleSelection}>
               <span className='icon'><Icon path={isSelected?mdiCheck:mdiCheckboxBlankOutline} size={1}></Icon></span>
             </button>
-          </div>:<div></div>}
+          </div>}
       
          
-          <div className={clsx('column','is-10','ml-1','mr-1')}>
-            <div className={clsx('input','is-hovered','entrystyle')} type="text" >{itemData.type===CONSTANTS.LINK_TYPE?
-            <a href={itemData.name} target="_blank" rel="noopener noreferrer">{itemData.bookmark?itemData.bookmark:'link'}</a>:itemData.name}
+          <div className={clsx('column','is-12','ml-1','mr-1')}>
+            <div className={clsx(itemData.type===CONSTANTS.TEXT_TYPE?'input':false,'is-hovered','entrystyle')} type="text" >{itemData.type===CONSTANTS.LINK_TYPE?
+           <LinkCard url={itemData.name} label={itemData.bookmark}></LinkCard>:
+            itemData.name}
             </div>
           </div>
-          <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
-         
-          </div>
-          {/* <div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
+
+          {/* {
+            itemData.detail&&<div className={clsx('column','is-auto',isExpanded?'active-item':false)}>
             <button className={clsx('button','is-white')} onClick={handleExpansion}>
-              <span className='icon'><Icon path={isExpanded?mdiMinus:mdiDotsHorizontal} size={1}></Icon></span>
+              <span className='icon'><Icon path={isExpanded?mdiChevronUp:mdiChevronDown} size={1}></Icon></span>
             </button>
-          </div> */}
+          </div>
+          } */}
+          
         </div>
                         
   
-  
-        <div className={clsx('tray-quick','mt-1',showDetails?'tray-max':'tray-min')}>
+        {
+          showDetails&& <div className={clsx('tray-quick','mt-1',showDetails?'tray-max':'tray-min')}>
           <p className={clsx('text')} type="text" defaultValue={''}>{itemData&&itemData.detail}</p>
         </div>
+        }
+       
       
       </li>
     }
@@ -234,27 +247,37 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
                   <p className="label is-6 has-text-info">{counters.bookmarks}</p> */}
                 </div>
                 <div class="column is-auto is-narrow">
+          
               
-       <button className={clsx('button','has-text-success',showDetails?'is-info':'is-white')} onClick={()=>setShowDetails(!showDetails)}>
+          {/* <button className={clsx('button','has-text-success',showDetails?'is-info':'is-white')} onClick={()=>setShowDetails(!showDetails)}>
             <span className={clsx(showDetails?'has-text-white':'has-text-grey')}><Icon path={mdiDotsHorizontal} size={0.75}></Icon></span>
-            {/* <span className="label is-6 has-text-info">{resource.bookmarks}</span> */}
-          </button>
+          </button> */}
                   {/* <a onClick={handleBookmark}><p class={clsx(userAction.bookmark?'has-text-success':'has-text-gray')}><Icon path={userAction.bookmark?mdiBookmark:mdiBookmarkOutline} size={1}></Icon></p></a>
                   <p className="label is-6 has-text-info">{counters.bookmarks}</p> */}
                 </div>
              <div className={clsx('is-auto')}></div>
               {/* </div> */}
               <div class="column is-auto"/>
-              {/* <div className={clsx('column','is-narrow','is-desktop')}>
+              <div className={clsx('column','is-narrow','is-desktop')}>
                 <button className={clsx('button','is-white','has-text-grey')} onClick={handleClose}><Icon path={mdiClose} size={1}></Icon></button>
-              </div> */}
+              </div>
             </nav>
 
             <div className={clsx('columns','is-mobile')}>
             <div class="column is-auto is-narrow"/>
               <div className={clsx('column','is-auto')}>
               <div className="is-title is-4"><span className="title is-5">{resource.data.title}</span></div>
-                <p className={clsx('is-size-65','kandyjar-grey')}>{resource.data.author_name}</p>
+                <div className={clsx('columns','is-mobile')}>
+                  <div className={clsx('column','is-narrow','author-name')}>
+                  <p className={clsx('is-size-65','kandyjar-grey')}>{resource.data.author_name}</p>
+                  </div>
+                  <div className={clsx('column','is-auto')}>
+                    <button className={clsx('button','has-text-success',showDetails?'is-info':'is-white','is-rounded')} onClick={()=>setShowDetails(!showDetails)}>
+                    <span className={clsx(showDetails?'has-text-white':'has-text-grey')}><strong>Show details</strong></span>
+                    </button>
+                  </div>
+                </div>
+
               </div>
               
             </div>

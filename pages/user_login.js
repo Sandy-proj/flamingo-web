@@ -196,7 +196,13 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                             <div className="level-right"><Link href='/forgot_password'><a className="is-size-6"><span className="is-link is-light is-small">Forgot password?</span></a></Link></div>
                             
                         </div>
-
+                        <div className={clsx('buttons','centeralignment','mt-4')}>
+                               <Link href='/'>
+                      <a className={clsx('button','is-info','is-light','hoverzoom','is-rounded')}>
+                        <strong>Home</strong>
+                      </a>
+                    </Link>
+                    </div>
                     </form>
         
                    

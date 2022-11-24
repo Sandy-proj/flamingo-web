@@ -196,7 +196,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
           }
           <Loader visible={navigateAway}/>
           <nav className={clsx('navbar','pr-4','pl-3','pt-1','pb-1','mb-1')} role="navigation" aria-label="main navigation">
-            <div className="navbar-brand">
+            <div className={clsx('navbar-brand','')}>
               <a className="navbar-item" href="/">
                 <figure className={clsx('image')}>
                   <img src="/basic_logo.png" width='48' height='48' />
@@ -207,7 +207,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
 
               </a>
 
-              <a role="button" className={clsx('navbar-burger', 'has-text-white', sidebar ? 'is-active' : '')} aria-label="menu" aria-expanded="false" data-target="navBarMenu" onClick={() => setSidebar(!sidebar)}>
+              <a role="button" className={clsx('navbar-burger', 'has-text-info', sidebar ? 'is-active' : '')} aria-label="menu" aria-expanded="false" data-target="navBarMenu" onClick={() => setSidebar(!sidebar)}>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
@@ -216,7 +216,6 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
             </div>
 
             <div className={clsx('navbar-menu', 'is-active')}>
-
               <div className={clsx('navbar-item', 'navbar-end', 'is-dark', 'is-expanded', 'is-align-items-center')}>
                 <SearchBar className={clsx('ml-6')} onSearch={handleSearch} reset={displayState.mode === CONSTANTS.commandModes.SEARCH ? false : true} />
               </div>
