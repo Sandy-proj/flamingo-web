@@ -27,7 +27,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   const [currentItem, setCurrentItem] = useState('')
   const [categories, setCategories] = useState([])
   const [refreshFlag, setRefreshFlag] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('Anything goes');
+  const [selectedCategory, setSelectedCategory] = useState('Interesting');
   const [resourceTitle, setResourceTitle] = useState('')
   const [swapMode, setSwapMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
