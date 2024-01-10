@@ -73,16 +73,16 @@
     static TEXT_TYPE = 'TEXT'
 
     //static OAUTH_CLIENT_ID = "788036490312-qt8bglf554rd9afa19cov6ocmq4pse6l.apps.googleusercontent.com"
-    static OAUTH_CLIENT_ID = "326178450731-piab6f8j43hs321br3ct4g28h6gmkomg.apps.googleusercontent.com"
-
+   static OAUTH_CLIENT_ID = "326178450731-piab6f8j43hs321br3ct4g28h6gmkomg.apps.googleusercontent.com"
+   // static OAUTH_CLIENT_ID = "326178450731-38cg7dfl2l1ucvfhc0bnekht6fk606bp.apps.googleusercontent.com"
     //static OAUTH_CLIENT_ID = "788036490312-dnncf6lf0gj1h1qp8nnqeuri5ssksrp9.apps.googleusercontent.com"
-    static HOPS_SOCIAL_URL = 'api/user/social_login'
+   // static HOPS_SOCIAL_URL = 'api/user/social_login'
     // static HOPS_SERVER_BASE='http://localhost:3001/'
     // static HOPS_WEB_SERVER_BASE='http://localhost:3000/'
     static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/api/resources/resource'
    
 
-    // static HOPS_SOCIAL_URL = 'https://api.kandybag.com/user/social_login'
+    static HOPS_SOCIAL_URL = "https://kandybag.com/api/api/user/social_login"
     static HOPS_WEB_SERVER_BASE=''
-    //static HOPS_GET_SERVER_RESOURCE='http://api.KandyBag.com/resources/resource'
+    //static HOPS_GET_SERVER_RESOURCE='https://api.kandybag.com/resources/resource'
 }

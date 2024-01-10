@@ -60,7 +60,7 @@ export default function DisplayArea({command}){
                    try{
                         setData()
                         const response = await axios.get(fetchUrl,{timeout:CONSTANTS.REQUEST_TIMEOUT});
-                     
+                        //console.log(response)
                         if(response.data&&response.data.data&&response.data.data.action==='REFRESH'){
                             readyToFetch.current = true
                             user.initiateHandshake();
@@ -74,6 +74,7 @@ export default function DisplayArea({command}){
                         }
                         
                     }catch(error){
+	            //console.log(error)
           
                     setRequestTimeOut(true)
                     readyToFetch.current = false;
