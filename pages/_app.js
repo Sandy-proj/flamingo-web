@@ -106,6 +106,21 @@ function MyApp({ Component, pageProps }) {
   //return <AuthorizationContext.Provider value={loginStatus}>{!loginStatus.handshake?<div className={clsx('container')}>Loading...</div>:<Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>}</AuthorizationContext.Provider>
   return <AuthorizationContext.Provider value={loginStatus}>
           {/* <Head><script src={'https://accounts.google.com/gsi/client'}></script></Head> */}
+           {/* Google analytics code*/}
+           <script
+        src="https://www.googletagmanager.com/gtag/js?id=G-26ZWFLPBJ3"
+        strategy="afterInteractive"
+      />
+      <script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-26ZWFLPBJ3');
+        `}
+      </script>
+
             <UserNameDialog onDeactivate={()=>{}}></UserNameDialog>
             <ErrorPage error={errorCode} onClose={setErrorCode}></ErrorPage>
             <Component role={loginStatus.role} onError={setErrorCode} displayState={displayState} onDisplayStateChange={handleDisplayStateChange} error={errorCode} onLoginChange={setLogin} {...pageProps}/>

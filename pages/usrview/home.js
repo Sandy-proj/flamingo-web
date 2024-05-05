@@ -11,7 +11,7 @@ export default function UserHome({permissions}) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <body>
-            <h1>User home.</h1>
+            <h1></h1>
         </body>
         </div>
     );
