@@ -14,6 +14,8 @@ import ErrorPage from '../components/ui/ErrorPage'
 import Head from 'next/head'
 
 
+
+
 function MyApp({ Component, pageProps }) {
 
   //Initialize the page.
@@ -111,15 +113,17 @@ function MyApp({ Component, pageProps }) {
         src="https://www.googletagmanager.com/gtag/js?id=G-26ZWFLPBJ3"
         strategy="afterInteractive"
       />
-      <script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
+      
+      <script id="google-analytics" strategy="afterInteractive"
+      dangerouslySetInnerHTML={{
+              __html: ` window.dataLayer = window.dataLayer || [];
+              function gtag(){window.dataLayer.push(arguments);}
+              gtag('js', new Date());
+    
+              gtag('config', 'G-26ZWFLPBJ3');`
+            }}/>
 
-          gtag('config', 'G-26ZWFLPBJ3');
-        `}
-      </script>
+
 
             <UserNameDialog onDeactivate={()=>{}}></UserNameDialog>
             <ErrorPage error={errorCode} onClose={setErrorCode}></ErrorPage>
