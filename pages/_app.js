@@ -120,7 +120,8 @@ function MyApp({ Component, pageProps }) {
               function gtag(){window.dataLayer.push(arguments);}
               gtag('js', new Date());
     
-              gtag('config', 'G-26ZWFLPBJ3');`
+              gtag('config', 'G-26ZWFLPBJ3',{
+                page_path: window.location.pathname});`
             }}/>
 
 
