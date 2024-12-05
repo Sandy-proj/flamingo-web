@@ -11,6 +11,7 @@ import BaseLayout from '../../components/ui/BaseLayout';
 import { AuthorizationContext } from '../../components/Util/AuthContext';
 import UserActivity from '../../components/ui/UserActivity';
 import CommentBox from '../../components/ui/CommentBox';
+import clsx from 'clsx';
 
 export default function Square({handshake,onLoginChange,onError,error}) {
     const [mode,setMode] = useState(CONSTANTS.modes.USE)
@@ -60,7 +61,7 @@ export default function Square({handshake,onLoginChange,onError,error}) {
             readyToFetch.current=true
             return;
         }
-        if(user.isLoggedIn){
+        // if(user.isLoggedIn){
 
         
             if((user.isLoggedIn&&user.id&&user.id>0)&&id>0){
@@ -102,7 +103,9 @@ export default function Square({handshake,onLoginChange,onError,error}) {
             }else{
                 setMode(CONSTANTS.modes.EDIT)
             }
-        }
+        // }else{
+        //     router.push('/')
+        // }
         
     },[id,mode,user.handshakeInProgress,router.isReady])
     var pageBody;
@@ -114,11 +117,11 @@ export default function Square({handshake,onLoginChange,onError,error}) {
         pageBody = <EditSquare onSave={onSave} resource={resourceObject} onError={onError}/>
     }
     return (
-        <div>
+        <div className={clsx('theme-background')}>
         
          <UserActivity resourceId={resourceObject.id} onFetch={handleUserActivity}/> 
             {pageBody}
-            {(mode===CONSTANTS.modes.USE&&resourceObject&&resourceObject.status!=='DOWNLOADED')&&<CommentBox getComments={comment} resourceId={id}/>}
+            {(mode===CONSTANTS.modes.USE&&resourceObject&&resourceObject.status!=='PRIVATE')&&<CommentBox getComments={comment} resourceId={id}/>}
         </div>
         
     );

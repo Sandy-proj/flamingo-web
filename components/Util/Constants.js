@@ -8,7 +8,8 @@
         SAVED:'Saved lists',
         BOOKMARKED:'Bookmarked',
         MYLISTS:'Saved',
-        CATEGORIES:'Categories'
+        CATEGORIES:'Categories',
+        CREATE:'New'
     }
     static PAGE_SIZE=10;
     static MAX_PAGES=3;

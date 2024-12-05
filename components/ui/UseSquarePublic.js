@@ -194,7 +194,7 @@ export default function UseSquarePublic({resourceId,resource,onEdit,activity,isE
 
     return (
       <div>
-        <Head>s
+        <Head>
           <title>KandyBag</title>
           <link rel="icon" href="/tinylogo.png" />
   

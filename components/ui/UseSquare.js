@@ -21,9 +21,9 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     var updateActionsUrl = '/hopsapi/resources/resource/actionupdate?'
     var deleteUrl = '/hopsapi/resources/resource/delete'
     const [mainMenu,setMainMenu] = useState([])
-    let list=[];
+    let itemList=[];
     if(resource.data){
-      list = resource.data?resource.data.resource:[]
+      itemList = resource.data?resource.data.resource:[]
       // gconsole.log('resource')
       //console.log(list)
     }
@@ -112,7 +112,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     }
 
     async function handleDownload(){
-      if(userAction.download||resource.status==='DOWNLOADED')
+      if(userAction.download||resource.status==='PRIVATE')
       return;
       downloadUrl = downloadUrl+`?res=${resource.id}`
       try{
@@ -233,7 +233,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
       function handleSelection(e){
 
         //Add action to the batch of updates. 
-        let newListAction = Object.assign({},listAction)
+        let newListAction =  Object.assign({},listAction)
         newListAction[item.id] = !isSelected
         setListAction(newListAction)
         //onItemSelection()
@@ -349,7 +349,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
         counterObject['bookmarks']=resource.bookmarks?resource.bookmarks:0;
         counterObject['downloads']=resource.downloads?resource.downloads:0;
       }
-      if(resource.status==='DOWNLOADED'){
+      if(resource.status==='PRIVATE'){
         setMainMenu([
           {id:1,name:CONSTANTS.ACTION_MENU.EDIT,owner:true},
           {id:2,name:CONSTANTS.ACTION_MENU.DELETE,isOwner:true},
@@ -381,7 +381,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
     return (
       <div className={clsx('mb-0')}>
         <Head>
-          <title>KandyBag</title>
+          <title>TrypSmart</title>
           <link rel="icon" href="/tinylogo.png" />
   
         </Head>
@@ -407,7 +407,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
           </div>
           <div className={clsx('column','box','is-auto','is-shadowless','mt-2','mb-1')}>
           
-          {resource.status!=='DOWNLOADED'?<nav class="columns is-mobile">
+          {resource.status!=='PRIVATE'?<nav class="columns is-mobile">
             {/* <div class='columns is-mobile'> */}
             <div className={clsx('column','is-narrow')}>
                 <DropDownMenu list={mainMenu} isAuthor={isUserAuthor()} isOwner={isUserOwner()} onSelectItem={handleMenuItemSelection}/>
@@ -422,7 +422,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
               <div class="column is-auto is-narrow">
                 
                  <button className={clsx('button','is-white',userAction.download?'has-text-link':'has-text-grey')} onClick={handleDownload}>
-            <span className={clsx(userAction.download?'has-text-info':'has-text-grey')}><Icon path={userAction.download||resource.status==='DOWNLOADED'?mdiDownload:mdiDownloadOutline} size={0.5}></Icon></span>
+            <span className={clsx(userAction.download?'has-text-info':'has-text-grey')}><Icon path={userAction.download||resource.status==='PRIVATE'?mdiDownload:mdiDownloadOutline} size={0.5}></Icon></span>
             <span className="label is-size-65 has-text-grey has-text-weight-normal">{counters.downloads}</span>
           </button>
               
@@ -457,7 +457,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
             <div class="column is-auto is-narrow"/>
               <div className={clsx('column','is-auto')}>
                 <div className="is-title has-text-grey is-5"><span className="title is-5">{resource.data&&resource.data.title}</span>
-                <p className='has-text-grey has-font-weight-light is-6'>{resource.status==='DOWNLOADED'?'':resource.data&&resource.data.author_name}</p></div>
+                <p className='has-text-grey has-font-weight-light is-6'>{resource.status==='PRIVATE'?'':resource.data&&resource.data.author_name}</p></div>
               </div>
 
             </div>
@@ -468,7 +468,7 @@ export default function UseSquare({resourceId,resource,onEdit,activity,isEditabl
 
 
             <ul className={clsx('p-2','listbox')}>
-              {list.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={resource.status==='DOWNLOADED'}/>})}
+              {itemList.map((item,index)=>{return <ExpandableListItem item={item} itemIndex={index} onItemSelection={handleItemCheck} actionable={resource.status==='PRIVATE'}/>})}
             </ul>
           
           </div>

@@ -15,7 +15,7 @@ import axios from 'axios'
 import GenericCategories from '../components/ui/GenericCategories'
 import { buildGuestUser } from '../components/Util/Session'
 import Icon from '@mdi/react'
-import { mdiAccount, mdiGoogle, mdiPlusCircle, mdiPlus, mdiEmail, mdiHeart } from '@mdi/js'
+import { mdiAccount, mdiGoogle, mdiPlusCircle, mdiPlus, mdiEmail } from '@mdi/js'
 import Footer from '../components/ui/Footer'
 import Loader from '../components/ui/LoadingOverlay'
 
@@ -25,12 +25,10 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   const user = useContext(AuthorizationContext);
   const [categoryData, setCategoryData] = useState([]);
   const [sidebar, setSidebar] = useState(false)
-  const [loadSignIn, setLoadSignIn] = useState(false)
-  const [navigateAway, setNavigateAway] = useState(false)
-  const [downloads,setDownloads] = useState(1359)
+  const [loadSignIn,setLoadSignIn] = useState(false)
+  const [navigateAway,setNavigateAway] = useState(false)
   const fetchCategoryUrl = '/hopsapi/resources/categories'
   const logoutUrl = '/hopsapi/user/logout'
-  const downloadsUrl = '/hopsapi/resources/downloads'
   const socialLoginUrl = CONSTANTS.HOPS_SOCIAL_URL;
 
 
@@ -47,12 +45,11 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
 
   function handleCreatePost() {
     setNavigateAway(true);
-    router.push('/usrview/square')
-    // if (user.isLoggedIn) {
-    //   router.push('/usrview/square')
-    // } else {
-    //   router.push('/user_login')
-    // }
+    if (user.isLoggedIn) {
+      router.push('/usrview/square')
+    } else {
+      router.push('/user_login')
+    }
   }
 
   async function handleLogout() {
@@ -109,28 +106,29 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   //Elements switching for logged in user and guest user. 
   var navButtons = <div></div>
   if (user.isLoggedIn) {
-    navButtons = (<div className={clsx('buttons','mt-1')}>
+    navButtons = (<div className={clsx('buttons')}>
       <Link href='/usrview/profile'>
-      <a class="navbar-item has-text-weight-bold">{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</a>
-        {/* <button className={clsx('button', 'is-info', 'is-light', 'is-rounded')}><span><Icon path={mdiAccount} size={1}></Icon></span><span><strong>{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</strong></span></button> */}
+        <button className={clsx('button', 'is-info', 'is-light', 'is-rounded')}><span><Icon path={mdiAccount} size={1}></Icon></span><span><strong>{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</strong></span></button>
         {/* <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
                         <strong>Profile</strong>
                       </a> */}
       </Link>
-      <a class="navbar-item has-text-weight-bold" onClick={handleLogout}>
+      <a className={clsx('button', 'is-light', 'is-rounded')} onClick={handleLogout}>
         <strong>Log out</strong>
       </a>
     </div>);
   } else {
-    navButtons = (<div className={clsx('buttons')}> 
+    navButtons = (<div className={clsx('buttons')}>
 
       <Link href='/user_login'>
-        <a class="navbar-item has-text-weight-bold" onClick={() => setNavigateAway(true)}>
+        <a className={clsx('button', 'is-info', 'is-rounded', 'hoverzoom')} onClick={()=>setNavigateAway(true)}>
           <strong>Log in</strong>
         </a>
       </Link>
       <Link href='/user_signup'>
-        <a class="navbar-item has-text-weight-bold" onClick={() => setNavigateAway(true)}>Sign up</a>
+        <a className={clsx('button', 'is-info', 'is-rounded', 'is-outlined', 'centeralignment', 'hoverzoom')} onClick={()=>setNavigateAway(true)}>
+          <p className={clsx('has-text-weight-bold')}>Sign up</p>
+        </a>
       </Link>
     </div>);
   }
@@ -143,21 +141,10 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
       const data = response.data.data.categories;
       setCategoryData(data)
     } catch (error) {
-      console.log(error)
       //No Category data
     }
     setLoadSignIn(true)
   }, [])
-
-  useEffect(async() => {
-    try {
-    const downloads = await axios.get(downloadsUrl, { timeout: CONSTANTS.REQUEST_TIMEOUT })
-    setDownloads(downloads.data);
-    }catch (error) {
-      console.log(error)
-      //No Category data
-    }
-  })
 
 
   //Effect to redirect registered users to verification.
@@ -171,7 +158,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   //Element
   return (
     <div>
-      <Head><script src={'https://accounts.google.com/gsi/client'} onLoad={() => { }}></script></Head>
+      <Head><script src={'https://accounts.google.com/gsi/client'} onLoad={()=>{}}></script></Head>
       <div className={clsx('sidenav', sidebar ? 'sidebar-max' : 'sidebar-min', 'is-hidden-desktop')}>
         <aside className={clsx('menu', 'centeralignment')}>
           <ul className="menu-list">
@@ -182,7 +169,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                     {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                     <Icon path={mdiPlus} size={1}></Icon>
                   </span>
-                  <span>Create my travel checklist</span>
+                  <span>Share a list</span>
                 </span>
               </a>
 
@@ -191,136 +178,23 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
 
           </ul>
         </aside>
-        {/* <div className={clsx('box')}>
+        <div className={clsx('box')}>
           <GenericCategories onSelectItem={handleGenericCategories} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.TRENDING || displayState.mode === CONSTANTS.commandModes.FRESH || displayState.mode === CONSTANTS.commandModes.POPULAR || displayState.mode === CONSTANTS.commandModes.MYLISTS || displayState.mode === CONSTANTS.commandModes.MYFEED || displayState.mode === CONSTANTS.commandModes.SAVED || displayState.mode === CONSTANTS.commandModes.BOOKMARKED ? false : true} />
 
         </div>
         <div className={clsx('box')}>
           <Categories className={clsx('pl-4')} onSelectItem={handleCategoryMenuItem} data={categoryData} activeIndex={displayState.activeItem} reset={displayState.mode === CONSTANTS.commandModes.CATEGORIES ? false : true} />
 
-        </div> */}
+        </div>
       </div>
       <div>
         <Header />
         <div>
-          <section className={clsx('hero', 'is-large', 'is-info', 'theme-background')}>
-            <div className={clsx('hero-head', 'overlay-layer')}>
-              <header class="navbar">
-                <div class="container">
-                  <div class="navbar-brand">
 
-                    <span class="navbar-burger" data-target="navbarMenuHeroC">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </span>
-                  </div>
-                  <div id="navbarMenuHeroC" class="navbar-menu">
-                    <div class="navbar-end">
-                      {navButtons}
-                      {/* <a class="navbar-item has-text-weight-bold"> Sign up </a>
-                      <a class="navbar-item has-text-weight-bold"> Login </a> */}
-                      <span class="navbar-item">
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </header>
-            </div>
-            <div className={clsx('hero-body', 'columns')}>
-              <div className={clsx('column', 'is-one-third')}>
-              <div class="container has-text-centered">
-                {/* <p class="title">1.2k downloads</p> */}
-                 
-              </div>
-              </div>
-
-              <div className={clsx('column', 'is-auto')}>
-                <p className={clsx('title', 'has-text-warning', 'is-size-1', 'sulphur-point-bold')}>TrypSmart</p>
-                <p className={clsx('mt-5')}></p>
-                <p className={clsx('subtitle', 'has-text-white', 'pt-10')}><span><button className={clsx('button', 'is-warning', 'is-rounded', 'trypsmart-action-button','has-text-weight-bold')} onClick={handleCreatePost}>Create</button> </span>your instant travel checklist here.</p>
-              </div>
-              <div className={clsx('column','is-one-fifth')}>
-
-
-                <div className={clsx('box', 'has-background-transparent', (user && user.isLoggedIn) ? 'hide-element' : '')}>
-                  <aside className={clsx('menu', 'centeralignment')}>
-                    <ul className="menu-list">
-                      <li key={1} className={clsx('mb-5')}>
-                        <button className={clsx('button', 'is-rounded', 'is-fullwidth', 'is-outlined', 'thin-border-button')} onClick={handleCreatePost}>
-                          <span className="icon-text">
-                            <span className="icon">
-                              <Icon path={mdiEmail} size={0.75}></Icon>
-                            </span>
-                            <span ><strong className={clsx('is-small', 'has-text-weight-medium', 'has-text-grey-dark')}>Login with email</strong></span>
-                          </span>
-                        </button>
-
-                      </li>
-                      {
-                        !loadSignIn ? <li key={2}>
-
-                          <div id="g_id_onload"
-                            data-client_id={CONSTANTS.OAUTH_CLIENT_ID}
-                            data-context="signin"
-                            data-ux_mode="popup"
-                            data-login_uri={socialLoginUrl}
-                            data-auto_prompt="false">
-                          </div>
-
-                          <div class="g_id_signin"
-                            data-type="standard"
-                            data-shape="pill"
-                            data-theme="outline"
-                            data-text="continue_with"
-                            data-size="large"
-                            data-logo_alignment="left">
-                          </div>
-
-                        </li> : <li key={2}>
-
-                          <div id="g_id_onload"
-                            data-client_id={CONSTANTS.OAUTH_CLIENT_ID}
-                            data-context="signin"
-                            data-ux_mode="popup"
-                            data-login_uri={socialLoginUrl}
-                            data-auto_prompt="false">
-                          </div>
-
-                          <div class="g_id_signin"
-                            data-type="standard"
-                            data-shape="pill"
-                            data-theme="outline"
-                            data-text="continue_with"
-                            data-size="large"
-                            data-logo_alignment="left">
-                          </div>
-
-                        </li>
-                      }
-
-                    </ul>
-                  </aside>
-
-                </div>
-                
-              </div>
-              <div className={clsx('is-one-third')}></div>
-            </div>
-          </section>
-          <section className={clsx('hero',  'is-warning')}>
-            <div class="hero-body">
-              <div class="container has-text-centered">
-                {/* <p class="title">1.2k downloads</p> */}
-                <p class="subtitle"> <span><Icon className={clsx('has-text-danger')} path={mdiHeart} size={0.75}></Icon><span>{downloads}</span> downloads</span></p>
-              </div>
-            </div>
-          </section>
           {
             //Header
           }
-          {/* <Loader visible={navigateAway}/>
+          <Loader visible={navigateAway}/>
           <nav className={clsx('navbar','pr-4','pl-3','pt-1','pb-1','mb-1')} role="navigation" aria-label="main navigation">
             <div className={clsx('navbar-brand','')}>
               <a className="navbar-item" href="/">
@@ -328,7 +202,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                   <img src="/basic_logo.png" width='48' height='48' />
                 </figure>
                 <p className={clsx('title', 'is-4', 'ml-4')}>
-                  <strong className={clsx( 'has-text-weight-bold','logo-font')}>TrypSmart<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></strong>
+                  <strong className={clsx( 'has-text-weight-bold','logo-font')}>Kandybag<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></strong>
                 </p>
 
               </a>
@@ -345,17 +219,17 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
               <div className={clsx('navbar-item', 'navbar-end', 'is-dark', 'is-expanded', 'is-align-items-center')}>
                 <SearchBar className={clsx('ml-6')} onSearch={handleSearch} reset={displayState.mode === CONSTANTS.commandModes.SEARCH ? false : true} />
               </div>
-              <div className="navbar-item navbar-end level-item is-expanded"> */}
-          {/* <SearchBar onSearch={handleSearch} reset={displayState.mode===CONSTANTS.commandModes.SEARCH?false:true}/> */}
+              <div className="navbar-item navbar-end level-item is-expanded">
+                {/* <SearchBar onSearch={handleSearch} reset={displayState.mode===CONSTANTS.commandModes.SEARCH?false:true}/> */}
 
-          {/* </div>
+              </div>
               <div className={'navbar-item'}>
                 {navButtons}
               </div>
             </div>
 
-          </nav> */}
-          {/* <div className="columns is-gapless ">
+          </nav>
+          <div className="columns is-gapless ">
             <div className="column is-2" />
 
 
@@ -384,9 +258,10 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                       <button className={clsx('button', 'is-info', 'is-rounded', 'thin-border-button')} onClick={handleCreatePost}>
                         <span className="icon-text">
                           <span className="icon">
+                            {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                             <Icon path={mdiPlus} size={1}></Icon>
                           </span>
-                          <span><strong>Create my travel checklist</strong></span>
+                          <span><strong>Share a list</strong></span>
                         </span>
                       </button>
 
@@ -406,6 +281,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                       <button className={clsx('button', 'is-rounded', 'is-fullwidth', 'is-outlined', 'thin-border-button')} onClick={handleCreatePost}>
                         <span className="icon-text">
                           <span className="icon">
+                            {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                             <Icon path={mdiEmail} size={0.75}></Icon>
                           </span>
                           <span ><strong className={clsx('is-small', 'has-text-weight-medium', 'has-text-grey-dark')}>Login with email</strong></span>
@@ -461,7 +337,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
               </div>}
             </div>
             <div className={clsx('column', 'is-2')} />
-          </div> */}
+          </div>
         </div>
       </div>
 

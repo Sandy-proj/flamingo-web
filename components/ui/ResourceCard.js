@@ -33,11 +33,11 @@ export default function Header({resourceData,onSelection}){
                     <div className={clsx('media-content')}>
                         <p class="title is-6 has-text-weight-medium is-family-primary mb-2">{resourceData.title}</p>
                         <span className={clsx('mt-0','mb-4')}>
-                        {resourceData&&resourceData.status!=='DOWNLOADED'&&<span className={clsx('subtitle','is-size-65','mb-4','kandyjar-grey','has-text-weight-normal')}>{resourceData.author_name}</span>}<span className={clsx('ml-2','kandyjar-grey','is-size-65')}><span className={clsx('mr-2','grey-dot')}><Icon path={mdiCircle} size={0.3}></Icon></span>{getTimeString(Number(resourceData.updated_at))}</span></span>
+                        {resourceData&&resourceData.status!=='PRIVATE'&&<span className={clsx('subtitle','is-size-65','mb-4','kandyjar-grey','has-text-weight-normal')}>{resourceData.author_name}</span>}<span className={clsx('ml-2','kandyjar-grey','is-size-65')}><span className={clsx('mr-2','grey-dot')}><Icon path={mdiCircle} size={0.3}></Icon></span>{getTimeString(Number(resourceData.updated_at))}</span></span>
                         {/* <p class="content">{resourceData.preview&&resourceData.preview.name}<br></br>....</p> */}
                     </div>
                 </div>
-                {resourceData&&resourceData.status==='DOWNLOADED'?<div></div>:
+                {resourceData&&resourceData.status==='PRIVATE'?<div></div>:
                 <div class="nav mt-4 mb-1">
                 <div class="columns is-mobile">
 

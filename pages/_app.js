@@ -24,7 +24,9 @@ function MyApp({ Component, pageProps }) {
 
   const [loginStatus,setLoginStatus] = useState(buildGuestUser());
   const [errorCode,setErrorCode] = useState(CONSTANTS.NO_ERROR)
-  const [displayState,setDisplayState]=useState({mode:(loginStatus.isLoggedIn?CONSTANTS.commandModes.MYFEED:CONSTANTS.commandModes.POPULAR),
+  const [displayState,setDisplayState]=useState({mode:(loginStatus.isLoggedIn?CONSTANTS.commandModes.SAVED:CONSTANTS.commandModes.SAVED
+
+  ),
                                                 param:(loginStatus.isLoggedIn?loginStatus.id:'')});
 
 
@@ -33,6 +35,8 @@ function MyApp({ Component, pageProps }) {
     //setLoginStatus(buildUser(user.id,user.role,{}));
     user.initiateHandshake = handleIntiateRequest;
     setLoginStatus(user)
+    setDisplayState({mode:CONSTANTS.commandModes.SAVED,
+    param:loginStatus.id})
   }
 
 

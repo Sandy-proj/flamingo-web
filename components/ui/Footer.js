@@ -4,7 +4,7 @@ export default function Footer({props,children}){
     return (
     <div className = {clsx('footer','mt-1','footer-background')}>
         <div className={clsx('content','has-text-centered')}>
-        2021 <strong>Copyright &#169;KandyBag</strong>
+        2024 <strong>Copyright &#169;TrypSmart</strong>
         </div>
        <div className={clsx('columns')}>
 

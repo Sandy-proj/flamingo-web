@@ -159,14 +159,14 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                          </div>
                           
                         <div>
-                            {validations.emailLengthFail&&<p className={'is-light','has-text-danger'}>&#8226;Email field is empty.</p>}
-                            {validations.passwordLengthFail&&<p className={'is-light','has-text-danger'}>&#8226;Password field is empty.</p>}
-                            {validations.validEmailFail&&<p className={'is-light','has-text-danger'}>&#8226;Invalid emailId</p>}
-                            {validations.validPasswordFail&&<p className={'is-light','has-text-danger'}>&#8226;Invalid password.<br/></p>}
-                            {validations.loginFail&&<p className={'is-light','has-text-danger'}>&#8226;Incorrect credentials.<br/></p>}
-                            {validations.serverError&&<p className={'is-light','has-text-danger'}>&#8226;An error occured while processing<br/>your request.</p>}
-                            {validations.notUser&&<p className={'is-light','has-text-danger'}>&#8226;emailId is invalid.</p>}
-                            {loginAttempts>3&&<p className={'is-light','has-text-danger'}>&#8226;Exceeded maximum attempts, try <br/>to reset your password.<br/></p>}
+                            {validations.emailLengthFail&&<p className={clsx('is-light','has-text-danger')}>&#8226;Email field is empty.</p>}
+                            {validations.passwordLengthFail&&<p className={clsx('is-light','has-text-danger')}>&#8226;Password field is empty.</p>}
+                            {validations.validEmailFail&&<p className={clsx('is-light','has-text-danger')}>&#8226;Invalid emailId</p>}
+                            {validations.validPasswordFail&&<p className={clsx('is-light','has-text-danger')}>&#8226;Invalid password.<br/></p>}
+                            {validations.loginFail&&<p className={clsx('is-light','has-text-danger')}>&#8226;Incorrect credentials.<br/></p>}
+                            {validations.serverError&&<p className={clsx('is-light','has-text-danger')}>&#8226;An error occured while processing<br/>your request.</p>}
+                            {validations.notUser&&<p className={clsx('is-light','has-text-danger')}>&#8226;emailId is invalid.</p>}
+                            {loginAttempts>3&&<p className={clsx('is-light','has-text-danger')}>&#8226;Exceeded maximum attempts, try <br/>to reset your password.<br/></p>}
                         </div>
                          <div className={clsx('is-full','column','centeralignment','mt-2','mb-0')}>
                               <div className="button is-rounded is-info is-fullwidth" onClick={handleSubmit}><strong>Login</strong></div>

@@ -207,6 +207,36 @@ hr.solid {
   border-radius: 2px;
 }
 .logo-font{
-  font-family:'Fredoka';
+  font-family:'Sulpher Point';
   color:#ffc000 !important;
+}
+.active-suggestion{
+  background-color: #3498db;
+}
+.inactive-suggestion{
+  background-color: #ffffff;
+}
+.theme-background{
+
+  background-size: cover; 
+  background:linear-gradient(0deg, rgba(16, 0, 89, 0.6), rgba(16, 0, 89, 0.4)), url(../public/travel-theme.jpg);
+  background-position: center; 
+}
+.theme-color-background{
+  height: 700px;
+  width: 100%;
+  background-color: #f4b505;
+  
+}
+.hero-text{
+  font-size: xx-large;
+  font-family:'Roboto';
+  font-weight:800;
+  color: #ffffff;
+}
+.overlay-layer{
+  background-color: #000000a9;
+}
+.trypsmart-background{
+  background-color: #fbfbfb;
 }
