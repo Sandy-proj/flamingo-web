@@ -117,7 +117,7 @@ export default function Square({handshake,onLoginChange,onError,error}) {
         pageBody = <EditSquare onSave={onSave} resource={resourceObject} onError={onError}/>
     }
     return (
-        <div className={clsx('theme-background')}>
+        <div className={clsx('trypsmart-background')}>
         
          <UserActivity resourceId={resourceObject.id} onFetch={handleUserActivity}/> 
             {pageBody}

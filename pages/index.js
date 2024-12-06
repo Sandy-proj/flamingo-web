@@ -111,14 +111,17 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   if (user.isLoggedIn) {
     navButtons = (<div className={clsx('buttons','mt-1')}>
       <Link href='/usrview/profile'>
-      <a class="navbar-item has-text-weight-bold">{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</a>
+      <a class="navbar-item has-text-weight-bold mr-5">{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</a>
         {/* <button className={clsx('button', 'is-info', 'is-light', 'is-rounded')}><span><Icon path={mdiAccount} size={1}></Icon></span><span><strong>{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</strong></span></button> */}
         {/* <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
                         <strong>Profile</strong>
                       </a> */}
       </Link>
-      <a class="navbar-item has-text-weight-bold" onClick={handleLogout}>
+      <a class="navbar-item is-link has-text-weight-bold mr-5" onClick={handleLogout}>
         <strong>Log out</strong>
+      </a>
+      <a class="navbar-item has-text-weight-bold" onClick={()=>{router.push('/my_page')}}>
+        <strong>My Page</strong>
       </a>
     </div>);
   } else {
@@ -239,7 +242,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
               <div className={clsx('column', 'is-auto')}>
                 <p className={clsx('title', 'has-text-warning', 'is-size-1', 'sulphur-point-bold')}>TrypSmart</p>
                 <p className={clsx('mt-5')}></p>
-                <p className={clsx('subtitle', 'has-text-white', 'pt-10')}><span><button className={clsx('button', 'is-warning', 'is-rounded', 'trypsmart-action-button','has-text-weight-bold')} onClick={handleCreatePost}>Create</button> </span>your instant travel checklist here.</p>
+                <p className={clsx('subtitle', 'has-text-white', 'pt-10')}><span><button className={clsx('button', 'is-warning', 'is-outlined', 'trypsmart-action-button','has-text-weight-bold')} onClick={handleCreatePost}>Create</button> </span>your instant travel checklist here.</p>
               </div>
               <div className={clsx('column','is-one-fifth')}>
 

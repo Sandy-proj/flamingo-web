@@ -49,7 +49,7 @@ hr.solid {
         padding-right: calc(1em + 0.25em); }
     
 .listbox{
-    height: 70vh;
+    height: 80vh;
     overflow: auto;
     background-color: #ffffff;
 }
@@ -151,11 +151,12 @@ hr.solid {
 }
 
 .ghost::placeholder {
-  color: #9e9e9e;
+  color: #00000043;
   opacity: 1;
+  font-weight: bold;
 }
 .thin-border-button{
-  border-width: thin;
+  border-width: 0;
 }
 .hide-element{
   display: none;
@@ -168,7 +169,7 @@ hr.solid {
   margin-bottom: 1px;
 }
 .editlistbackground{
-  height: 60vh;
+  height: 78vh;
   overflow: auto;
   background-color: #ffffff;
 }
@@ -179,6 +180,7 @@ hr.solid {
 .basic-placeholder {
   color: #b0b0b0;
   opacity: 1;
+  align-self: center;
 }
 .basic-box{
   background-color: #fff;
@@ -211,7 +213,9 @@ hr.solid {
   color:#ffc000 !important;
 }
 .active-suggestion{
-  background-color: #3498db;
+  background-color: #ffffff;
+  font-weight: bold;
+  color: #3498db;
 }
 .inactive-suggestion{
   background-color: #ffffff;
@@ -238,5 +242,14 @@ hr.solid {
   background-color: #000000a9;
 }
 .trypsmart-background{
-  background-color: #fbfbfb;
+  background-color: #f6f6f6;
+}
+.trypsmart-picker{
+  height:80vh;
+}
+.trypsmart-visible{
+  visibility: visible;
+}
+.trypsmart-hidden{
+  visibility: hidden;
 }

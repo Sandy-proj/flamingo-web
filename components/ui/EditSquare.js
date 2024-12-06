@@ -26,6 +26,7 @@ import pdfmake from 'pdfmake/build/pdfmake';
 import { vfs } from '../Util/vfs';
 import { mdiLightbulbOnOutline } from '@mdi/js';
 import { mdiLightbulbOn } from '@mdi/js';
+import { ToastContainer, toast } from 'react-toastify';
 pdfmake.vfs = vfs;
 
 export default function EditSquare({ resourceId, resource, onSave, onError }) {
@@ -40,9 +41,9 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   const [resourceTitle, setResourceTitle] = useState('')
   const [swapMode, setSwapMode] = useState(true);
   const [deleteMode, setDeleteMode] = useState(true);
-  const [pickerMode, setPickerMode] = useState(false);
+  const [pickerMode, setPickerMode] = useState(true);
   const [discarding, setDiscarding] = useState(false);
-  const [renderTrigger,setRenderTrigger] = useState(false);
+  const [renderTrigger, setRenderTrigger] = useState(false);
   const [titleValidation, setTitleValidation] = useState(false);
   const [requestStatus, setRequestStatus] = useState({ status: CONSTANTS.messageTypes.HIDDEN, message: '', error: false, isVisible: false })
   const [loginSuggestion, setLoginSuggestion] = useState(false)
@@ -291,12 +292,12 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
   useEffect(() => {
     if (resource.data) {
-      if(resource.data.resource){
+      if (resource.data.resource) {
         list.current = resource.data.resource;
-      }else{
+      } else {
         list.current = [];
       }
-     // setList(resource.data.resource ? resource.data.resource : []);
+      // setList(resource.data.resource ? resource.data.resource : []);
     }
     if (resource.data && resource.data.title)
       setResourceTitle(resource.data.title)
@@ -380,12 +381,12 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       <LoginSuggestion visible={loginSuggestion} onOk={onLoginOk} onCancel={onLoginCancel} />
       <SmartPicker visible={pickerMode} onOk={onPickOk} onCancel={onPickCancel} selectedIds={selectedIdList} pickDto={standardItemMap.current} />
       <div className={clsx('column', 'is-narrow', 'has-background-white')}>
-{/* 
+        {/* 
         <DropDownMenu up={true} list={inputTypes} trigger={DropDownChoice} onSelectItem={(index) => { setIsLink(inputTypes[index].name === 'Link' ? true : false) }} /> */}
 
       </div>
       {
-        isLink ? <div className={clsx('column', 'is-auto', 'box','is-radiusless' ,'mr-0')}>
+        isLink ? <div className={clsx('column', 'is-auto', 'box', 'is-radiusless', 'mr-0')}>
           {list.current.length > itemLimit ? <div className={clsx('has-background-gray')}><p className={clsx('title', 'has-background-gray', 'tag', 'has-text-info', 'container', 'is-6')}>You have reached the maximum items on a list({itemLimit}).</p></div> :
             <div>
               <input key={1} maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'p-2', 'thin-border-button', 'ghost', 'entrystyle', 'is-small', 'bottom-panel-small-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => { }} placeholder={`Paste your url.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)}></input>
@@ -406,12 +407,15 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             </span>
           </div>
           }
+
         </div>
       }
-      <div className={clsx('column', 'ml-0', 'is-1', 'p-1')}>
-        <button className={clsx('button', 'bottom-panel-dimensions', 'is-fullwidth')}
+      <div className={clsx('column', 'ml-0', 'is-narrow', 'p-1')}>
+        <button className={clsx('button', 'is-large', 'is-link', 'bottom-panel-dimensions', 'is-fullwidth')}
+          // ('button', 'bottom-panel-dimensions', 'is-fullwidth')}
           onClick={handleTextEntry}>
-          <span className={clsx('icon', 'is-info')}><Icon path={mdiPlus} size={2}></Icon></span>
+          {/* <span className={clsx('icon', 'is-info')}><Icon path={mdiPlus} size={2}></Icon></span> */}
+          <span className={clsx('is-size-5','has-text-weight-bold')}>Add to list</span>
         </button>
       </div>
 
@@ -433,7 +437,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
         setTitleText(initialTitle);
       }
     }, [initialTitle])
-    return <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')} value={titleRef.current} placeholder="Title here..." onChange={handleTitleTextEntry}></input>
+    return <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-bold')} value={titleRef.current} placeholder="Title here..." onChange={handleTitleTextEntry}></input>
 
   }
   function ExpandableListItem({ item, index, onDelete, onItemChange, onDetailChange }) {
@@ -513,6 +517,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   function onSortEnd({ oldIndex, newIndex }) {
     list.current = arrayMove(list.current
       , oldIndex, newIndex)
+    setRenderTrigger(!renderTrigger)
   }
 
 
@@ -534,10 +539,9 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
   //console.log('item-data:'+itemData.name)
   function printDocument() {
-
     let docDefinition = {
       content: [
-        { text: 'Travel checklist', style: 'header' },
+        { text: titleRef.current ? titleRef.current : 'Travel checklist', style: 'header' },
         {
 
           // to treat a paragraph as a bulleted list, set an array of items under the ul key
@@ -602,6 +606,16 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       </Head>
       {/* <SimpleAlert isVisible={titleValidation} message={'Enter a title to save the list.'} onCancel={closeDialog} onConfirm={closeDialog} onClose={closeDialog} /> */}
       <Alert isVisible={titleValidation} message={'Enter a title to post the list'} onCancel={closeDialog} />
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover/>
       <div className={clsx('trypsmart-background')}>
         <div>
 
@@ -615,10 +629,34 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
             <div className="column is-auto is-radiusless">
 
-              <div className="card p-0 is-shadowless mb-0.5 pt-2">
+              <div className={clsx('card', 'p-0', 'is-shadowless', 'has-background-link', 'mb-0.5', 'pt-2')}>
 
-                <nav class="level has-background-white mt-1 pr-2 is-mobile">
+                <nav className={clsx('level', 'has-background-link', 'mt-1', 'pr-2', 'is-mobile')}>
                   <div className="level-left">
+                    <div class="ml-2 field has-addons">
+                      <p class="control">
+                        <button class="button is-warning is-outlined" onClick={togglePick}>
+                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-white','mr-2')}><Icon path={mdiLightbulbOn} size={1}></Icon></span>
+                          <span>Suggestions</span>
+                        </button>
+                      </p>
+                      <p class="control">
+                        <button class="button is-warning is-outlined" onClick={()=>{
+                          if(list.current.length>0){
+                            printDocument();
+                          }else{
+                            toast.error("The list is empty. Add items to download.")
+                          }
+                        }}>
+                          <span>Download PDF</span>
+                        </button>
+                      </p>
+                      <p class="control">
+                        <button class="button is-warning is-outlined" onClick={handleSave}>
+                          <span>Save</span>
+                        </button>
+                      </p>
+                    </div>
                     {/* <div className='level-item'>
                       <DropDownMenu list={categories} trigger={DropDownMenuTrigger} onSelectItem={(index) => { setSelectedCategory(categories[index].name) }} />
                       <button className={clsx('is-white', 'is-small', 'button', swapMode ? 'has-background-info' : '')} onClick={toggleSwap}>
@@ -628,13 +666,13 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                     <button className={clsx('is-white', 'is-small', 'button', deleteMode ? 'has-background-info' : '')} onClick={toggleDelete}>
                       <span className={clsx(deleteMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiDelete} size={1}></Icon></span>
                     </button> */}
-                    <button className={clsx('is-white', 'is-small', 'button', 'is-rounded', pickerMode ? 'has-background-info' : '')} onClick={togglePick}>
+
+                    {/* <button className={clsx('is-white', 'is-small', 'button', 'is-rounded', pickerMode ? 'has-background-info' : '')} onClick={togglePick}>
                       <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-danger')}><Icon path={mdiLightbulbOn} size={1}></Icon></span>
                     </button>
-                    <button className={clsx('is-white', 'is-small', 'button', 'is-rounded','is-warning', pickerMode ? 'has-background-info' : '')} onClick={printDocument}>
-                      {/* <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-grey')}><Icon path={mdiDelete} size={1}></Icon></span> */}
+                    <button className={clsx('is-white', 'is-small', 'button', 'is-warning', pickerMode ? 'has-background-info' : '')} onClick={printDocument}>
                       Download
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className='level-right'>
@@ -643,24 +681,28 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
                         <div className={clsx('buttons')}>
 
-                          <div >
+                          {/* <div >
                             <a onClick={handleSave} className={clsx('button', 'is-white', 'is-small', 'grey-dot')}>
-                              {/* <span className={clsx('kandyjar-grey')}> <Icon path={mdiCheck} size={1}></Icon></span> */}
-                              <span className={clsx('kandyjar-grey','has-text-weight-bold','has-text-info')}> Save</span>
+                              <span className={clsx('kandyjar-grey')}> <Icon path={mdiCheck} size={1}></Icon></span>
+                              <span className={clsx('kandyjar-grey', 'has-text-weight-bold', 'has-text-info')}> Save</span>
                             </a>
-                          </div>
+                          </div> */}
+
                           <div>
-                            <a onClick={handleCancel} className={clsx('button', 'is-white', 'is-small', 'has-text-grey')}>
-                              {/* <span className={clsx('kandyjar-grey')}><Icon path={mdiClose} size={1}></Icon></span> */}
-                              <span className={clsx('kandyjar-grey','has-text-info')}> Cancel</span>
-                            </a>
+                            <button class="button is-ghost" onClick={handleCancel} >
+                              <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-white')} ><Icon path={mdiClose} size={1.5}></Icon></span>
+                            </button>
+                            {/* <button onClick={handleCancel} className={clsx('button','is-outlined',)}>
+                              <span className={clsx('has-text-danger')}><Icon path={mdiClose} size={1}></Icon></span>
+                              <span className={clsx('kandyjar-grey', 'has-text-info')}> Cancel</span>
+                            </button> */}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </nav>
-                {<div className={clsx('dropdown-divider')}></div>}
+                {/* {<div className={clsx('dropdown-divider')}></div>} */}
                 <TitleEntry initialTitle={resource && resource.data && resource.data.title ? resource.data.title : ''} />
 
                 {/* <input maxLength={CONSTANTS.LIST_ITEM_TITLE_MAX_LENGTH} className={clsx('input', 'ghost', 'title', 'pl-5', 'is-5', 'entrystyle', 'has-text-weight-normal')}  placeholder="It's a list of..."   onChange={handleTitlechange}></input> */}
@@ -674,7 +716,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
               </div>
               <div id="divToPrint" className={clsx('box', 'editlistbackground', 'mb-0', 'is-shadowless', 'has-background-gray')}>
                 {isListEmpty() ? <div className={clsx('container', 'centeralignment')}>
-                  <p className={clsx('mt-6', 'is-size-6', 'basic-placeholder', 'has-text-weight-light', 'p-4', 'is-rounded', 'cloud')}>Lists are fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
+                  <p className={clsx('mt-1', 'is-size-6', 'basic-placeholder', 'has-text-weight-light', 'p-4', 'is-rounded', 'cloud')}>Lists can be fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
                 </div> :
                   <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                     {list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> })}

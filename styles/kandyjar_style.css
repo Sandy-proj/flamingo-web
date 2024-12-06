@@ -19308,6 +19308,9 @@ print {
 .trypsmart-action-button:hover{
   background-color:#009e86;
 }
+.trypsmart-white{
+  background-color:#eeeeee;
+}
 
 .sulphur-point-light {
   font-family: "Sulphur Point", sans-serif;

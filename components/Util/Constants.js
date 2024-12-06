@@ -17,7 +17,8 @@
         SUCCESS :1,
         ERROR:2,
         PROGRESS:3,
-        HIDDEN:4
+        HIDDEN:4,
+        NOTIFICATION:5
     }
     static modes = {
         EDIT:1,

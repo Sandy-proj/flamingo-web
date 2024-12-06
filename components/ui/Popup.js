@@ -20,7 +20,9 @@ export default function Popup({status,message,error,onClose,isVisible,children})
                     </div>
     }else if(status===CONSTANTS.messageTypes.ERROR){
         modalBody=<div>Error</div>
-    }
+    }else if(status===CONSTANTS.messageTypes.NOTIFICATION){
+      modalBody=<div>message</div>
+  }
 
     return (
 

@@ -171,7 +171,7 @@ export default function MyHome({ onLoginChange, displayState, onDisplayStateChan
 
   //Element
   return (
-    <div>
+    <div className='trypsmart-background'>
       <Head><script src={'https://accounts.google.com/gsi/client'} onLoad={()=>{}}></script></Head>
       <div className={clsx('sidenav', sidebar ? 'sidebar-max' : 'sidebar-min', 'is-hidden-desktop')}>
         <aside className={clsx('menu', 'centeralignment')}>
@@ -216,7 +216,7 @@ export default function MyHome({ onLoginChange, displayState, onDisplayStateChan
                   <img src="/basic_logo.png" width='48' height='48' />
                 </figure>
                 <p className={clsx('title', 'is-4', 'ml-4')}>
-                  <strong className={clsx( 'has-text-weight-bold','logo-font')}>TrypSmart<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></strong>
+                  <div className={clsx( 'has-text-weight-bold','logo-font')}>TrypSmart<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></div>
                 </p>
 
               </a>
