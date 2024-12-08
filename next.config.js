@@ -7,8 +7,8 @@ module.exports = {
       },
       {
         source: '/socialapi/:path*',
-       // destination: 'https://api.TrypSmart.com/:path*',
-	destination: '/api/:path*', 
+        destination: 'https://api.TrypSmart.com/api/:path*',
+	     //destination: '/api/:path*', 
 	      //destination:'http://localhost:3001/:path*',
       },
       {

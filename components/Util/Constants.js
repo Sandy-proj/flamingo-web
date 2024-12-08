@@ -85,7 +85,7 @@
     static HOPS_GET_SERVER_RESOURCE='http://localhost:3001/api/resources/resource'
    
 
-    static HOPS_SOCIAL_URL = "https://TrypSmart.com/api/api/user/social_login"
+    static HOPS_SOCIAL_URL = "/socialapi/user/social_login"
     static HOPS_WEB_SERVER_BASE=''
     //static HOPS_GET_SERVER_RESOURCE='https://api.TrypSmart.com/resources/resource'
 }
