@@ -7,7 +7,7 @@ export default function UserHome({permissions}) {
     return (
       <div className={styles.container}>
         <Head>
-          <title>KandyBag</title>
+          <title>TrypSmart</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <body>

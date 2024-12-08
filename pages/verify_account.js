@@ -105,15 +105,15 @@ export default function VerifyAccount({}){
     <div className="columns min-screen-fill">
         <div className={clsx('column','centeralignment')}>
             <section className="section is-small">
-            <div className={'min-screen-fill','box'}>
+            <div className={clsx('min-screen-fill','box')}>
                
-            <form className={'box','p-6'}>
+            <form className={clsx('box','p-6')}>
                     <div className="block level mb-8">
                             <div className="level-left">
                                 <figure className = {clsx('image','is-24x24','mr-2','level-item') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure>
-                                <p className="level-item title is-5 is-grouped is-grouped-centered">Welcome to KandyBag!!</p>
+                                <p className="level-item title is-5 is-grouped is-grouped-centered">Welcome to TrypSmart!!</p>
                             </div>
                         </div>
                         {(Object.keys(verfiyErrorFlags).length>0)?<div>

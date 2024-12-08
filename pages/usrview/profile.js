@@ -34,7 +34,7 @@ export default function Profile() {
     return (
       <div>
         <Head>
-          <title>KandyBag</title>
+          <title>TrypSmart</title>
           <link rel="icon" href="/tinylogo.png" />
         </Head>
         <div className={clsx('columns','min-screen-fill')}>
@@ -46,7 +46,7 @@ export default function Profile() {
                                 <span><figure className = {clsx('image','is-24x24','mr-2') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure></span>
-                                <span><p className="title is-5 is-grouped is-grouped-centered">KandyBag</p></span>
+                                <span><p className="title is-5 is-grouped is-grouped-centered">TrypSmart</p></span>
                             </div>
                         </div>
           <article class="media mt-6">

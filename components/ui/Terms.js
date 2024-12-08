@@ -20,7 +20,7 @@ export default function Terms({visible,onDeactivate,onAgree}) {
 
                             AGREEMENT TO TERMS
 
-These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and KandyBag(“we,” “us” or “our”), concerning your access to and use of the KandyBag.com website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the “Site”). 
+These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and TrypSmart(“we,” “us” or “our”), concerning your access to and use of the TrypSmart.com website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the “Site”). 
 
 You agree that by accessing the Site, you have read, understood, and agree to be bound by all of these Terms of Service. If you do not agree with all of these Terms of Service, then you are expressly prohibited from using the Site and you must discontinue use immediately.
 

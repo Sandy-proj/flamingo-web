@@ -117,7 +117,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
         
         <div>
             <Head>
-                <title>KandyBag</title>
+                <title>TrypSmart</title>
                 <link rel="icon" href="/tinylogo.png" />
                 <script src={'https://accounts.google.com/gsi/client'} ></script>
             </Head>
@@ -135,7 +135,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                                 <span><figure className = {clsx('image','is-24x24','mr-2') }> 
                                     <img src="/headerlogo.png"/>
                                 </figure></span>
-                                <span><p className="title is-5 is-grouped is-grouped-centered">KandyBag</p></span>
+                                <span><p className="title is-5 is-grouped is-grouped-centered">TrypSmart</p></span>
                             </div>
                             <div className={clsx('column','is-auto')}></div>
                         </div>

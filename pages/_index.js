@@ -202,7 +202,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                   <img src="/basic_logo.png" width='48' height='48' />
                 </figure>
                 <p className={clsx('title', 'is-4', 'ml-4')}>
-                  <strong className={clsx( 'has-text-weight-bold','logo-font')}>Kandybag<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></strong>
+                  <strong className={clsx( 'has-text-weight-bold','logo-font')}>TrypSmart<span className={clsx('has-text-white', 'has-text-weight-normal')}></span></strong>
                 </p>
 
               </a>
