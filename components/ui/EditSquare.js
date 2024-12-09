@@ -127,6 +127,9 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
     //
   }
   function onPickCancel() {
+    if(localStorage.getItem('latestlist')){
+      localStorage.removeItem('latestlist')
+    }
     setPickerMode(false);
   }
   function onLoginCancel() {
@@ -283,7 +286,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       setCategories(listOfCategories.data.data.categories)
       if (localStorage.getItem("latestlist")) {
         list.current = JSON.parse(localStorage.getItem("latestlist"))
-        localStorage.removeItem("latestlist")
+        //localStorage.removeItem("latestlist")
       }
     } catch (error) {
       console.error(error);
@@ -403,7 +406,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             </span>
           </div> : <div>
 
-            <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} autoFocus={true} onKeyPress={handleTextKeyPress}></input>
+            <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)}  onKeyPress={handleTextKeyPress}></input>
             </span>
           </div>
           }
@@ -719,7 +722,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   <p className={clsx('mt-1', 'is-size-6', 'basic-placeholder', 'has-text-weight-light', 'p-4', 'is-rounded', 'cloud')}>Lists can be fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
                 </div> :
                   <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-                    {list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> })}
+                    {list.current&&list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> })}
                     <AlwaysScrollToBottom />
                   </SortableContainer>
 

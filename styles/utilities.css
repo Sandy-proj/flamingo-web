@@ -223,7 +223,7 @@ hr.solid {
 .theme-background{
 
   background-size: cover; 
-  background:linear-gradient(0deg, rgba(16, 0, 89, 0.6), rgba(16, 0, 89, 0.4)), url(../public/travel-theme.jpg);
+  background:linear-gradient(0deg, rgba(16, 0, 89, 0.7), rgba(16, 0, 89, 0.5)), url(../public/travel-theme.jpg);
   background-position: center; 
 }
 .theme-color-background{
@@ -252,4 +252,61 @@ hr.solid {
 }
 .trypsmart-hidden{
   visibility: hidden;
+}
+.strip-background{
+  background-image: url("/tile.png");
+  background-repeat: repeat;
+}
+.thumbnail{
+  height:80px;
+  width:80px;
+  border-radius: 50%;
+  background-position: "center"; 
+  background-size: "cover";
+  background-repeat: "no-repeat";
+}
+.thumbnail:hover{
+  border:5px solid #fffc2d;
+
+}
+.thumbnail-selected{
+  border:5px solid #fff82d;
+}
+.suggestion-item{
+
+}
+.suggestion-item:hover{
+  background-color: #fafafa;
+}
+.horizontal-scroller{
+  overflow-x: scroll;
+}
+.remove-level-margin{
+  margin-bottom: 0px !important;
+}
+.seperator{
+  border: 1px;
+  color: #aaaaaa;
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+}
+
+
+
+.overlay-thumbnail {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+.login-suggestion{
+  width:25rem;
 }

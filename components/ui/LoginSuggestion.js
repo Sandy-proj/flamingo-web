@@ -12,9 +12,9 @@ export default function LoginSuggestion({visible,onDeactivate,onAgree,onOk,onCan
 
     return <div className={clsx('modal',visible?'is-active':'')}>
             <div class="modal-background" onClick={onCancel}></div>
-            <div class="modal-card">
+            <div className={clsx('modal-card','login-suggestion')}>
            
-    <section class="modal-card-body p-4">
+    <section className="modal-card-body p-4">
       <div className={clsx('columns')}>
           <div className={clsx('column','is-full')}>
               <div className={'header'}>
@@ -23,6 +23,7 @@ export default function LoginSuggestion({visible,onDeactivate,onAgree,onOk,onCan
                       <span className={clsx('level-item','has-text-warning')}><Icon path={mdiAccountCircle} size={1}></Icon></span>
                       <span className={'level-item'}>Hello there !</span>
                       </div>
+                      <hr className={clsx('seperator')}/>
                 </div>
             </div>
              <p className={clsx('title','is-6','ml-4','mt-4')}>Login to continue.</p>  

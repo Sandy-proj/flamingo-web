@@ -280,7 +280,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                     <li key={1} className={clsx('mb-5')}>
                       <button className={clsx('button', 'is-rounded', 'is-fullwidth', 'is-outlined', 'thin-border-button')} onClick={handleCreatePost}>
                         <span className="icon-text">
-                          <span className="icon">
+                          <span className="has-text-danger">
                             {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                             <Icon path={mdiEmail} size={0.75}></Icon>
                           </span>

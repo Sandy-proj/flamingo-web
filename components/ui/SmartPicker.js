@@ -1,4 +1,4 @@
-import { mdiAccount, mdiAccountCircle, mdiCheck, mdiCheckBold, mdiClose } from "@mdi/js";
+import { mdiAccount, mdiAccountCircle, mdiCheck, mdiCheckBold, mdiClose, mdiLightbulb } from "@mdi/js";
 import Icon from "@mdi/react";
 import clsx from "clsx";
 import axios from 'axios'
@@ -37,7 +37,7 @@ const SmartPicker = React.memo(
       }, [suggestion])
 
       return tags.tags && tags.tags.includes(tag) ? <div>
-        <a style={{ display: "flex", alignContent: "center" }} className={clsx('box', 'is-radiusless', 'is-shadowless', 'is-borderless', 'mt-0.5', 'is-active', selected ? 'active-suggestion' : 'inactive-suggestion')}
+        <a style={{ display: "flex", alignContent: "center" }} className={clsx('box', 'is-radiusless', 'is-shadowless', 'suggestion-item', 'is-borderless', 'mt-0.5', 'is-active', selected ? 'active-suggestion' : 'inactive-suggestion')}
 
           onClick={() => { setSelected(!selected); handleSelection(suggestion, !selected) }}>
           <span className={clsx('has-text-success', selected ? 'trypsmart-visible' : 'trypsmart-hidden', 'mr-2')}><Icon path={mdiCheck} size={0.75}></Icon></span>{suggestion.name}</a></div> :
@@ -85,15 +85,15 @@ const SmartPicker = React.memo(
     // }, [tag]);
 
     return <div className={clsx('modal', 'is-radiusless', visible ? 'is-active' : '')}>
-      <div class="modal-background" onClick={onCancel}></div>
+      <div class="modal-background" onClick={doNothing}></div>
       <div className={clsx('modal-card', 'has-background-white', 'trypsmart-picker')}>
-        <nav class="level is-mobile">
+        <nav class={clsx('level','is-mobile','remove-level-margin')}>
 
           <div class="level-left">
             <div class="level-item ml-5 mt-5">
               <div>
-              <p className={clsx('is-size-4','has-text-link')}><strong>Suggestions</strong></p>
-                <p class="is-size-6">Select the items to add to your checklist.</p>
+                <p className={clsx('is-size-5', 'has-text-link')}><strong>Suggestions</strong></p>
+                <p class="is-size-7 is-text-weight-light">Select the items to add to your checklist.</p>
 
               </div>
             </div>
@@ -101,40 +101,71 @@ const SmartPicker = React.memo(
           </div>
 
           <div class="level-right">
-          <button class="button is-ghost" onClick={onCancel} >
-                              <span className={clsx('has-text-link')} ><Icon path={mdiClose} size={1.5}></Icon></span>
-                            </button>
-            <p class="level-item mr-5 mt-5"><a class="is-link"><Icon path={mdiCheckBold}></Icon></a></p>
+            <button class="button is-ghost" onClick={onCancel} >
+              <span className={clsx('has-text-gray')} ><Icon path={mdiClose} size={1.5}></Icon></span>
+            </button>
           </div>
         </nav>
-        <section class="modal-card-body p-2">
-          <nav className={clsx('level','is-mobile')}>
-            <div class="level-item has-text-centered">
+        <hr className="seperator"/>
+        <section class="modal-card-body p-0">
+          <nav className={clsx('level', 'is-mobile','remove-level-margin','mt-2')}>
+            <div className={clsx('level-item','has-text-centered')}>
               <div>
-                <span className={clsx('button','has-text-weight-bold', 'is-small', 'is-link', 'is-rounded', tag === 'All' ? '' : 'is-outlined')} onClick={() => switchTag('All')}>All</span>
+                <p onClick={()=>switchTag('All')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='All'?'thumbnail-selected':'')} style={{
+                  backgroundImage: "url(" + "/travel-theme.jpg" + ")",
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover'
+                }}></p>
+                
+                <p className={clsx('button','has-text-weight-bold', 'is-small', 'is-ghost', tag === 'All' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('All')}>All</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
-              <div>
-                <span className={clsx('button','has-text-weight-bold', 'is-small',  'is-link', 'is-rounded', tag === 'Lighter' ? '' : 'is-outlined')} onClick={() => switchTag('Lighter')}>Lighter</span>
+            <div>
+                <p onClick={()=>switchTag('Trekking')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='Trekking'?'thumbnail-selected':'')} style={{
+                  backgroundImage: "url(" + "/travel-theme2.jpg" + ")",
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover'
+                }}></p>
+                
+                <p className={clsx('button','has-text-weight-bold', 'is-small', 'is-ghost', tag === 'Trekking' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Trekking')}>Trekking</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
-              <div>
-                <span className={clsx('button', 'has-text-weight-bold', 'is-small', 'is-link', 'is-rounded', tag === 'Greener' ? '' : 'is-outlined')} onClick={() => switchTag('Greener')}>Greener</span>
+            <div>
+                <p onClick={()=>switchTag('Road trip')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='Road trip'?'thumbnail-selected':'')} style={{
+                  backgroundImage: "url(" + "/basic_logo.png" + ")",
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover'
+                }}></p>
+                
+                <p className={clsx('button','has-text-weight-bold', 'is-small', 'is-ghost', tag === 'Road trip' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Road trip')}>Road trip</p>
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+            <div>
+                <p onClick={()=>switchTag('Train')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='Train'?'thumbnail-selected':'')} style={{
+                  backgroundImage: "url(" + "/travel-theme.jpg" + ")",
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover'
+                }}></p>
+                
+                <p className={clsx('button','has-text-weight-light', 'is-small', 'is-ghost', tag === 'Train' ? ['has-text-success','has-text-weight-bold'] : 'has-text-gray')} onClick={() => switchTag('Train')}>Train</p>
               </div>
             </div>
           </nav>
-          <div className={clsx('container')}>
+
+          <div className={clsx('container','p-2')}>
             <ul>
               {suggestions.map((value, index) => { ; return <li><SuggestionItem suggestion={value.suggestion} tags={value.tags}></SuggestionItem></li> })}
             </ul>
           </div>
 
         </section>
-        <footer class="columns has-background-white"  >
-
-            <button class="button mr-15 column is-half is-offset-one-quarter is-success is-centered is-full-width mb-5" onClick={onOk}>Done</button>
+        <hr className="seperator"/>
+        <footer class="columns has-background-white is-mobile mt-0"  >
+                
+          <button class="button mr-15 column is-half is-offset-one-quarter is-link is-centered is-full-width mb-5 has-text-weight-bold" onClick={onOk}>Done</button>
 
         </footer>
       </div>

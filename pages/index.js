@@ -55,6 +55,11 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
     // }
   }
 
+  async function handleLogin(){
+    setNavigateAway(true);
+    router.push('/user_login')
+  }
+
   async function handleLogout() {
     try {
       const response = await axios.post(logoutUrl);
@@ -150,6 +155,9 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
       //No Category data
     }
     setLoadSignIn(true)
+    if(localStorage.getItem('latestlist')){
+      handleCreatePost();
+    }
   }, [])
 
   useEffect(async() => {
@@ -242,7 +250,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
               <div className={clsx('column', 'is-auto')}>
                 <p className={clsx('title', 'has-text-warning', 'is-size-1', 'sulphur-point-bold')}>TrypSmart</p>
                 <p className={clsx('mt-5')}></p>
-                <p className={clsx('subtitle', 'has-text-white', 'pt-10')}><span><button className={clsx('button', 'is-warning', 'is-outlined', 'trypsmart-action-button','has-text-weight-bold')} onClick={handleCreatePost}>Create</button> </span>your instant travel checklist here.</p>
+                <p className={clsx('subtitle', 'has-text-white', 'pt-10')}><span><button className={clsx('button', 'is-warning', 'is-outlined', 'trypsmart-action-button','has-text-weight-bold')} onClick={handleCreatePost}>Create</button> </span><span className={clsx('ml-1','has-text-weight-light')}>and  download your instant travel checklist here.</span></p>
               </div>
               <div className={clsx('column','is-one-fifth')}>
 
@@ -251,9 +259,9 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                   <aside className={clsx('menu', 'centeralignment')}>
                     <ul className="menu-list">
                       <li key={1} className={clsx('mb-5')}>
-                        <button className={clsx('button', 'is-rounded', 'is-fullwidth', 'is-outlined', 'thin-border-button')} onClick={handleCreatePost}>
+                        <button className={clsx('button', 'is-rounded', 'is-fullwidth', 'is-outlined')} onClick={handleLogin}>
                           <span className="icon-text">
-                            <span className="icon">
+                            <span className={clsx('icon','has-text-link')}>
                               <Icon path={mdiEmail} size={0.75}></Icon>
                             </span>
                             <span ><strong className={clsx('is-small', 'has-text-weight-medium', 'has-text-grey-dark')}>Login with email</strong></span>
@@ -312,11 +320,11 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
               <div className={clsx('is-one-third')}></div>
             </div>
           </section>
-          <section className={clsx('hero',  'is-warning')}>
+          <section className={clsx('hero',  'is-white','strip-background')}>
             <div class="hero-body">
               <div class="container has-text-centered">
                 {/* <p class="title">1.2k downloads</p> */}
-                <p class="subtitle"> <span><Icon className={clsx('has-text-danger')} path={mdiHeart} size={0.75}></Icon><span>{downloads}</span> downloads</span></p>
+                <p class="is-5"> <span><Icon className={clsx('has-text-danger','mr-1')} path={mdiHeart} size={0.75}></Icon><span className={clsx('has-text-weight-bold')}>{downloads}</span> <span className={clsx('has-text-weight-light')}>downloads</span></span></p>
               </div>
             </div>
           </section>
