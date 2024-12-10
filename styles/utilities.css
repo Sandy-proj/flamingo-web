@@ -310,3 +310,6 @@ hr.solid {
 .login-suggestion{
   width:25rem;
 }
+.header-adjustment{
+  margin-bottom: 10px !important;
+}

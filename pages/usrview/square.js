@@ -64,11 +64,12 @@ export default function Square({handshake,onLoginChange,onError,error}) {
         // if(user.isLoggedIn){
 
         
-            if((user.isLoggedIn&&user.id&&user.id>0)&&id>0){
+            if((user.isLoggedIn&&user.id&&user.id != -1)&&id != -1){
                 try{
                     
                 
                     if(readyToFetch.current){
+                        
 
 
                         readyToFetch.current=false;

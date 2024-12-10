@@ -76,10 +76,14 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   function togglePick() {
     //Populated the selected list.
     selectedIdList.current = []
+    console.log(list.current)
     list.current.forEach((item) => {
+      console.log(item)
       if (item.suggestionId) {
         if (!selectedIdList.current.includes(item.suggestionId)) {
-          selectedIdList.current.push(item.suggestionId)
+          let temp = selectedIdList.current.slice();
+          temp.push(item.suggestionId)
+          selectedIdList.current = temp;
         }
       }
     })
@@ -127,7 +131,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
     //
   }
   function onPickCancel() {
-    if(localStorage.getItem('latestlist')){
+    if (localStorage.getItem('latestlist')) {
       localStorage.removeItem('latestlist')
     }
     setPickerMode(false);
@@ -137,7 +141,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   }
   function onLoginOk() {
 
-    localStorage.setItem("latestlist", JSON.stringify(list));
+    localStorage.setItem("latestlist", JSON.stringify(list.current));
 
     router.replace('/user_login')
   }
@@ -285,9 +289,21 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       const listOfCategories = await axios.get(categoriesUrl, { timeout: CONSTANTS.REQUEST_TIMEOUT })
       setCategories(listOfCategories.data.data.categories)
       if (localStorage.getItem("latestlist")) {
-        list.current = JSON.parse(localStorage.getItem("latestlist"))
+        console.log('list-current',JSON.parse(localStorage.getItem("latestlist")))
+        list.current = JSON.parse(localStorage.getItem("latestlist")).slice()
+        selectedIdList.current = []
+        console.log("current",list.current[0])
+        list.current.forEach((item) => {
+          if (item.suggestionId) {
+            if (!selectedIdList.current.includes(item.suggestionId)) {
+              let temp = selectedIdList.current.slice();
+              temp.push(item.suggestionId)
+              selectedIdList.current = temp;
+            }
+          }
+        })
         //localStorage.removeItem("latestlist")
-      }
+      } 
     } catch (error) {
       console.error(error);
     }
@@ -298,7 +314,9 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       if (resource.data.resource) {
         list.current = resource.data.resource;
       } else {
+
         list.current = [];
+
       }
       // setList(resource.data.resource ? resource.data.resource : []);
     }
@@ -406,7 +424,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             </span>
           </div> : <div>
 
-            <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Type your item & press enter.(Upto ${CONSTANTS.LIST_ITEM_MAX_LENGTH} characters)`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)}  onKeyPress={handleTextKeyPress}></input>
+            <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Enter your list item & press enter.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} onKeyPress={handleTextKeyPress}></input>
             </span>
           </div>
           }
@@ -418,7 +436,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
           // ('button', 'bottom-panel-dimensions', 'is-fullwidth')}
           onClick={handleTextEntry}>
           {/* <span className={clsx('icon', 'is-info')}><Icon path={mdiPlus} size={2}></Icon></span> */}
-          <span className={clsx('is-size-5','has-text-weight-bold')}>Add to list</span>
+          <span className={clsx('is-size-5', 'has-text-weight-bold')}>Add to list</span>
         </button>
       </div>
 
@@ -618,7 +636,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover/>
+        pauseOnHover />
       <div className={clsx('trypsmart-background')}>
         <div>
 
@@ -627,27 +645,27 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             <div className="column is-one-fifth is-radiusless">
 
             </div>
-            <ConfirmationDialog isVisible={discarding} message={'Discard changes and exit?'} onCancel={() => { setDiscarding(false) }} onConfirm={() => { router.replace('/') }} />
+            <ConfirmationDialog isVisible={discarding} message={'Discard changes and exit?'} onCancel={() => { setDiscarding(false) }} onConfirm={() => { localStorage.removeItem('latestlist');router.replace('/') }} />
             <Popup status={requestStatus.status} onClose={() => { setRequestStatus({ isVisible: false }) }} isVisible={requestStatus.isVisible} message={requestStatus.message} />
 
             <div className="column is-auto is-radiusless">
 
               <div className={clsx('card', 'p-0', 'is-shadowless', 'has-background-link', 'mb-0.5', 'pt-2')}>
 
-                <nav className={clsx('level', 'has-background-link', 'mt-1', 'pr-2', 'is-mobile')}>
+                <nav className={clsx('level', 'has-background-link', 'is-mobile', 'header-adjustment')}>
                   <div className="level-left">
                     <div class="ml-2 field has-addons">
                       <p class="control">
                         <button class="button is-warning is-outlined" onClick={togglePick}>
-                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-white','mr-2')}><Icon path={mdiLightbulbOn} size={1}></Icon></span>
+                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-white', 'mr-2')}><Icon path={mdiLightbulbOn} size={1}></Icon></span>
                           <span>Suggestions</span>
                         </button>
                       </p>
                       <p class="control">
-                        <button class="button is-warning is-outlined" onClick={()=>{
-                          if(list.current.length>0){
+                        <button class="button is-warning is-outlined" onClick={() => {
+                          if (list.current.length > 0) {
                             printDocument();
-                          }else{
+                          } else {
                             toast.error("The list is empty. Add items to download.")
                           }
                         }}>
@@ -722,7 +740,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   <p className={clsx('mt-1', 'is-size-6', 'basic-placeholder', 'has-text-weight-light', 'p-4', 'is-rounded', 'cloud')}>Lists can be fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
                 </div> :
                   <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-                    {list.current&&list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> })}
+                    {list.current instanceof Array ? list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> }):list}
                     <AlwaysScrollToBottom />
                   </SortableContainer>
 

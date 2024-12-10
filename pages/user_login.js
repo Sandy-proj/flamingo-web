@@ -54,7 +54,7 @@ export default function Login({isLoggedIn,role,onLoginChange}){
                
     
             }catch(e){
-
+                console.log("login fail",e)
                 setValidations({serverError:true})
             }
         }

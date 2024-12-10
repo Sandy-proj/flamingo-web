@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { isValidElement, useState } from 'react';
 import {Icon} from '@mdi/react'
-import {mdiChatQuestion, mdiCheckBold, mdiHeadQuestion} from '@mdi/js'
+import {mdiChatQuestion, mdiCheckBold, mdiFileQuestion, mdiHeadQuestion} from '@mdi/js'
 import { CONSTANTS } from '../Util/Constants';
 
 export default function ConfirmationDialog({message,onCancel,onClose,isVisible,onConfirm,children}){
@@ -18,9 +18,9 @@ export default function ConfirmationDialog({message,onCancel,onClose,isVisible,o
 
 <div className={clsx('modal',isVisible?'is-active':false)}>
   <div class="modal-background"></div>
-  <div className={clsx('card','is-radiusless')}>
+  <div className={clsx('card')}>
     <header class="modal-card-head has-background-white">
-      <span className={clsx('has-text-link')}><Icon path={mdiChatQuestion} size={1.5}></Icon></span><span className={clsx('title','is-5','ml-3')}>Confirmation</span>
+      <span className={clsx('has-text-link')}><Icon path={mdiFileQuestion} size={1}></Icon></span><span className={clsx('title','is-5','ml-3')}>Confirmation</span>
      
     </header>
     <section class="modal-card-body is-loading">

@@ -65,7 +65,7 @@
     static POST_COMMENTS_URL = '/hopsapi/resources/addcomment'
     static DELETE_COMMENT_URL = '/hopsapi/resources/comment/delete'
     static HOPS_USERNAME_KEY='hops_username'
-    static LIST_ITEM_MAX_LENGTH = 75;
+    static LIST_ITEM_MAX_LENGTH = 128;
     static LIST_ITEM_DETAIL_MAX_LENGTH = 240;
     static LIST_ITEM_TITLE_MAX_LENGTH = 100;
     static LIST_ITEM_LIMIT=100;
