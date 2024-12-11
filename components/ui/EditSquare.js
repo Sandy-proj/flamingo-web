@@ -58,6 +58,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   const inputTypes = [{ id: 1, name: 'Text' }, { id: 2, name: 'Link' }]
   const itemLimit = CONSTANTS.LIST_ITEM_LIMIT;
   const titleRef = useRef('');
+  const focusRef = useRef(false);
   const selectedIdList = useRef([]);
   const standardItemMap = useRef(new Map())
 
@@ -289,16 +290,16 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       const listOfCategories = await axios.get(categoriesUrl, { timeout: CONSTANTS.REQUEST_TIMEOUT })
       setCategories(listOfCategories.data.data.categories)
       if (localStorage.getItem("latestlist")) {
-        console.log('list-current',JSON.parse(localStorage.getItem("latestlist")))
         list.current = JSON.parse(localStorage.getItem("latestlist")).slice()
         selectedIdList.current = []
         console.log("current",list.current[0])
         list.current.forEach((item) => {
           if (item.suggestionId) {
             if (!selectedIdList.current.includes(item.suggestionId)) {
-              let temp = selectedIdList.current.slice();
-              temp.push(item.suggestionId)
-              selectedIdList.current = temp;
+              // let temp = selectedIdList.current.slice();
+              // temp.push(item.suggestionId)
+              // selectedIdList.current = temp;
+              selectedIdList.current = [...selectedIdList,item.suggestionId]
             }
           }
         })
@@ -313,6 +314,16 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
     if (resource.data) {
       if (resource.data.resource) {
         list.current = resource.data.resource;
+        list.current.forEach((item) => {
+          if (item.suggestionId) {
+            if (!selectedIdList.current.includes(item.suggestionId)) {
+              // let temp = selectedIdList.current.slice();
+              // temp.push(item.suggestionId)
+              // selectedIdList.current = temp;
+              selectedIdList.current = [...selectedIdList.current,item.suggestionId]
+            }
+          }
+        })
       } else {
 
         list.current = [];
@@ -346,9 +357,14 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
     const [bookmark, setBookmark] = useState('')
     const [validation, setValidation] = useState(true)
     const [focus, setFocus] = useState(false);
+
+    const inputRef = useRef(null);
     function handleTextKeyPress(e) {
       if (e.key === 'Enter') {
+        if (e.target.value.trim() === '') return;
         addItem(e.target.value, isLink ? CONSTANTS.LINK_TYPE : CONSTANTS.TEXT_TYPE)
+        focusRef.current = true;
+        console.log('set',focusRef.current)
         setFocus(true)
       }
     }
@@ -396,6 +412,15 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       )
     }
 
+    useEffect(() => {
+      console.log('outside',focusRef.current)
+      if(focusRef.current == true){
+        focusRef.current = false;
+        console.log('effects')
+        inputRef.current.focus();
+      }
+    },[focus]);
+
     //console.log('is-link'+isLink)
     return (<div className={clsx('columns', 'is-gapless', 'is-mobile', 'mb-2')}>
       <Alert isVisible={!validation} message={'The link is not supported.'} onCancel={validationAcknowledgement} />
@@ -424,7 +449,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             </span>
           </div> : <div>
 
-            <span><input maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Enter your list item & press enter.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} onKeyPress={handleTextKeyPress}></input>
+            <span><input ref={inputRef}  maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Enter your list item & press enter.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} onKeyPress={handleTextKeyPress}></input>
             </span>
           </div>
           }
