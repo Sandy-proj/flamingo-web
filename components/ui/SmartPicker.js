@@ -40,7 +40,7 @@ const SmartPicker = React.memo(
         <a style={{ display: "flex", alignContent: "center" }} className={clsx('box','is-radiusless', 'is-shadowless', 'suggestion-item', 'is-borderless', 'mt-0.5', 'is-active', selected ? 'active-suggestion' : 'inactive-suggestion')}
 
           onClick={() => { setSelected(!selected); handleSelection(suggestion, !selected) }}>
-          <span className={clsx('has-text-success', selected ? 'trypsmart-visible' : 'trypsmart-hidden','mr-2')}><Icon path={mdiCheck} size={1}></Icon></span><span className={clsx('is-size-5')}>{suggestion.name}</span></a></div> :
+          <span className={clsx('has-text-success', selected ? 'trypsmart-visible' : 'trypsmart-hidden','mr-2')}><Icon path={mdiCheck} size={1}></Icon></span><span className={clsx('is-size-6')}>{suggestion.name}</span></a></div> :
         <div></div>;
 
     }
@@ -111,45 +111,45 @@ const SmartPicker = React.memo(
             <div className={clsx('level-item','has-text-centered')}>
               <div>
                 <p onClick={()=>switchTag('Travel')} className={clsx('container','has-text-weight-bold','thumbnail','overlay-layer','is-clickable',tag==='Travel'?'thumbnail-selected':'')} style={{
-                  backgroundImage: "url(" + "/travel-theme.jpg" + ")",
+                  backgroundImage: "url(" + "/air-travel.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Travel' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray','subtitle')}  onClick={() => switchTag('Travel')}>Travel</p>
+                <p className={clsx('button','is-7', 'has-text-weight-bold','is-ghost', tag === 'Travel' ?['has-text-success','has-text-weight-bold'] :'','subtitle')}  onClick={() => switchTag('Travel')}>Travel</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
             <div >
-                <p onClick={()=>switchTag('Personal')} className={clsx('container','thumbnail','overlay-layer','is-clickable',tag==='Personal'?'thumbnail-selected':'')} style={{
-                  backgroundImage: "url(" + "/travel-theme2.jpg" + ")",
+                <p onClick={()=>switchTag('Personal')} className={clsx('container','has-text-weight-bold','thumbnail','overlay-layer','is-clickable',tag==='Personal'?'thumbnail-selected':'')} style={{
+                  backgroundImage: "url(" + "/personal.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Personal' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Personal')}>Personal</p>
+                <p className={clsx('button','is-7', 'has-text-weight-bold', 'is-ghost', tag === 'Personal' ?['has-text-success','has-text-weight-bold'] : '','subtitle')}  onClick={() => switchTag('Personal')}>Personal</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
             <div>
-                <p onClick={()=>switchTag('Safety')} className={clsx('container','thumbnail','overlay-layer','is-clickable',tag==='Safety'?'thumbnail-selected':'')} style={{
-                  backgroundImage: "url(" + "/basic_logo.png" + ")",
+                <p onClick={()=>switchTag('Safety')} className={clsx('container','has-text-weight-bold','thumbnail','overlay-layer','is-clickable',tag==='Safety'?'thumbnail-selected':'')} style={{
+                  backgroundImage: "url(" + "/safety.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Safety' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Safety')}>Safety</p>
+                <p className={clsx('button','is-7', 'has-text-weight-bold', 'is-ghost', tag === 'Safety' ?['has-text-success','has-text-weight-bold'] : '','subtitle')}  onClick={() => switchTag('Safety')}>Safety</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
             <div>
-                <p onClick={()=>switchTag('Hiking')} className={clsx('container','thumbnail','overlay-layer','is-clickable',tag==='Train'?'thumbnail-selected':'')} style={{
-                  backgroundImage: "url(" + "/travel-theme.jpg" + ")",
+                <p onClick={()=>switchTag('Hiking')} className={clsx('container','has-text-weight-bold','thumbnail','overlay-layer','is-clickable',tag==='Hiking'?'thumbnail-selected':'','subtitle')} style={{
+                  backgroundImage: "url(" + "/hiking.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Hiking' ? ['has-text-success','has-text-weight-bold'] : 'has-text-gray')} onClick={() => switchTag('Hiking')}>Hiking</p>
+                <p className={clsx('button','is-7', 'has-text-weight-bold', 'is-ghost', tag === 'Hiking' ? ['has-text-success','has-text-weight-bold'] : '','subtitle')} onClick={() => switchTag('Hiking')}>Hiking</p>
               </div>
             </div>
           </nav>

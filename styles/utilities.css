@@ -261,17 +261,17 @@ hr.solid {
 .thumbnail{
   height:80px;
   width:80px;
-  border-radius: 50%;
+  border-radius: 10%;
   background-position: "center"; 
   background-size: "cover";
   background-repeat: "no-repeat";
 }
 .thumbnail:hover{
-  border:5px solid #fffc2d;
+  border:5px solid #16e0a4;
 
 }
 .thumbnail-selected{
-  border:5px solid #fff82d;
+  border:5px solid #16e0a4;
 }
 .suggestion-item{
 
