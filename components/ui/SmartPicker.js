@@ -11,7 +11,7 @@ import { CONSTANTS } from '../../components/Util/Constants'
 const SmartPicker = React.memo(
   function SmartPicker({ visible, onDeactivate, onAgree, onOk, onCancel, selectedIds, pickDto }) {
     const [suggestions, setSuggestions] = useState([])
-    const [tag, setTag] = useState('All')
+    const [tag, setTag] = useState('Travel')
     const suggestionsUrl = '/hopsapi/suggestions'
 
     function doNothing() {
@@ -37,10 +37,10 @@ const SmartPicker = React.memo(
       }, [suggestion])
 
       return tags.tags && tags.tags.includes(tag) ? <div>
-        <a style={{ display: "flex", alignContent: "center" }} className={clsx('box', 'is-radiusless', 'is-shadowless', 'suggestion-item', 'is-borderless', 'mt-0.5', 'is-active', selected ? 'active-suggestion' : 'inactive-suggestion')}
+        <a style={{ display: "flex", alignContent: "center" }} className={clsx('box','is-radiusless', 'is-shadowless', 'suggestion-item', 'is-borderless', 'mt-0.5', 'is-active', selected ? 'active-suggestion' : 'inactive-suggestion')}
 
           onClick={() => { setSelected(!selected); handleSelection(suggestion, !selected) }}>
-          <span className={clsx('has-text-success', selected ? 'trypsmart-visible' : 'trypsmart-hidden', 'mr-2')}><Icon path={mdiCheck} size={0.75}></Icon></span>{suggestion.name}</a></div> :
+          <span className={clsx('has-text-success', selected ? 'trypsmart-visible' : 'trypsmart-hidden','mr-2')}><Icon path={mdiCheck} size={1}></Icon></span><span className={clsx('is-size-5')}>{suggestion.name}</span></a></div> :
         <div></div>;
 
     }
@@ -86,7 +86,7 @@ const SmartPicker = React.memo(
 
     return <div className={clsx('modal', 'is-radiusless', visible ? 'is-active' : '')}>
       <div class="modal-background" onClick={doNothing}></div>
-      <div className={clsx('modal-card', 'has-background-white', 'trypsmart-picker')}>
+      <div className={clsx('modal-card', 'has-background-white', 'trypsmart-picker','has-background-light')}>
         <nav class={clsx('level','is-mobile','remove-level-margin')}>
 
           <div class="level-left">
@@ -107,55 +107,56 @@ const SmartPicker = React.memo(
           </div>
         </nav>
         <hr className="seperator"/>
-        <section class="modal-card-body p-0">
-          <nav className={clsx('level', 'is-mobile','remove-level-margin','mt-2')}>
+        <nav className={clsx('level', 'is-mobile','remove-level-margin','mt-2')}>
             <div className={clsx('level-item','has-text-centered')}>
               <div>
-                <p onClick={()=>switchTag('All')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='All'?'thumbnail-selected':'')} style={{
+                <p onClick={()=>switchTag('Travel')} className={clsx('container','has-text-weight-bold','thumbnail','overlay-layer','is-clickable',tag==='Travel'?'thumbnail-selected':'')} style={{
                   backgroundImage: "url(" + "/travel-theme.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','has-text-weight-bold', 'is-small', 'is-ghost', tag === 'All' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('All')}>All</p>
+                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Travel' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray','subtitle')}  onClick={() => switchTag('Travel')}>Travel</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
-            <div>
-                <p onClick={()=>switchTag('Trekking')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='Trekking'?'thumbnail-selected':'')} style={{
+            <div >
+                <p onClick={()=>switchTag('Personal')} className={clsx('container','thumbnail','overlay-layer','is-clickable',tag==='Personal'?'thumbnail-selected':'')} style={{
                   backgroundImage: "url(" + "/travel-theme2.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','has-text-weight-bold', 'is-small', 'is-ghost', tag === 'Trekking' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Trekking')}>Trekking</p>
+                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Personal' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Personal')}>Personal</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
             <div>
-                <p onClick={()=>switchTag('Road trip')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='Road trip'?'thumbnail-selected':'')} style={{
+                <p onClick={()=>switchTag('Safety')} className={clsx('container','thumbnail','overlay-layer','is-clickable',tag==='Safety'?'thumbnail-selected':'')} style={{
                   backgroundImage: "url(" + "/basic_logo.png" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','has-text-weight-bold', 'is-small', 'is-ghost', tag === 'Road trip' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Road trip')}>Road trip</p>
+                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Safety' ?['has-text-success','has-text-weight-bold'] : 'has-text-gray')}  onClick={() => switchTag('Safety')}>Safety</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
             <div>
-                <p onClick={()=>switchTag('Train')} className={clsx('thumbnail','overlay-layer','is-clickable',tag==='Train'?'thumbnail-selected':'')} style={{
+                <p onClick={()=>switchTag('Hiking')} className={clsx('container','thumbnail','overlay-layer','is-clickable',tag==='Train'?'thumbnail-selected':'')} style={{
                   backgroundImage: "url(" + "/travel-theme.jpg" + ")",
                   backgroundPosition: 'center',
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','has-text-weight-light', 'is-small', 'is-ghost', tag === 'Train' ? ['has-text-success','has-text-weight-bold'] : 'has-text-gray')} onClick={() => switchTag('Train')}>Train</p>
+                <p className={clsx('button','is-6','is-uppercase', 'is-ghost', tag === 'Hiking' ? ['has-text-success','has-text-weight-bold'] : 'has-text-gray')} onClick={() => switchTag('Hiking')}>Hiking</p>
               </div>
             </div>
           </nav>
-
-          <div className={clsx('container','p-2')}>
+          <hr className="seperator"/>   
+        <section className={clsx('modal-card-body','p-0','scroller-style')}>
+ 
+          <div className={clsx('container','p-2','scroller-style')}>
             <ul>
               {suggestions.map((value, index) => { ; return <li><SuggestionItem suggestion={value.suggestion} tags={value.tags}></SuggestionItem></li> })}
             </ul>
@@ -163,9 +164,9 @@ const SmartPicker = React.memo(
 
         </section>
         <hr className="seperator"/>
-        <footer class="columns has-background-white is-mobile mt-0"  >
+        <footer class="columns has-background-light is-mobile mt-0"  >
                 
-          <button class="button mr-15 column is-half is-offset-one-quarter is-link is-centered is-full-width mb-5 has-text-weight-bold" onClick={onOk}>Done</button>
+          <button class="button mt-2 mr-15 column is-half is-offset-one-quarter is-link is-centered is-full-width mb-4 has-text-weight-bold" onClick={onOk}>Done</button>
 
         </footer>
       </div>

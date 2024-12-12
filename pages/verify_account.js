@@ -123,7 +123,7 @@ export default function VerifyAccount({}){
                             </div>
                         </div>:
                          <div className="field mt-4">
-                         <p className={clsx('content','is-medium')}>Verification link been sent to your registered email.<br/></p>
+                         <p className={clsx('content','is-medium')}>Verification link has been sent to your registered email.<br/></p>
                          <p className="content">
                             
                            Did not receive the email? <button className={clsx('button','is-info','is-small','is-light',requestingVerification?'is-loading':'')} onClick={handleVerificationRequest}>Resend</button>

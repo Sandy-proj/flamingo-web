@@ -15,7 +15,7 @@ import axios from 'axios'
 import GenericCategories from '../components/ui/GenericCategories'
 import { buildGuestUser } from '../components/Util/Session'
 import Icon from '@mdi/react'
-import { mdiAccount, mdiGoogle, mdiPlusCircle, mdiPlus, mdiEmail, mdiHeart } from '@mdi/js'
+import { mdiAccount, mdiGoogle, mdiPlusCircle, mdiPlus, mdiEmail, mdiHeart, mdiLogout } from '@mdi/js'
 import Footer from '../components/ui/Footer'
 import Loader from '../components/ui/LoadingOverlay'
 
@@ -71,6 +71,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
 
       onLoginChange(guestUser)
       setDisplayState({ mode: CONSTANTS.commandModes.POPULAR, param: '', activeItem: 0 })
+      setSidebar(!sidebar)
     } catch (error) {
 
     }
@@ -116,29 +117,29 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   if (user.isLoggedIn) {
     navButtons = (<div className={clsx('buttons','mt-1')}>
       <Link href='/usrview/profile'>
-      <a class="navbar-item has-text-weight-bold mr-5">{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</a>
+      <div class="navbar-item button is-outlined is-info has-text-weight-bold mr-5"><span><Icon path={mdiAccount} size={0.8}></Icon></span>{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</div>
         {/* <button className={clsx('button', 'is-info', 'is-light', 'is-rounded')}><span><Icon path={mdiAccount} size={1}></Icon></span><span><strong>{localStorage.getItem(CONSTANTS.HOPS_USERNAME_KEY)}</strong></span></button> */}
         {/* <a className={clsx('button','is-success', 'is-light','centeralignment','hoverzoom')}>
                         <strong>Profile</strong>
                       </a> */}
       </Link>
-      <a class="navbar-item is-link has-text-weight-bold mr-5" onClick={handleLogout}>
+      <div class="navbar-item button button is-outlined is-info has-text-weight-bold mr-5" onClick={handleLogout}>
         <strong>Log out</strong>
-      </a>
-      <a class="navbar-item has-text-weight-bold" onClick={()=>{router.push('/my_page')}}>
+      </div>
+      <a class="navbar-item button is-outlined is-info .has-text-weight-bold" onClick={()=>{router.push('/my_page')}}>
         <strong>My Page</strong>
       </a>
     </div>);
   } else {
-    navButtons = (<div className={clsx('buttons')}> 
+    navButtons = (<div className={clsx('buttons','mt-1')}> 
 
       <Link href='/user_login'>
-        <a class="navbar-item has-text-weight-bold" onClick={() => setNavigateAway(true)}>
+        <div class="navbar-item button is-outlined is-info has-text-weight-bold" onClick={() => setNavigateAway(true)}>
           <strong>Log in</strong>
-        </a>
+        </div>
       </Link>
       <Link href='/user_signup'>
-        <a class="navbar-item has-text-weight-bold" onClick={() => setNavigateAway(true)}>Sign up</a>
+        <div class="navbar-item button is-outlined is-info has-text-weight-bold" onClick={() => setNavigateAway(true)}>Sign up</div>
       </Link>
     </div>);
   }
@@ -189,16 +190,28 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
             <li key={1}>
               <a onClick={handleCreatePost}>
                 <span className="icon-text">
-                  <span className="icon">
+                  <span className="icon has-text-success">
                     {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
                     <Icon path={mdiPlus} size={1}></Icon>
                   </span>
-                  <span>Create my travel checklist</span>
+                  <span className={clsx('has-text-weight-bold')}>Create my checklist</span>
                 </span>
               </a>
 
             </li>
+            {user.isLoggedIn ? <li key={1}>
+              <a onClick={handleLogout}>
+                <span className="icon-text">
+                  <span className="icon has-text-info">
+                    {/* <i className="mdi mdi-plus has-text-success p-2"></i> */}
+                    <Icon path={mdiLogout} size={1}></Icon>
+                  </span>
+                  <span className={clsx('has-text-weight-bold')}>Logout</span>
+                </span>
+              </a>
 
+            </li>:''}
+            
 
           </ul>
         </aside>
@@ -220,11 +233,10 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
                 <div class="container">
                   <div class="navbar-brand">
 
-                    <span class="navbar-burger" data-target="navbarMenuHeroC">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                    <span className={clsx('navbar-burger' ,'has-text-info', sidebar ? 'is-active' : '')} aria-label="menu" aria-expanded="false" data-target="navBarMenu" onClick={() => setSidebar(!sidebar)}>
+                    <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
                     </span>
                   </div>
                   <div id="navbarMenuHeroC" class="navbar-menu">

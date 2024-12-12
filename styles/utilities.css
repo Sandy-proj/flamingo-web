@@ -156,7 +156,7 @@ hr.solid {
   font-weight: bold;
 }
 .thin-border-button{
-  border-width: 0;
+  border-width: 1px;
 }
 .hide-element{
   display: none;
@@ -172,6 +172,7 @@ hr.solid {
   height: 78vh;
   overflow: auto;
   background-color: #ffffff;
+  scrollbar-color: #e0e0e0 #fcfcfc;
 }
 .cloud{
   border-style: dashed;
@@ -312,4 +313,7 @@ hr.solid {
 }
 .header-adjustment{
   margin-bottom: 10px !important;
+}
+.scroller-style{
+  scrollbar-color: #e0e0e0 #f6f6f6;
 }

@@ -84,6 +84,7 @@ export default function SignUp({onError,onLoginChange}){
                
     
             }catch(e){
+                console.log("error",e)
                 let newObj = {}
                 newObj.signUpAttempFail = true;
                 setValidations(newObj)
