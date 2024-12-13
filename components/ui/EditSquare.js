@@ -777,7 +777,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
               <EntryBox />
               <div className = {clsx('columns','mt-0','pl-3','pr-3','is-hidden-desktop')}>
-                <nav class="column is-full-width level  has-background-white pl-5">
+                <nav class="column is-full-width level  is-mobile has-background-white pl-5">
                   <div class="level-item has-text-centered">
                     <div>
                     <p class="control">
