@@ -114,7 +114,7 @@ function MyApp({ Component, pageProps }) {
           {/* <Head><script src={'https://accounts.google.com/gsi/client'}></script></Head> */}
            {/* Google analytics code*/}
            <script
-        src="https://www.googletagmanager.com/gtag/js?id=G-26ZWFLPBJ3"
+        src="https://www.googletagmanager.com/gtag/js?id=G-87GQ8DVSVK"
         strategy="afterInteractive"
       />
       
@@ -124,7 +124,7 @@ function MyApp({ Component, pageProps }) {
               function gtag(){window.dataLayer.push(arguments);}
               gtag('js', new Date());
     
-              gtag('config', 'G-26ZWFLPBJ3',{
+              gtag('config', 'G-87GQ8DVSVK',{
                 page_path: window.location.pathname});`
             }}/>
 
