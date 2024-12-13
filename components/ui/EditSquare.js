@@ -48,6 +48,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
   const [requestStatus, setRequestStatus] = useState({ status: CONSTANTS.messageTypes.HIDDEN, message: '', error: false, isVisible: false })
   const [loginSuggestion, setLoginSuggestion] = useState(false)
   const [smartPickerStatus, setSmartPickerStatus] = useState(false)
+  const [scrollToBottom, setScrollToBottom] = useState(false);
   const router = useRouter();
   const user = useContext(AuthorizationContext)
   const categoriesUrl = '/hopsapi/resources/categories'
@@ -281,7 +282,12 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef();
-    useEffect(() => elementRef.current.scrollIntoView());
+    useEffect(() => {
+      if (scrollToBottom) {
+        elementRef.current.scrollIntoView()
+        setScrollToBottom( false);
+      }
+    }, [scrollToBottom]);
     return <div ref={elementRef} />;
   };
 
@@ -365,6 +371,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
         addItem(e.target.value, isLink ? CONSTANTS.LINK_TYPE : CONSTANTS.TEXT_TYPE)
         focusRef.current = true;
         console.log('set', focusRef.current)
+        setScrollToBottom(true)
         setFocus(true)
       }
     }
@@ -776,11 +783,11 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
 
               <EntryBox />
-              <div className = {clsx('columns','mt-0','pl-3','pr-3','is-hidden-desktop')}>
+              <div className={clsx('columns', 'mt-0', 'pl-3', 'pr-3', 'is-hidden-desktop')}>
                 <nav class="column is-full-width level  is-mobile has-background-white pl-5">
                   <div class="level-item has-text-centered">
                     <div>
-                    <p class="control">
+                      <p class="control">
                         <button class="button is-light" onClick={togglePick}>
                           <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiLightbulbOn} size={1}></Icon></span>
                         </button>
@@ -790,7 +797,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   </div>
                   <div class="level-item has-text-centered">
                     <div>
-                    <p class="control">
+                      <p class="control">
                         <button class="button is-light" onClick={() => {
                           if (list.current.length > 0) {
                             printDocument();
@@ -799,7 +806,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                           }
                         }}>
                           <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiDownload} size={1}></Icon></span>
-                          
+
                         </button>
                       </p>
                       <p className={clsx('heading')}>Download PDF</p>
@@ -807,22 +814,22 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   </div>
                   <div class="level-item has-text-centered">
                     <div>
-                    <p class="control">
+                      <p class="control">
                         <button class="button is-light" onClick={handleSave}>
-                        <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiFloppy} size={1}></Icon></span>
+                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiFloppy} size={1}></Icon></span>
                         </button>
                       </p>
-                      <p className={clsx('heading')}>Save</p>  
+                      <p className={clsx('heading')}>Save</p>
                     </div>
                   </div>
                   <div class="level-item has-text-centered">
                     <div>
-                    <p class="control">
+                      <p class="control">
                         <button class="button is-light" onClick={handleCancel}>
-                        <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiClose} size={1}></Icon></span>
+                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiClose} size={1}></Icon></span>
                         </button>
                       </p>
-                      <p className={clsx('heading')}>Close</p>  
+                      <p className={clsx('heading')}>Close</p>
                     </div>
                   </div>
                 </nav>
