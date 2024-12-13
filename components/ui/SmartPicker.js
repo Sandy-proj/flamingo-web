@@ -12,6 +12,7 @@ const SmartPicker = React.memo(
   function SmartPicker({ visible, onDeactivate, onAgree, onOk, onCancel, selectedIds, pickDto }) {
     const [suggestions, setSuggestions] = useState([])
     const [tag, setTag] = useState('Travel')
+    const [dataReady,setDataReady] = useState(false)
     const suggestionsUrl = '/hopsapi/suggestions'
 
     function doNothing() {
@@ -71,6 +72,7 @@ const SmartPicker = React.memo(
       try {
         const suggestionsData = await axios.get(suggestionsUrl, { timeout: CONSTANTS.REQUEST_TIMEOUT })
         setSuggestions(suggestionsData.data.data)
+        setDataReady(true);
       } catch (error) {
         console.error(error.message);
       }
@@ -116,7 +118,7 @@ const SmartPicker = React.memo(
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-7', 'has-text-weight-bold','is-ghost', tag === 'Travel' ?['has-text-success','has-text-weight-bold'] :'','subtitle')}  onClick={() => switchTag('Travel')}>Travel</p>
+                <p className={clsx('button','is-7', 'heading','is-ghost', tag === 'Travel' ?['has-text-success','has-text-weight-bold'] :'','subtitle')}  onClick={() => switchTag('Travel')}>Travel</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
@@ -127,7 +129,7 @@ const SmartPicker = React.memo(
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-7', 'has-text-weight-bold', 'is-ghost', tag === 'Personal' ?['has-text-success','has-text-weight-bold'] : '','subtitle')}  onClick={() => switchTag('Personal')}>Personal</p>
+                <p className={clsx('button','is-7', 'heading', 'is-ghost', tag === 'Personal' ?['has-text-success','has-text-weight-bold'] : '','subtitle')}  onClick={() => switchTag('Personal')}>Personal</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
@@ -138,7 +140,7 @@ const SmartPicker = React.memo(
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-7', 'has-text-weight-bold', 'is-ghost', tag === 'Safety' ?['has-text-success','has-text-weight-bold'] : '','subtitle')}  onClick={() => switchTag('Safety')}>Safety</p>
+                <p className={clsx('button','is-7', 'heading', 'is-ghost', tag === 'Safety' ?['has-text-success','has-text-weight-bold'] : '','subtitle')}  onClick={() => switchTag('Safety')}>Safety</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
@@ -149,7 +151,7 @@ const SmartPicker = React.memo(
                   backgroundSize: 'cover'
                 }}></p>
                 
-                <p className={clsx('button','is-7', 'has-text-weight-bold', 'is-ghost', tag === 'Hiking' ? ['has-text-success','has-text-weight-bold'] : '','subtitle')} onClick={() => switchTag('Hiking')}>Hiking</p>
+                <p className={clsx('button','is-7', 'heading', 'is-ghost', tag === 'Hiking' ? ['has-text-success','has-text-weight-bold'] : '','subtitle')} onClick={() => switchTag('Hiking')}>Hiking</p>
               </div>
             </div>
           </nav>
@@ -157,9 +159,21 @@ const SmartPicker = React.memo(
         <section className={clsx('modal-card-body','p-0','scroller-style')}>
  
           <div className={clsx('container','p-2','scroller-style')}>
-            <ul>
+            {dataReady?            <ul>
               {suggestions.map((value, index) => { ; return <li><SuggestionItem suggestion={value.suggestion} tags={value.tags}></SuggestionItem></li> })}
-            </ul>
+            </ul>:
+             <div className={clsx('min-screen-fill','container','centeralignment')}>
+           
+             <div>
+                 <div className={clsx('loader','centeralignment')}></div>
+                 <div className={clsx('is-size-4','mt-4')}>Loading...</div>
+             </div>
+            
+             
+           
+             </div>}
+
+
           </div>
 
         </section>

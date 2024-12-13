@@ -4,7 +4,7 @@ import { startTransition, useContext, useState } from 'react'
 import { useRef } from 'react'
 import { useEffect } from 'react'
 import BaseLayout from '../../components/ui/BaseLayout'
-import { mdiDragVertical, mdiPlus, mdiMinus, mdiHeart, mdiBookmark, mdiSwapVertical, mdiBookmarkOutline, mdiHeartOutline, mdiClose, mdiMinuss, mdiArrowDown, mdiMenuDown, mdiCheck, mdiCancel, mdiMenuUp, mdiDelete } from '@mdi/js'
+import { mdiDragVertical, mdiPlus, mdiMinus, mdiHeart, mdiBookmark, mdiSwapVertical, mdiBookmarkOutline, mdiHeartOutline, mdiClose, mdiMinuss, mdiArrowDown, mdiMenuDown, mdiCheck, mdiCancel, mdiMenuUp, mdiDelete, mdiDownload, mdiFloppy } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import axios from 'axios'
 import clsx from 'clsx';
@@ -292,19 +292,19 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
       if (localStorage.getItem("latestlist")) {
         list.current = JSON.parse(localStorage.getItem("latestlist")).slice()
         selectedIdList.current = []
-        console.log("current",list.current[0])
+        console.log("current", list.current[0])
         list.current.forEach((item) => {
           if (item.suggestionId) {
             if (!selectedIdList.current.includes(item.suggestionId)) {
               // let temp = selectedIdList.current.slice();
               // temp.push(item.suggestionId)
               // selectedIdList.current = temp;
-              selectedIdList.current = [...selectedIdList,item.suggestionId]
+              selectedIdList.current = [...selectedIdList, item.suggestionId]
             }
           }
         })
         //localStorage.removeItem("latestlist")
-      } 
+      }
     } catch (error) {
       console.error(error);
     }
@@ -320,7 +320,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
               // let temp = selectedIdList.current.slice();
               // temp.push(item.suggestionId)
               // selectedIdList.current = temp;
-              selectedIdList.current = [...selectedIdList.current,item.suggestionId]
+              selectedIdList.current = [...selectedIdList.current, item.suggestionId]
             }
           }
         })
@@ -364,7 +364,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
         if (e.target.value.trim() === '') return;
         addItem(e.target.value, isLink ? CONSTANTS.LINK_TYPE : CONSTANTS.TEXT_TYPE)
         focusRef.current = true;
-        console.log('set',focusRef.current)
+        console.log('set', focusRef.current)
         setFocus(true)
       }
     }
@@ -413,16 +413,16 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
     }
 
     useEffect(() => {
-      console.log('outside',focusRef.current)
-      if(focusRef.current == true){
+      console.log('outside', focusRef.current)
+      if (focusRef.current == true) {
         focusRef.current = false;
         console.log('effects')
         inputRef.current.focus();
       }
-    },[focus]);
+    }, [focus]);
 
     //console.log('is-link'+isLink)
-    return (<div className={clsx('columns', 'is-gapless', 'is-mobile', 'mb-2')}>
+    return (<div className={clsx('columns', 'is-gapless', 'is-mobile', 'mb-0')}>
       <Alert isVisible={!validation} message={'The link is not supported.'} onCancel={validationAcknowledgement} />
       <LoginSuggestion visible={loginSuggestion} onOk={onLoginOk} onCancel={onLoginCancel} />
       <SmartPicker visible={pickerMode} onOk={onPickOk} onCancel={onPickCancel} selectedIds={selectedIdList} pickDto={standardItemMap.current} />
@@ -449,7 +449,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             </span>
           </div> : <div>
 
-            <span><input ref={inputRef}  maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Enter your list item & press enter.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} onKeyPress={handleTextKeyPress}></input>
+            <span><input ref={inputRef} maxLength={CONSTANTS.LIST_ITEM_MAX_LENGTH} className={clsx('input', 'mr-0', 'has-text-blue', 'p-2', 'thin-border-button', 'ghost', 'bottom-panel-dimensions')} disabled={list.current.length > itemLimit} type="text" onPaste={(e) => window.alert(e.clipboardData.getData('text'))} placeholder={`Enter your list item & press enter.`} value={currentBoxEntry} onChange={e => setCurrentBoxEntry(e.target.value)} onKeyPress={handleTextKeyPress}></input>
             </span>
           </div>
           }
@@ -670,7 +670,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
             <div className="column is-one-fifth is-radiusless">
 
             </div>
-            <ConfirmationDialog isVisible={discarding} message={'Discard changes and exit?'} onCancel={() => { setDiscarding(false) }} onConfirm={() => { localStorage.removeItem('latestlist');router.replace('/') }} />
+            <ConfirmationDialog isVisible={discarding} message={'Discard changes and exit?'} onCancel={() => { setDiscarding(false) }} onConfirm={() => { localStorage.removeItem('latestlist'); router.replace('/') }} />
             <Popup status={requestStatus.status} onClose={() => { setRequestStatus({ isVisible: false }) }} isVisible={requestStatus.isVisible} message={requestStatus.message} />
 
             <div className="column is-auto is-radiusless">
@@ -765,7 +765,7 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
                   <p className={clsx('mt-1', 'is-size-6', 'basic-placeholder', 'has-text-weight-light', 'p-4', 'is-rounded', 'cloud')}>Lists can be fun after adding the first item.<br /><span className={clsx('is-size-7', 'has-text-info')}> Use the text box below.</span></p>
                 </div> :
                   <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-                    {list.current instanceof Array ? list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> }):list}
+                    {list.current instanceof Array ? list.current.map((value, index) => { ; return <SortableElement key={value.id} index={index} operationIndex={index} value={value}></SortableElement> }) : list}
                     <AlwaysScrollToBottom />
                   </SortableContainer>
 
@@ -776,6 +776,57 @@ export default function EditSquare({ resourceId, resource, onSave, onError }) {
 
 
               <EntryBox />
+              <div className = {clsx('columns','mt-0','pl-3','pr-3','is-hidden-desktop')}>
+                <nav class="column is-full-width level  has-background-white pl-5">
+                  <div class="level-item has-text-centered">
+                    <div>
+                    <p class="control">
+                        <button class="button is-light" onClick={togglePick}>
+                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiLightbulbOn} size={1}></Icon></span>
+                        </button>
+                      </p>
+                      <p className={clsx('heading')}>Suggestions</p>
+                    </div>
+                  </div>
+                  <div class="level-item has-text-centered">
+                    <div>
+                    <p class="control">
+                        <button class="button is-light" onClick={() => {
+                          if (list.current.length > 0) {
+                            printDocument();
+                          } else {
+                            toast.error("The list is empty. Add items to download.")
+                          }
+                        }}>
+                          <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiDownload} size={1}></Icon></span>
+                          
+                        </button>
+                      </p>
+                      <p className={clsx('heading')}>Download PDF</p>
+                    </div>
+                  </div>
+                  <div class="level-item has-text-centered">
+                    <div>
+                    <p class="control">
+                        <button class="button is-light" onClick={handleSave}>
+                        <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiFloppy} size={1}></Icon></span>
+                        </button>
+                      </p>
+                      <p className={clsx('heading')}>Save</p>  
+                    </div>
+                  </div>
+                  <div class="level-item has-text-centered">
+                    <div>
+                    <p class="control">
+                        <button class="button is-light" onClick={handleCancel}>
+                        <span className={clsx(pickerMode ? 'has-text-white' : 'has-text-link', 'mr-2')}><Icon path={mdiClose} size={1}></Icon></span>
+                        </button>
+                      </p>
+                      <p className={clsx('heading')}>Close</p>  
+                    </div>
+                  </div>
+                </nav>
+              </div>
 
               {/* <div className={clsx('columns', 'is-gapless', 'is-mobile', 'mt-0.5', 'mb-2')}>
 

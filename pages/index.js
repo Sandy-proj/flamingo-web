@@ -27,7 +27,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
   const [sidebar, setSidebar] = useState(false)
   const [loadSignIn, setLoadSignIn] = useState(false)
   const [navigateAway, setNavigateAway] = useState(false)
-  const [downloads,setDownloads] = useState(1359)
+  const [downloads,setDownloads] = useState(0)
   const fetchCategoryUrl = '/hopsapi/resources/categories'
   const logoutUrl = '/hopsapi/user/logout'
   const downloadsUrl = '/hopsapi/resources/downloads'
@@ -226,6 +226,7 @@ export default function Home({ onLoginChange, displayState, onDisplayStateChange
       </div>
       <div>
         <Header />
+        <Loader visible={navigateAway}/>
         <div>
           <section className={clsx('hero', 'is-large', 'is-info', 'theme-background')}>
             <div className={clsx('hero-head', 'overlay-layer')}>

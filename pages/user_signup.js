@@ -54,7 +54,6 @@ export default function SignUp({onError,onLoginChange}){
             
                 const response = await axios.post(signupUrl,qs.stringify({emailId:credentials.emailId.toLowerCase(),username:credentials.username,password:credentials.password}));
                 //const response = await axios.post(loginUrl,params)
-                console.log('xxx')
                 console.log(response)
                 if(response.status===CONSTANTS.POST_SUCCESS){
                     if(response.data.result&&response.data.result.signup==='SUCCESS'&&response.data.result.email==='SUCCESS'){
